@@ -34,6 +34,13 @@ insert into kirja values(7, "Hopeinen tuoli", 4, "Neljäs osa Narnia-sarjaa", "C
 insert into kirja values(8, "Hevonen ja poika", 5, "Viides osa Narnia-sarjaa", "C. S. Lewis", "-", 1954, 15);
 insert into kirja values(9, "Taikurin sisarenpoika", 6, "Kuudes osa Narnia-sarjaa", "C. S. Lewis", "-", 1955, 14);
 insert into kirja values(10, "Narnian viimeinen taistelu", 7, "Seitsemäs ja viimeinen osa Narnia-sarjaa", "C. S. Lewis", "-", 1956, 14);
+insert into kirja values(11, "Harry Potter ja viisasten kivi", 1, "Ensimmäinen osa Harry Potter -sarjaa", "J.K. Rowling", "-", 1997, 50);
+insert into kirja values(12, "The Shining", NULL, "A horror novel about a family staying at an isolated hotel", "Stephen King", "-", 1977, 30);
+insert into kirja values(13, "Watchmen", NULL, "A graphic novel exploring the dark side of superheroes", "Alan Moore", "Dave Gibbons", 1986, 10);
+insert into kirja values(14, "Murder on the Orient Express", NULL, "A classic murder mystery novel set on a train", "Agatha Christie", "-", 1934, 40);
+insert into kirja values(15, "A Game of Thrones", 1, "The first book in the A Song of Ice and Fire series", "George R.R. Martin", "-", 1996, 20);
+insert into kirja values(16, "The Old Man and the Sea", NULL, "A short novel about an aging fisherman's struggle with a giant marlin", "Ernest Hemingway", "-", 1952, 25);
+
 
 -- Narnia -kirjat sarjaan
 insert into sarjan_kirjat values(2,4);
