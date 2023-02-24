@@ -248,11 +248,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`oma_kirja_has_valokuva`
+-- Table `mydb`.`oman_kirjan_valokuvat`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`oma_kirja_has_valokuva` ;
+DROP TABLE IF EXISTS `mydb`.`oman_kirjan_valokuvat` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja_has_valokuva` (
+CREATE TABLE IF NOT EXISTS `mydb`.`oman_kirjan_valokuvat` (
   `oma_kirja_oma_kirja_id` INT NOT NULL,
   `valokuva_valokuva_id` INT NOT NULL,
   PRIMARY KEY (`oma_kirja_oma_kirja_id`, `valokuva_valokuva_id`),
