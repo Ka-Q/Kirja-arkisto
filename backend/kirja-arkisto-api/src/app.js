@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
   });
 });
 
+// Pelkkä kirja
 app.get('/kirja', (req, res) => {
     let queryJson = kirja_functions.GetKirja(req);
     connect(res, queryJson.query, queryJson.queryList)
@@ -61,6 +62,28 @@ app.delete('/kirja', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
+// TODO Kirja kaikilla tiedoilla
+app.get('/kirjakaikella', (req, res) => {
+  let queryJson = {}
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/kirjakaikella', (req, res) => {
+let queryJson = {}
+connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.put('/kirjakaikella', (req, res) => {
+let queryJson = {}
+connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/kirjakaikella', (req, res) => {
+let queryJson = {}
+connect(res, queryJson.query, queryJson.queryList)
+});
+
+// Sarja
 app.get('/sarja', (req, res) => {
 
   let listOfValues = []
