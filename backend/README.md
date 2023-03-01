@@ -1,4 +1,11 @@
 #Tänne backendin koodi
 
-Tietokannan portti oletuksena 3006
+##Tietokanta:
+
+Portti oletuksena 3006
+Nimi mydb
+käyttäjä root
+salasana root
+
+##Api
 Express-apin portti oletuksena 5000
