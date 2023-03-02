@@ -2,6 +2,9 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require("body-parser")
 const kirja_functions = require('./functions/kirja_functions')
+const sarja_functions = require('./functions/sarja_functions')
+
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,9 +16,9 @@ const connect = (res, query, queryList) => {
     password: "root",
     database: "mydb",
     dateStrings: true,
-    
+
   });
-  connection.query(query, queryList ,(error, SQLresult, fields) => {
+  connection.query(query, queryList, (error, SQLresult, fields) => {
     connection.end();
     return handleConnection(res, error, SQLresult);
   });
@@ -24,12 +27,12 @@ const connect = (res, query, queryList) => {
 const handleConnection = (res, error, SQLresult) => {
   if (error || SQLresult.length == 0) {
     console.log("ERROR: " + error);
-    res.json({status: "NOT OK", message: "Virheellinen haku", data: []})
+    res.json({ status: "NOT OK", message: "Virheellinen haku", data: [] })
   }
   else {
-      console.log("OK")
-      res.statusCode = 200;
-      res.json({status: "OK", message: "handled", data: SQLresult})
+    console.log("OK")
+    res.statusCode = 200;
+    res.json({ status: "OK", message: "handled", data: SQLresult })
   }
 }
 
@@ -43,8 +46,8 @@ app.get('/', (req, res) => {
 
 // Pelkkä kirja
 app.get('/kirja', (req, res) => {
-    let queryJson = kirja_functions.GetKirja(req);
-    connect(res, queryJson.query, queryJson.queryList)
+  let queryJson = kirja_functions.GetKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 app.post('/kirja', (req, res) => {
@@ -69,128 +72,40 @@ app.get('/kirjakaikella', (req, res) => {
 });
 
 app.post('/kirjakaikella', (req, res) => {
-let queryJson = {}
-connect(res, queryJson.query, queryJson.queryList)
+  let queryJson = {}
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 app.put('/kirjakaikella', (req, res) => {
-let queryJson = {}
-connect(res, queryJson.query, queryJson.queryList)
+  let queryJson = {}
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 app.delete('/kirjakaikella', (req, res) => {
-let queryJson = {}
-connect(res, queryJson.query, queryJson.queryList)
+  let queryJson = {}
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 // Sarja
 app.get('/sarja', (req, res) => {
 
-  let listOfValues = []
-
-  let params = req.query;
-  let keys = Object.keys(params);
-  let query = "SELECT * FROM sarja WHERE (1=1)"
-  
-  for (let key in keys){
-    query += " AND ?? LIKE ?"
-    let avain = keys[key]
-    listOfValues.push(avain)
-    listOfValues.push(params[avain])
-  }
-
-  console.log(query)
-  connect(res, query, listOfValues)
+  let queryJson = sarja_functions.GetSarja(req);
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 app.post('/sarja', (req, res) => {
-  let params = req.body
-  let keys = Object.keys(params)
-  console.log(keys.length)
+  let queryJson = sarja_functions.PostSarja(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
 
-  let listOfKeys = []
-  let listOfValues = []
-
-  let query = "INSERT INTO sarja ("
-
-  for (let key in keys){
-    query += "??,"
-    let avain = keys[key]
-    listOfKeys.push(avain)
-  }
-
-  query = query.substring(0, query.length - 1)
-
-  query += ") VALUES("
-
-  for (let key in keys){
-    query += "?,"
-    let avain = keys[key]
-    listOfValues.push(params[avain])
-  }
-
-  query = query.substring(0, query.length - 1)
-
-  query += ")"
-  let queryList = listOfKeys.concat(listOfValues);
-
-  console.log(query)
-
-  connect(res, query, queryList)
-})
-// DELETE method for sarja table
 app.delete('/sarja', (req, res) => {
-  let where = req.body;
-  let whereKeys = Object.keys(where);
-
-  let queryList = [];
-
-  let query = "DELETE FROM sarja WHERE (1=1)";
-
-  for (let x in whereKeys){
-    let key = whereKeys[x];
-    query += " AND ?? = ?";
-    queryList.push(key);
-    queryList.push(where[key]);
-  }
-
-  console.log(query);
-
-  connect(res, query, queryList);
+  let queryJson = sarja_functions.DeleteSarja(req)
+  connect(res, queryJson.query, queryJson.queryList);
 });
 
 app.put('/sarja', (req, res) => {
-  let set = req.body.set
-  let where = req.body.where
-
-  let setKeys = Object.keys(set)
-  let whereKeys = Object.keys(where)
-
-  let queryList = []
-
-  let query = "UPDATE sarja SET "
-
-  for (let x in setKeys) {
-    let key = setKeys[x];
-    query += "?? = ?,";
-    queryList.push(setKeys[x]);
-    queryList.push(set[key]);
-  }
-
-  query = query.substring(0, query.length - 1);
-
-  query += " WHERE (1=1)"
-
-  for (let x in whereKeys) {
-    let key = whereKeys[x];
-    query += " AND ?? = ?";
-    queryList.push(whereKeys[x]);
-    queryList.push(where[key]);
-  }
-
-  console.log(query)
-
-  connect(res, query, queryList)
+  let queryJson=sarja_functions.PutSarja(req)
+  connect(res, queryJson.query, queryJson.queryList)
 })
 
 
