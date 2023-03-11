@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const bodyParser = require("body-parser")
 const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
+const oma_kirja_functions = require('./functions/oma_kirja_functions')
 const sarja_functions = require('./functions/sarja_functions')
 
 const app = express();
@@ -45,7 +46,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Pelkkä kirja
+// Kirja
 app.get('/kirja', (req, res) => {
   let queryJson = kirja_functions.GetKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
@@ -69,6 +70,27 @@ app.delete('/kirja', (req, res) => {
 // Kirja Kaikella
 app.get('/kirjakaikella', (req, res) => {
   kirja_kaikella_functions.GetKirjaKaikella(req, res)
+});
+
+// Oma kirja
+app.get('/oma_kirja', (req, res) => {
+  let queryJson = oma_kirja_functions.GetOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/oma_kirja', (req, res) => {
+  let queryJson = oma_kirja_functions.PostOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.put('/oma_kirja', (req, res) => {
+  let queryJson = kirja_functions.PutOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/oma_kirja', (req, res) => {
+  let queryJson = oma_kirja_functions.DeleteOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
 });
 
 // Sarja
