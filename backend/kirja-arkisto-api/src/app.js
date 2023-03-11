@@ -2,9 +2,8 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require("body-parser")
 const kirja_functions = require('./functions/kirja_functions')
+const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const sarja_functions = require('./functions/sarja_functions')
-
-
 
 const app = express();
 app.use(bodyParser.json());
@@ -24,6 +23,8 @@ const connect = (res, query, queryList) => {
   });
 }
 
+// Toimii, kun halutaan palauttaa yhden taulun data sellaisenaan. Jos dataa pitää muokata, pitää kehitellä jokin variaatio tästä 
+// (vrt. kirja_kaikella_functions.handleConnection)
 const handleConnection = (res, error, SQLresult) => {
   if (error || SQLresult.length == 0) {
     console.log("ERROR: " + error);
@@ -65,30 +66,13 @@ app.delete('/kirja', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-// TODO Kirja kaikilla tiedoilla
+// Kirja Kaikella
 app.get('/kirjakaikella', (req, res) => {
-  let queryJson = {}
-  connect(res, queryJson.query, queryJson.queryList)
-});
-
-app.post('/kirjakaikella', (req, res) => {
-  let queryJson = {}
-  connect(res, queryJson.query, queryJson.queryList)
-});
-
-app.put('/kirjakaikella', (req, res) => {
-  let queryJson = {}
-  connect(res, queryJson.query, queryJson.queryList)
-});
-
-app.delete('/kirjakaikella', (req, res) => {
-  let queryJson = {}
-  connect(res, queryJson.query, queryJson.queryList)
+  kirja_kaikella_functions.GetKirjaKaikella(req, res)
 });
 
 // Sarja
 app.get('/sarja', (req, res) => {
-
   let queryJson = sarja_functions.GetSarja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
