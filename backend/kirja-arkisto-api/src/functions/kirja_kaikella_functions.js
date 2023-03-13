@@ -25,6 +25,7 @@ const connect = (res, query, queryList) => {
     else {
       let returnList = []                                               // Lista, johon kasataan palautettavat objektit
       let previousKirja = {kirja_id: -1}                                // Pitää yllä ns. "viimeisintä kirjaa", jotta monet kuvarivit voidaan yhdistää yhteen kirjaan 
+      let kuva_ids = []                                                 
     
       for (let i = 0; i < SQLresult.length; i++){
         let kirja = SQLresult[i]
@@ -42,6 +43,22 @@ const connect = (res, query, queryList) => {
           previousKirja.ensipainosvuosi = kirja.ensipainosvuosi
           previousKirja.painokset = kirja.painokset
           previousKirja.kuvat = []
+
+          let kuva = {
+            kuva_id: kirja.kuva_id, 
+            kuva: kirja.kuva, 
+            kuva_tyyppi_id: kirja.kuva_tyyppi_id, 
+            julkaisuvuosi: kirja.julkaisuvuosi, 
+            taiteilija: kirja.taiteilija, 
+            tyyli: kirja.tyyli, 
+            kuvaus: kirja.kuvan_kuvaus
+        }
+
+        if (!kuva_ids.includes(kuva.kuva_id) && kuva.kuva_id) {
+          kuva_ids.push(kuva.kuva_id)
+          previousKirja.kuvat.push(kuva)
+        }
+        
         } else {                                                        // Lisätään kirjalle kuva
           let kuva = {
               kuva_id: kirja.kuva_id, 
@@ -52,7 +69,10 @@ const connect = (res, query, queryList) => {
               tyyli: kirja.tyyli, 
               kuvaus: kirja.kuvan_kuvaus
           }
-          previousKirja.kuvat.push(kuva)
+          if (!kuva_ids.includes(kuva.kuva_id) && kuva.kuva_id) {
+            kuva_ids.push(kuva.kuva_id)
+            previousKirja.kuvat.push(kuva)
+          }
         }
       }
       returnList.push(JSON.parse(JSON.stringify(previousKirja)))        // Pusketaan lopuksi vielä viimeinenkin kirja palautuslistaan
