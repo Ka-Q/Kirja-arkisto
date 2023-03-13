@@ -64,25 +64,35 @@ insert into oma_kirja values(60, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12"
 insert into oma_kirja values(70, 3, 5.00, "Antikvariaatista", 2007, "2022-06-08", 10);
 
 
--- Omien kirjojen kuvat
-insert into kuva values(1, "Kuva Sormuksen ritareiden etukannesta", 1);
-insert into kuva values(2, "Kuva Sormuksen ritareiden takakannesta", 2);
-insert into kuva values(3, "Kuva Kaksi tornia etukannesta", 1);
-insert into kuva values(4, "Kuva Kaksi tornia takakannesta", 2);
-insert into kuva values(5, "Kuva Kaksi tornia sivulta 4", 3);
+-- Kirjojen kuvat
+insert into kuva values(1, "Kuva Sormuksen ritareiden etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(2, "Kuva Sormuksen ritareiden takakannesta", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(3, "Kuva Kaksi tornia etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(4, "Kuva Kaksi tornia takakannesta", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(5, "Kuva Kaksi tornia sivulta 4", 3, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
 
-insert into kuva values(6, "Kuva Velho ja Leijona etukannesta", 1);
-insert into kuva values(7, "Kuva Narnian viimeinen taistelu etukannesta", 1);
+insert into kuva values(6, "Kuva Velho ja Leijona etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(7, "Kuva Narnian viimeinen taistelu etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
 
--- Omien kirjojen kuvat paikoilleen
-insert into oman_kirjan_kuvat values(20, 1);
-insert into oman_kirjan_kuvat values(20, 2);
-insert into oman_kirjan_kuvat values(30, 3);
-insert into oman_kirjan_kuvat values(30, 4);
-insert into oman_kirjan_kuvat values(30, 5);
+-- kuvat paikoilleen
+insert into kirjan_kuvat values(1, 1);
+insert into kirjan_kuvat values(1, 2);
+insert into kirjan_kuvat values(2, 3);
+insert into kirjan_kuvat values(2, 4);
+insert into kirjan_kuvat values(2, 5);
 
-insert into oman_kirjan_kuvat values(40, 6);
-insert into oman_kirjan_kuvat values(70, 7);
+insert into kirjan_kuvat values(4, 6);
+insert into kirjan_kuvat values(10, 7);
+
+insert into valokuva values(1, 1234, "testivalokuva");
+insert into valokuva values(2, 1235, "testivalokuva2");
+insert into valokuva values(3, 1236, "testivalokuva3");
+insert into valokuva values(4, 1237, "testivalokuva4");
+
+insert into oman_kirjan_valokuvat values(10, 1);
+insert into oman_kirjan_valokuvat values(10, 2);
+insert into oman_kirjan_valokuvat values(20, 3);
+insert into oman_kirjan_valokuvat values(30, 4);
 
 -- Omat sarjat
 insert into oma_sarja values(1, "Taru sormusten Herrasta (oma)", "Kokoelmani Taru Sormusten Herrasta - kirjoja", 1);
