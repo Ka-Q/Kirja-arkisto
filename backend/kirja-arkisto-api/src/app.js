@@ -5,6 +5,7 @@ const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const oma_kirja_functions = require('./functions/oma_kirja_functions')
 const sarja_functions = require('./functions/sarja_functions')
+const oma_sarja_functions = require('./functions/oma_sarja_functions')
 
 const app = express();
 app.use(bodyParser.json());
@@ -111,6 +112,27 @@ app.delete('/sarja', (req, res) => {
 
 app.put('/sarja', (req, res) => {
   let queryJson=sarja_functions.PutSarja(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+
+// Oma sarja
+app.get('/oma_sarja', (req, res) => {
+  let queryJson = oma_sarja_functions.GetOmaSarja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/oma_sarja', (req, res) => {
+  let queryJson = oma_sarja_functions.PostOmaSarja(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/oma_sarja', (req, res) => {
+  let queryJson = oma_sarja_functions.DeleteOmaSarja(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/oma_sarja', (req, res) => {
+  let queryJson=oma_sarja_functions.PutOmaSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
