@@ -7,6 +7,7 @@ const oma_kirja_functions = require('./functions/oma_kirja_functions')
 const sarja_functions = require('./functions/sarja_functions')
 const oma_sarja_functions = require('./functions/oma_sarja_functions')
 const kuva_functions = require('./functions/kuva_functions')
+const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
 
 const app = express();
 app.use(bodyParser.json());
@@ -70,7 +71,7 @@ app.delete('/kirja', (req, res) => {
 });
 
 // Kirja Kaikella
-app.get('/kirjakaikella', (req, res) => {
+app.get('/kirja_kaikella', (req, res) => {
   kirja_kaikella_functions.GetKirjaKaikella(req, res)
 });
 
@@ -93,6 +94,11 @@ app.put('/oma_kirja', (req, res) => {
 app.delete('/oma_kirja', (req, res) => {
   let queryJson = oma_kirja_functions.DeleteOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
+});
+
+// Oma kirja Kaikella
+app.get('/oma_kirja_kaikella', (req, res) => {
+  oma_kirja_kaikella_functions.GetOmaKirjaKaikella(req, res)
 });
 
 // Sarja

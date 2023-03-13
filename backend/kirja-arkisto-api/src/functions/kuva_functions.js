@@ -17,8 +17,8 @@ function GetKuva(req) {
     returnJson.query = query
     returnJson.queryList = listOfValues
     return returnJson
-
 }
+
 function PostKuva(req) {
     let returnJson = {}
     let params = req.body
@@ -55,8 +55,8 @@ function PostKuva(req) {
     returnJson.query=query
     returnJson.queryList=queryList
     return returnJson
-
 }
+
 function PutKuva(req) {
     let returnJson = {}
     let set = req.body.set
@@ -91,8 +91,8 @@ function PutKuva(req) {
     returnJson.query=query
     returnJson.queryList=queryList
     return returnJson
-
 }
+
 function DeleteKuva(req) {
     let returnJson = {}
     let where = req.body;
