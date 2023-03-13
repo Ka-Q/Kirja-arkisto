@@ -6,6 +6,7 @@ const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const oma_kirja_functions = require('./functions/oma_kirja_functions')
 const sarja_functions = require('./functions/sarja_functions')
 const oma_sarja_functions = require('./functions/oma_sarja_functions')
+const kuva_functions = require('./functions/kuva_functions')
 
 const app = express();
 app.use(bodyParser.json());
@@ -111,7 +112,7 @@ app.delete('/sarja', (req, res) => {
 });
 
 app.put('/sarja', (req, res) => {
-  let queryJson=sarja_functions.PutSarja(req)
+  let queryJson = sarja_functions.PutSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
@@ -132,7 +133,28 @@ app.delete('/oma_sarja', (req, res) => {
 });
 
 app.put('/oma_sarja', (req, res) => {
-  let queryJson=oma_sarja_functions.PutOmaSarja(req)
+  let queryJson = oma_sarja_functions.PutOmaSarja(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+
+// Kuva
+app.get('/kuva', (req, res) => {
+  let queryJson = kuva_functions.GetKuva(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/kuva', (req, res) => {
+  let queryJson = kuva_functions.PostKuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/kuva', (req, res) => {
+  let queryJson = kuva_functions.DeleteKuva(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/kuva', (req, res) => {
+  let queryJson = kuva_functions.PutKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
