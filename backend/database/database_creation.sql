@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kirjahylly` (
   PRIMARY KEY (`kirjahylly_id`),
   UNIQUE INDEX `kirjahylly_id_UNIQUE` (`kirjahylly_id` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_sarja` (
     FOREIGN KEY (`sarja_sarja_id`)
     REFERENCES `mydb`.`sarja` (`sarja_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS `mydb`.`kirja` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`kirja` (
   `kirja_id` INT NOT NULL AUTO_INCREMENT,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  `jarjestusnumero` INT NULL DEFAULT NULL,
+  `jarjestysnumero` INT NULL DEFAULT NULL,
   `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
   `kirjailijat` VARCHAR(200) NULL DEFAULT NULL,
   `piirtajat` VARCHAR(200) NULL DEFAULT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kuva` (
     FOREIGN KEY (`kuva_tyyppi_id`)
     REFERENCES `mydb`.`kuva_tyyppi` (`kuva_tyyppi_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 8
+AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`valokuva` (
   PRIMARY KEY (`valokuva_id`),
   UNIQUE INDEX `valokuva_id_UNIQUE` (`valokuva_id` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -268,6 +269,20 @@ CREATE TABLE IF NOT EXISTS `mydb`.`sarjan_kirjat` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Placeholder table for view `mydb`.`oma_kirja_kaikella`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja_kaikella` (`oma_kirja_id` INT, `kuntoluokka` INT, `hankintahinta` INT, `esittelyteksti` INT, `painosvuosi` INT, `hankinta_aika` INT, `valokuva_id` INT, `sivunumero` INT, `valokuvan_nimi` INT, `kirja_id` INT, `kirjan_nimi` INT, `jarjestysnumero` INT, `kirjan_kuvaus` INT, `kirjailijat` INT, `piirtajat` INT, `ensipainosvuosi` INT, `painokset` INT, `kuva_id` INT, `kuva` INT, `kuva_tyyppi_id` INT, `julkaisuvuosi` INT, `taiteilija` INT, `tyyli` INT, `kuvan_kuvaus` INT);
+
+-- -----------------------------------------------------
+-- View `mydb`.`oma_kirja_kaikella`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`oma_kirja_kaikella`;
+DROP VIEW IF EXISTS `mydb`.`oma_kirja_kaikella` ;
+USE `mydb`;
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `mydb`.`oma_kirja_kaikella` AS select `mydb`.`oma_kirja`.`oma_kirja_id` AS `oma_kirja_id`,`mydb`.`oma_kirja`.`kuntoluokka` AS `kuntoluokka`,`mydb`.`oma_kirja`.`hankintahinta` AS `hankintahinta`,`mydb`.`oma_kirja`.`esittelyteksti` AS `esittelyteksti`,`mydb`.`oma_kirja`.`painosvuosi` AS `painosvuosi`,`mydb`.`oma_kirja`.`hankinta_aika` AS `hankinta_aika`,`mydb`.`valokuva`.`valokuva_id` AS `valokuva_id`,`mydb`.`valokuva`.`sivunumero` AS `sivunumero`,`mydb`.`valokuva`.`nimi` AS `valokuvan_nimi`,`mydb`.`kirja`.`kirja_id` AS `kirja_id`,`mydb`.`kirja`.`nimi` AS `kirjan_nimi`,`mydb`.`kirja`.`jarjestysnumero` AS `jarjestysnumero`,`mydb`.`kirja`.`kuvaus` AS `kirjan_kuvaus`,`mydb`.`kirja`.`kirjailijat` AS `kirjailijat`,`mydb`.`kirja`.`piirtajat` AS `piirtajat`,`mydb`.`kirja`.`ensipainosvuosi` AS `ensipainosvuosi`,`mydb`.`kirja`.`painokset` AS `painokset`,`mydb`.`kuva`.`kuva_id` AS `kuva_id`,`mydb`.`kuva`.`kuva` AS `kuva`,`mydb`.`kuva`.`kuva_tyyppi_id` AS `kuva_tyyppi_id`,`mydb`.`kuva`.`julkaisuvuosi` AS `julkaisuvuosi`,`mydb`.`kuva`.`taiteilija` AS `taiteilija`,`mydb`.`kuva`.`tyyli` AS `tyyli`,`mydb`.`kuva`.`kuvaus` AS `kuvan_kuvaus` from (((((`mydb`.`oma_kirja` left join `mydb`.`oman_kirjan_valokuvat` on((`mydb`.`oma_kirja`.`oma_kirja_id` = `mydb`.`oman_kirjan_valokuvat`.`oma_kirja_id`))) left join `mydb`.`valokuva` on((`mydb`.`oman_kirjan_valokuvat`.`valokuva_id` = `mydb`.`valokuva`.`valokuva_id`))) left join `mydb`.`kirja` on((`mydb`.`oma_kirja`.`kirja_id` = `mydb`.`kirja`.`kirja_id`))) left join `mydb`.`kirjan_kuvat` on((`mydb`.`kirja`.`kirja_id` = `mydb`.`kirjan_kuvat`.`kirja_kirja_id`))) left join `mydb`.`kuva` on((`mydb`.`kirjan_kuvat`.`kuva_kuva_id` = `mydb`.`kuva`.`kuva_id`)));
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
