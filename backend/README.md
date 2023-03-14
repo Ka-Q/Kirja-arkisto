@@ -1,4 +1,5 @@
-#Tänne backendin koodi
+#Backend
+Tänne hakemistoon backendin koodit ml. tietokanta ja api.
 
 ##Tietokanta:
 
@@ -71,3 +72,40 @@ Rajapinta palauttaa tiedon tietokantaan tehdyistä operaatiosta seuraavanlaisest
 }
 ```
 
+### Put 
+Put toimii samalla kaavalla, mutta nyt body-lohkoon pitää antaa json-objektissa kaksi aliobjektia "where" ja "set". "Where"-objektiin 
+muokattavien rivien rajaavat parametrit. Rajaus yleensä varmaan uniikilla id:llä. "Set"-objektiin korvaavat tiedot rivi(e)n sarakkeille.
+Esim PUT kirjalle: ```http://localhost:5000/kirja```: 
+```
+{
+    "where": {
+        "kirja_id": 22
+    },
+    "set":{
+        "nimi": "Muokattu nimi",
+        "jarjestysnumero": 1
+    }
+}
+```
+Ja backend palauttaa jälleen esim:
+
+```
+{
+    "status": "OK",
+    "message": "handled",
+    "data": {
+        "fieldCount": 0,
+        "affectedRows": 1,
+        "insertId": 0,
+        "serverStatus": 2,
+        "warningCount": 0,
+        "message": "(Rows matched: 1  Changed: 1  Warnings: 0",
+        "protocol41": true,
+        "changedRows": 1
+    }
+}
+```
+
+### Delete 
+Delete toimii samalla tavalla kuin POST, mutta body-lohkoon tulee poistettavien rivien rajaavat tiedot. **Tämäkin yleensä varmaan uniikilla id:llä.** 
+Palauttaa tiedon tietokantaan tehdyistä operaatiosta samassa muodossa.
