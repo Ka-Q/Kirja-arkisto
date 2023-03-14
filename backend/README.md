@@ -109,3 +109,109 @@ Ja backend palauttaa jälleen esim:
 ### Delete 
 Delete toimii samalla tavalla kuin POST, mutta body-lohkoon tulee poistettavien rivien rajaavat tiedot. **Tämäkin yleensä varmaan uniikilla id:llä.** 
 Palauttaa tiedon tietokantaan tehdyistä operaatiosta samassa muodossa.
+
+
+## Custom Getit
+
+**Kirja kaikella ja Oma kirja kaikella**
+
+Getit polkuihin ``` http://localhost:5000/kirja_kaikella ``` ja ``` http://localhost:5000/oma_kirja_kaikella ``` palauttavat yhdistettyä dataa kirjoista ja/tai omista kirjoista.
+"Kirja_kaikella" palauttaa kirjan tiedot, joihin on liitetty kenttä "kuvat", jonka arvona on kyseisen kirjan kuvat taulukossa, JSON-muodossa.
+```
+"status": "OK",
+    "message": "handled",
+    "data": [
+        {
+            "kirja_id": 1,
+            "nimi": "Sormuksen ritarit",
+            "jarjestysnumero": 1,
+            "kuvaus": "Ensimmäinen osa Taru Sormusten Herra - sarjaa",
+            "kirjailijat": "J. R. R. Tolkien",
+            "piirtajat": "-",
+            "ensipainosvuosi": 1954,
+            "painokset": 11,
+            "kuvat": [
+                {
+                    "kuva_id": 1,
+                    "kuva": "kuvan dataa",
+                    "kuva_tyyppi_id": 1,
+                    "julkaisuvuosi": 1999,
+                    "taiteilija": "Kalle",
+                    "tyyli": "Maalaus",
+                    "kuvaus": "Kuva Sormuksen ritareiden etukannesta"
+                },
+                {
+                    "kuva_id": 2,
+                    "kuva": "kuvan dataa",
+                    "kuva_tyyppi_id": 2,
+                    "julkaisuvuosi": 1999,
+                    "taiteilija": "Kalle",
+                    "tyyli": "Maalaus",
+                    "kuvaus": "Kuva Sormuksen ritareiden takakannesta"
+                }
+            ]
+        }
+    ]
+}
+```
+"Oma_kirja_kaikella" palauttaa oman kirjan tiedot, joihin on liitetty kentät "valokuvat" ja "kirja", joiden arvoina ovat kyseisen oman kirjan valokuvat taulukossa, JSON-muodossa 
+sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisesti kuvineen:
+
+```
+{
+    "status": "OK",
+    "message": "handled",
+    "data": [
+        {
+            "oma_kirja_id": 10,
+            "kuntoluokka": 4,
+            "hankintahinta": 12.9,
+            "esittelyteksti": "Kirpputorilöytö",
+            "painosvuosi": 2002,
+            "hankinta_aika": "2019-10-12",
+            "valokuvat": [
+                {
+                    "valokuva_id": 1,
+                    "sivunumero": 1234,
+                    "nimi": "testivalokuva"
+                },
+                {
+                    "valokuva_id": 2,
+                    "sivunumero": 1235,
+                    "nimi": "testivalokuva2"
+                }
+            ],
+            "kirja": {
+                "kirja_id": 1,
+                "nimi": "Sormuksen ritarit",
+                "jarjestysnumero": 1,
+                "kuvaus": "Ensimmäinen osa Taru Sormusten Herra - sarjaa",
+                "kirjailijat": "J. R. R. Tolkien",
+                "piirtajat": "-",
+                "ensipainosvuosi": 1954,
+                "painokset": 11,
+                "kuvat": [
+                    {
+                        "kuva_id": 1,
+                        "kuva": "kuvan dataa",
+                        "kuva_tyyppi_id": 1,
+                        "julkaisuvuosi": 1999,
+                        "taiteilija": "Kalle",
+                        "tyyli": "Maalaus",
+                        "kuvaus": "Kuva Sormuksen ritareiden etukannesta"
+                    },
+                    {
+                        "kuva_id": 2,
+                        "kuva": "kuvan dataa",
+                        "kuva_tyyppi_id": 2,
+                        "julkaisuvuosi": 1999,
+                        "taiteilija": "Kalle",
+                        "tyyli": "Maalaus",
+                        "kuvaus": "Kuva Sormuksen ritareiden etukannesta"
+                    }
+                ]
+            }
+        }
+    ]
+}
+```
