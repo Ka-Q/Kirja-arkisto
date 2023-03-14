@@ -207,7 +207,7 @@ sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisest
                         "julkaisuvuosi": 1999,
                         "taiteilija": "Kalle",
                         "tyyli": "Maalaus",
-                        "kuvaus": "Kuva Sormuksen ritareiden etukannesta"
+                        "kuvaus": "Kuva Sormuksen ritareiden takakannesta"
                     }
                 ]
             }
