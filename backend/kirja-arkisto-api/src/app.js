@@ -8,6 +8,8 @@ const sarja_functions = require('./functions/sarja_functions')
 const oma_sarja_functions = require('./functions/oma_sarja_functions')
 const kuva_functions = require('./functions/kuva_functions')
 const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
+const valokuva_functions=require('./functions/valokuva_functions')
+const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 
 const app = express();
 app.use(bodyParser.json());
@@ -161,6 +163,46 @@ app.delete('/kuva', (req, res) => {
 
 app.put('/kuva', (req, res) => {
   let queryJson = kuva_functions.PutKuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+// valokuva
+app.get('/valokuva', (req, res) => {
+  let queryJson = valokuva_functions.GetValokuva(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/valokuva', (req, res) => {
+  let queryJson = valokuva_functions.PostValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/valokuva', (req, res) => {
+  let queryJson = valokuva_functions.DeleteValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/valokuva', (req, res) => {
+  let queryJson = valokuva_functions.PutValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+// hyllyn_sarjat
+app.get('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.GetHylly(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.PostHylly(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.DeleteHylly(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.PutHylly(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
