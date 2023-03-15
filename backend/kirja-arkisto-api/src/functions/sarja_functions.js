@@ -1,4 +1,4 @@
-//TODO
+
 function GetSarja(req) {
     let returnJson = {}
     let listOfValues = []
@@ -92,7 +92,6 @@ function PutSarja(req) {
     returnJson.query=query
     returnJson.queryList=queryList
     return returnJson
-
 }
 function DeleteSarja(req) {
     let returnJson = {}
