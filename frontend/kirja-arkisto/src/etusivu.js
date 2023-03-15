@@ -10,7 +10,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
 import {Row, Col} from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirjasivu";
-import {OmaSarjaSivu} from "./omasarjasivu";
+import {SarjaSivu} from "./Sarjasivu";
 
 
 function Etusivu () {
@@ -67,7 +67,7 @@ const BookPage = (props) => {
 
 const SeriesPage = (props) => {
   return (
-    <OmaSarjaSivu/>
+    <SarjaSivu/>
   )
 }
 
