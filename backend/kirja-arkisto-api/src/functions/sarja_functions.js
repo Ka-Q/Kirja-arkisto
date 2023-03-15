@@ -1,4 +1,4 @@
-//TODO
+
 function GetSarja(req) {
     let returnJson = {}
     let listOfValues = []
