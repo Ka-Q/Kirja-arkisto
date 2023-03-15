@@ -43,6 +43,8 @@ const handleConnection = (res, error, SQLresult) => {                           
                 previousOmaKirja.painosvuosi = omaKirja.painosvuosi
                 previousOmaKirja.hankinta_aika = omaKirja.hankinta_aika
                 previousOmaKirja.valokuvat = []
+                valokuva_ids = []
+                kuva_ids = []
 
                 let kirja = {
                     kirja_id: omaKirja.kirja_id,
