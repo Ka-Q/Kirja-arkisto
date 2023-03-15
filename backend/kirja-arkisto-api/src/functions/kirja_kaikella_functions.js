@@ -43,6 +43,7 @@ const connect = (res, query, queryList) => {
           previousKirja.ensipainosvuosi = kirja.ensipainosvuosi
           previousKirja.painokset = kirja.painokset
           previousKirja.kuvat = []
+          kuva_ids = []
 
           let kuva = {
             kuva_id: kirja.kuva_id, 
