@@ -37,22 +37,28 @@ const SearchBar = (props) => {
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
     console.log(nimi)
-    console.log(bookList.data)
+    console.log(searchCounter)
 
     //Mapping JSON to BookCards
     let bookData = bookList.data
     let BookCardList = []
 
     if (bookData) {
-        BookCardList = bookData.map((n, index) => {
-            return (
-                <BookCard 
-                    key={index} 
-                    omakirja={n} >
-                </BookCard>
-            )
-        })
-    }
+        if (bookData.length > 0){
+            BookCardList = bookData.map((n, index) => {
+                return (
+                    <BookCard 
+                        key={index} 
+                        omakirja={n} >
+                    </BookCard>
+                )
+            });
+        }
+        else if (searchCounter != 0 ) {
+            BookCardList = [<ErrorCard />]
+        }
+    } 
+    
     
     const updateQuery = () => {
         setSearchCounter(searchCounter + 1)
@@ -107,10 +113,32 @@ const BookCard = (props) => {
         <Card border="dark" className="mb-1">
             <Card.Body>
                 <Card.Title>{kirja.nimi}</Card.Title>
-                <Card.Text>
-                    Kuntoluokka: {omakirja.kuntoluokka} <p> </p>
-                    Hankittu: {omakirja.hankinta_aika}
-                </Card.Text>
+                <Row>
+                    <Col md={2}>
+                        Tähän kuva
+                    </Col>
+                    <Col>
+                        <Card.Text>
+                            Kuntoluokka: {omakirja.kuntoluokka} <p> </p>
+                            Hankittu: {omakirja.hankinta_aika}
+                        </Card.Text>
+                    </Col>
+                    <Col md={2}>
+                        <Card.Text style={{fontSize:"3em"}}>
+                            <a href={"#id:" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>➡</a>
+                        </Card.Text>
+                    </Col>
+                </Row>
+            </Card.Body>
+        </Card>
+    )
+}
+
+const ErrorCard = () => {
+    return (
+        <Card border="dark" className="mb-1">
+            <Card.Body>
+                <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
             </Card.Body>
         </Card>
     )
