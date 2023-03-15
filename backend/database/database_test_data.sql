@@ -110,3 +110,7 @@ insert into oman_sarjan_kirjat values(2, 50);
 insert into oman_sarjan_kirjat values(2, 60);
 insert into oman_sarjan_kirjat values(2, 70);
 
+
+
+
+
