@@ -10,8 +10,11 @@ const kuva_functions = require('./functions/kuva_functions')
 const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
 const valokuva_functions=require('./functions/valokuva_functions')
 const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
+var cors = require('cors');
 
 const app = express();
+
+app.use(cors({origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 
 const connect = (res, query, queryList) => {
