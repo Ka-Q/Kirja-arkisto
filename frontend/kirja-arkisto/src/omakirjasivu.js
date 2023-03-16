@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
+//import etukansi from "../../../backend/content/images/Taru_sormusten_herrasta_etukansi"
 
 const OmaKirjaSivu = () => {
 
@@ -36,8 +37,8 @@ const SearchBar = (props) => {
     const [bookList, setBookList] = useState([]);
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
-    console.log(nimi)
-    console.log(searchCounter)
+    //console.log(nimi)
+    //console.log(searchCounter)
 
     //Mapping JSON to BookCards
     let bookData = bookList.data
@@ -58,7 +59,6 @@ const SearchBar = (props) => {
             BookCardList = [<ErrorCard />]
         }
     } 
-    
     
     const updateQuery = () => {
         setSearchCounter(searchCounter + 1)
@@ -97,7 +97,7 @@ const SearchBar = (props) => {
 
     return (
         <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-            <input onChange={(e) => setNimi(e.target.value)} style={{width: "65%"}} placeholder="Hae omista kirjoista"></input>
+            <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em"}} placeholder="Hae omista kirjoista"></input>
             <Button onClick={handleSearchClick} style={{width: "3.5em", height: "3.5em", marginLeft: "1em"}}>🔎</Button>
             <div style={{marginTop: "3em"}}>
                 {BookCardList}
@@ -107,15 +107,37 @@ const SearchBar = (props) => {
 }
 
 const BookCard = (props) => {
+
     let omakirja = props.omakirja
     let kirja = omakirja.kirja
+    let kirjankuvat = []
+    kirjankuvat = kirja.kuvat
+
+    let imgsrc = "";
+
+    let etukansikuva = {}
+    for (let row in kirjankuvat) {
+        let kuva = kirjankuvat[row]
+        if (kuva.kuva_tyyppi_id == 1) {
+            etukansikuva = kuva
+            break;
+        }
+    }
+
+    console.log(etukansikuva)
+
+    if (etukansikuva.kuva) {
+        let kuvaSplit = etukansikuva.kuva.split('.')
+        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + kuvaSplit[0] + "&paate=" + kuvaSplit[1]
+    }
+
     return (
         <Card border="dark" className="mb-1">
             <Card.Body>
                 <Card.Title>{kirja.nimi}</Card.Title>
-                <Row>
+                <Row className="mb-2">
                     <Col md={2}>
-                        Tähän kuva
+                        <img src={imgsrc} style={{height: "10em"}}></img>
                     </Col>
                     <Col>
                         <Card.Text>
