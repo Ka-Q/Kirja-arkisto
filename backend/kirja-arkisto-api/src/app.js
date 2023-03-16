@@ -10,7 +10,9 @@ const kuva_functions = require('./functions/kuva_functions')
 const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
 const valokuva_functions=require('./functions/valokuva_functions')
 const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
-var cors = require('cors');
+const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
+
+const cors = require('cors');
 
 const app = express();
 
@@ -52,6 +54,11 @@ app.get('/', (req, res) => {
   res.json({
     message: 'root',
   });
+});
+
+// Kuvatiedosto
+app.get('/kuvatiedosto', (req, res) => {
+  kuva_tiedosto_functions.GetKuvaTiedosto(req, res);
 });
 
 // Kirja
