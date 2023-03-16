@@ -7,7 +7,7 @@ insert into kuva_tyyppi values(2, "takakansi");
 insert into kuva_tyyppi values(3, "sivu");
 
 -- Kirjahyllyt
-insert into kirjahylly values (0, "Pekan kirjahylly");
+insert into kirjahylly values (1, "Pekan kirjahylly");
 
 
 -- Taru sormusten Herrasta -sarja
@@ -65,29 +65,35 @@ insert into oma_kirja values(70, 3, 5.00, "Antikvariaatista", 2007, "2022-06-08"
 
 
 -- Kirjojen kuvat
-insert into kuva values(1, "Kuva Sormuksen ritareiden etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(2, "Kuva Sormuksen ritareiden takakannesta", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(3, "Kuva Kaksi tornia etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(4, "Kuva Kaksi tornia takakannesta", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(5, "Kuva Kaksi tornia sivulta 4", 3, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(1, "sormuksen_ritarit_etukansi.gif",  1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(2, "sormuksen_ritarit_etukansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(3, "kaksi_tornia_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
+insert into kuva values(4, "kaksi_tornia_etukansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
+insert into kuva values(5, "kuninkaan_paluu_etukansi.gif", 3, 1999, "Kalle", "Maalaus", "Kuva Kuninkaan paluun etukannesta");
 
-insert into kuva values(6, "Kuva Velho ja Leijona etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(7, "Kuva Narnian viimeinen taistelu etukannesta", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(6, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(7, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+
+insert into kuva values(8, "prinssi_kaspian_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuvaprinssi kaspian etukannesta");
+insert into kuva values(9, "kaspianin_matka_maailman_aariin_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva kaspianin matka maailman ääriin etukannesta");
 
 -- kuvat paikoilleen
 insert into kirjan_kuvat values(1, 1);
 insert into kirjan_kuvat values(1, 2);
 insert into kirjan_kuvat values(2, 3);
 insert into kirjan_kuvat values(2, 4);
-insert into kirjan_kuvat values(2, 5);
+insert into kirjan_kuvat values(3, 5);
 
 insert into kirjan_kuvat values(4, 6);
 insert into kirjan_kuvat values(10, 7);
 
-insert into valokuva values(1, 1234, "testivalokuva");
-insert into valokuva values(2, 1235, "testivalokuva2");
-insert into valokuva values(3, 1236, "testivalokuva3");
-insert into valokuva values(4, 1237, "testivalokuva4");
+insert into kirjan_kuvat values(5, 8);
+insert into kirjan_kuvat values(6, 9);
+
+insert into valokuva values(1, "testivalokuva", 1234, "testivalokuva");
+insert into valokuva values(2, "testivalokuva2", 1235, "testivalokuva2");
+insert into valokuva values(3, "testivalokuva3", 1236, "testivalokuva3");
+insert into valokuva values(4, "testivalokuva4", 1237, "testivalokuva4");
 
 insert into oman_kirjan_valokuvat values(10, 1);
 insert into oman_kirjan_valokuvat values(10, 2);
@@ -110,7 +116,6 @@ insert into oman_sarjan_kirjat values(2, 50);
 insert into oman_sarjan_kirjat values(2, 60);
 insert into oman_sarjan_kirjat values(2, 70);
 
-
-
-
-
+-- Sarjat hyllyyn
+insert into hyllyn_sarjat values(1, 1);
+insert into hyllyn_sarjat values(1, 2);
