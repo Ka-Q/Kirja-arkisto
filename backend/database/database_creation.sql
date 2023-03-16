@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kirjahylly` (
   PRIMARY KEY (`kirjahylly_id`),
   UNIQUE INDEX `kirjahylly_id_UNIQUE` (`kirjahylly_id` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kirja` (
   PRIMARY KEY (`kirja_id`),
   UNIQUE INDEX `kirja_id_UNIQUE` (`kirja_id` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 22
+AUTO_INCREMENT = 23
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -129,7 +129,7 @@ DROP TABLE IF EXISTS `mydb`.`kuva` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`kuva` (
   `kuva_id` INT NOT NULL AUTO_INCREMENT,
-  `kuva` VARCHAR(200) NULL DEFAULT NULL,
+  `kuva` VARCHAR(1024) NULL DEFAULT NULL,
   `kuva_tyyppi_id` INT NOT NULL,
   `julkaisuvuosi` INT NULL DEFAULT NULL,
   `taiteilija` VARCHAR(45) NULL DEFAULT NULL,
@@ -198,6 +198,7 @@ DROP TABLE IF EXISTS `mydb`.`valokuva` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`valokuva` (
   `valokuva_id` INT NOT NULL AUTO_INCREMENT,
+  `valokuva` VARCHAR(1024) NULL,
   `sivunumero` INT NULL DEFAULT NULL,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`valokuva_id`),
