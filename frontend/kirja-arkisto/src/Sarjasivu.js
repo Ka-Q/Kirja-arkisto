@@ -86,13 +86,13 @@ const SearchBar = (props) => {
         if (nimi.length > 0) {
             let splitName = nimi.split(' ');
             if (splitName.length > 1) {
-                q += "&sarjan_nimi="
+                q += "&nimi="
                 for (let wrd in splitName) {
                     q += wrd + "%20"
                 }
                 q = q.substring(0, q.length - 3)
             } else {
-                q += ("&sarjan_nimi=%" + nimi + "%");
+                q += ("&nimi=%" + nimi + "%");
             }
         }
         console.log(q)
