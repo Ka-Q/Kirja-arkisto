@@ -11,6 +11,9 @@ import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
 import {Row, Col} from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirjasivu";
 import {SarjaSivu} from "./sarjasivu";
+import {OmaSarjaSivu} from "./omasarjasivu";
+
+
 
 
 function Etusivu () {
@@ -30,6 +33,7 @@ function Etusivu () {
                   <LinkContainer to="/kirja"><Nav.Link className="mx-2">Kirjat</Nav.Link></LinkContainer>
                   <LinkContainer  to="/sarjasivu"><Nav.Link className="mx-2">Sarjat</Nav.Link></LinkContainer>
                   <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Oma kirja</Nav.Link></LinkContainer>
+                  <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma Sarja</Nav.Link></LinkContainer>
               </Nav>
               </Navbar.Collapse>
           </Container>
@@ -40,6 +44,7 @@ function Etusivu () {
           <Route path="/kirja" element={<BookPage />}/>
           <Route path="/sarjasivu" element={<SeriesPage />}/>
           <Route path="/omakirja" element={<OwnedBookPage/>}/>
+          <Route path="/omasarja" element={<OwnedSeriePage/>}/>
       </Routes>
       </Router>
   </div>
@@ -77,7 +82,11 @@ const OwnedBookPage = (props) => {
   )
 }
 
-
+const OwnedSeriePage = (props) => {
+  return (
+    <OmaSarjaSivu/>
+  )
+}
 
 
 export {Etusivu};
