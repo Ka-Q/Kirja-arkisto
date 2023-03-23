@@ -7,8 +7,8 @@ const OmaKirjaSivu = () => {
     const [lisaaClicked, setLisaaClicked] = useState(false)
     const [lisaaBtnText, setLisaaBtnText] = useState("Lisää oma kirja")
 
+    // Näyttää ja/tai piilottaa oman kirja lisäys -näkymän
     const handleLisaaClicked = () => {
-        
         if (!lisaaClicked) {
             setLisaaClicked(true)
             setLisaaBtnText("Palaa omien kirjojen hakuun")
@@ -50,46 +50,36 @@ const OmaKirjaSivu = () => {
                     </Col>
                 </Row>
             }
-            {/* Testailua kuvatiedostolle <UploadComponent/>*/}
         </div>
-    )
-}
-
-const UploadComponent = () => {
-    return (
-        <form action="http://localhost:5000/valokuva_tiedostolla" method="POST" encType="multipart/form-data">
-            <input type="file" name="files" />
-            <input type="text" name="sivunumero" placeholder="snro"/>
-            <input type="text" name="nimi" placeholder="nimi"/>
-            
-            <button type="submit">Upload</button>
-        </form>
     )
 }
 
 const AddComponent = (props) => {
 
+    // oman kirjan tietoja
     const [kuntoluokka, setKuntoluokka] = useState(-1);
     const [hankintahinta, sethankintahinta] = useState(-1);
     const [esittelyteksti, setEsittelyteksti] = useState("");
     const [painosvuosi, setPainosvuosi] = useState(-1);
     const [hankintaAika, setHankintaAika] = useState(new Date);
     const [kirjaId, setKirjaId] = useState(1);
-    const [valokuvat, setValokuvat] = useState([]);
 
+    // aputietoa valokuvien lisäykseen
     const [addPicComponents, setAddPicComponents] = useState([]);
     const [addPicKeys, setAddPicKeys] = useState(0);
 
+    // tyyliä
     const inputStyle = {width: "60%", paddingLeft: "1em"}
 
+    // onko tallenna-nappia painettu? tiedot kasaan
     const [saveClicked, setSaveClicked] = useState(false)
     const [finalOmaKirja, setfinalOmaKirja] = useState({})
 
+    // ylläpidetään lisättyjen objektien id:itä
     const [insertedBookId, setInsertedBookId] = useState(-1)
     const [insertedPicId, setInsertedPicId] = useState(-1)
 
-    console.log("INSERTED BOOK: " + insertedBookId)
-
+    // Kun klikataan tallenna => lähetetään oma kirja ja odotetaan oma_kirja_id:tä
     useEffect(() => {
         const addOwnBook = async () => {
             const f = await fetch("http://localhost:5000/oma_kirja", {
@@ -107,19 +97,21 @@ const AddComponent = (props) => {
         }
     }, [saveClicked]);
 
-
+    // Kun oma_kirja_id saapuu => lähetetään valokuvat ja odotetaan niiden valokuva_id:itä
+    // HUOM!!! async kutsu on formin onSubmit event:issä, eli handleSubmit-funktiossa
     useEffect(() => {
-        const addPicToBook = async () => {
+        const handlePics = async () => {
             for (let i = 0; i < addPicKeys; i++) {
                 let form = document.getElementById("picForm" + i);
                 form.requestSubmit();
             }
         };
         if (insertedBookId > -1) {
-            addPicToBook();
+            handlePics();
         }
     }, [insertedBookId]);
 
+    // Kun valokuva_id saapuu/muuttuu => lisätään oma_kirja_id ja uusi valokuva_id oman_kirjan_valokuviin
     useEffect(() => {
         const addPicToBook = async () => {
             let obj = {oma_kirja_id: insertedBookId, valokuva_id: insertedPicId}
@@ -138,37 +130,8 @@ const AddComponent = (props) => {
         }
     }, [insertedPicId]);
 
-
-    const handleDeletePicClicked = () => {
-        let list = addPicComponents.slice(0, addPicComponents.length-1)
-        setAddPicComponents(list)
-        setAddPicKeys(addPicKeys - 1)
-    }
-
-    const handleAddPictureClicked = (e) => {
-        setAddPicKeys(addPicKeys + 1)
-        setAddPicComponents([...addPicComponents, <AddPictureComponent 
-            key={addPicKeys} 
-            inputStyle={inputStyle} 
-            formId={"picForm" + addPicKeys}
-            handleSubmit={handleSubmit}/>])
-    }
-
-    const handleSaveClicked = () => {
-        let omaKirja = {
-            oma_kirja_id: 0,
-            kuntoluokka: kuntoluokka,
-            hankintahinta: hankintahinta,
-            esittelyteksti: esittelyteksti,
-            painosvuosi: painosvuosi,
-            hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
-            kirja_id: kirjaId
-        }
-
-        setfinalOmaKirja(omaKirja);
-        setSaveClicked(true);
-    }
-
+    // Lähettää valokuvan tiedoston ja tiedot serverille. 
+    // HUOM! Tiedot lähtevät FORMINA, EIVÄT JSON-muodossa. Tämä siksi, että serveri ei tykkää kuvien vastaanottamisesta jsonissa 
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(e.target);
@@ -184,26 +147,37 @@ const AddComponent = (props) => {
         setInsertedPicId(data.data.insertId)
     }
 
-    const AddPictureComponent = (props) => {
-        const inputStyle = props.inputStyle
-        const formId = props.formId
+    // Poistaa viimeisimmän valokuvanuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
+    const handleDeletePicClicked = () => {
+        let list = addPicComponents.slice(0, addPicComponents.length-1)
+        setAddPicComponents(list)
+        setAddPicKeys(addPicKeys - 1)
+    }
 
-        const handleSub = props.handleSubmit
-    
-        return (
-            <Row className="mt-2 mb-3">
-                <hr/>
-                <Col>
-                <form id={formId} onSubmit={(e) => handleSub(e, insertedBookId)}>
-                    <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                        <div><input type={"file"} name="files" style={inputStyle}/></div>
-                        <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/></div>
-                        <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/></div>
-                    </Stack>
-                </form>
-                </Col>
-            </Row>
-        )
+    // Lisää uusen valokuvanlisäyskomponentin listan loppuun. Päivittää formien avaimen/id:n
+    const handleAddPictureClicked = (e) => {
+        setAddPicKeys(addPicKeys + 1)
+        setAddPicComponents([...addPicComponents, <AddPictureComponent 
+            key={addPicKeys} 
+            inputStyle={inputStyle} 
+            formId={"picForm" + addPicKeys}
+            handleSubmit={handleSubmit}/>])
+    }
+
+    // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
+    const handleSaveClicked = () => {
+        let omaKirja = {
+            oma_kirja_id: 0,
+            kuntoluokka: kuntoluokka,
+            hankintahinta: hankintahinta,
+            esittelyteksti: esittelyteksti,
+            painosvuosi: painosvuosi,
+            hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
+            kirja_id: kirjaId
+        }
+
+        setfinalOmaKirja(omaKirja);
+        setSaveClicked(true);
     }
 
     return (
@@ -264,14 +238,36 @@ const AddComponent = (props) => {
     )
 }
 
+// Komponentti valokuvan lisäykseen. Sisältää formin tiedostolle, nimelle ja sivunumerolle
+const AddPictureComponent = (props) => {
+    const inputStyle = props.inputStyle
+    const formId = props.formId
+
+    const handleSub = props.handleSubmit
+
+    return (
+        <Row className="mt-2 mb-3">
+            <hr/>
+            <Col>
+            <form id={formId} onSubmit={(e) => handleSub(e)}>
+                <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
+                    <div><input type={"file"} name="files" style={inputStyle}/></div>
+                    <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/></div>
+                    <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/></div>
+                </Stack>
+            </form>
+            </Col>
+        </Row>
+    )
+}
+
+// Komponentti hakukentälle. Tekee sumean haun oman kirjan nimellä ja asettaa tulokset hakukentän alle listana
 const SearchBar = (props) => {
 
     const [searchCounter, setSearchCounter] = useState(0);
     const [bookList, setBookList] = useState([]);
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
-    //console.log(nimi)
-    //console.log(searchCounter)
 
     //Mapping JSON to BookCards
     let bookData = bookList.data
@@ -293,6 +289,7 @@ const SearchBar = (props) => {
         }
     } 
     
+    // Päivittää reaaliajassa queryä
     const updateQuery = () => {
         setSearchCounter(searchCounter + 1)
         let q = "";
@@ -312,6 +309,7 @@ const SearchBar = (props) => {
         setQuery(q)
     }
 
+    // Hakee omat kirjat queryllä
     useEffect(() => {
         const fetchOwnBook = async () => {
             const f = await fetch("http://localhost:5000/oma_kirja_kaikella" + "?" + query)
@@ -323,6 +321,7 @@ const SearchBar = (props) => {
         }
     }, [searchCounter]);
 
+    // Laukaisee ylemmän useEffectin searchCounterin avulla.
     const handleSearchClick = (props) => {
         updateQuery()
         setSearchCounter(searchCounter + 1)
@@ -339,6 +338,7 @@ const SearchBar = (props) => {
     )
 }
 
+// Komponentti oman kirjan esittämiseen listassa.
 const BookCard = (props) => {
 
     let omakirja = props.omakirja
@@ -388,6 +388,7 @@ const BookCard = (props) => {
     )
 }
 
+// Komponentti virhetilanteen näyttämiselle. Näytetään, jos haku ei tuottanut tuloksia.
 const ErrorCard = () => {
     return (
         <Card border="dark" className="mb-1">
