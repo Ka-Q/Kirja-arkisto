@@ -1,0 +1,102 @@
+const fs = require('fs')
+const mysql = require('mysql');
+
+const valokuva_functions = require('./valokuva_functions')
+
+const root = "./content"
+const filepath = '/images/'
+
+const connect = (res, query, queryList) => {
+    let connection = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "root",
+      database: "mydb",
+      dateStrings: true,
+  
+    });
+    connection.query(query, queryList, (error, SQLresult, fields) => {
+      connection.end();
+      return handleConnection(res, error, SQLresult);
+    });
+  }
+  
+  const handleConnection = (res, error, SQLresult) => {
+    if (error || SQLresult.length == 0) {
+      console.log("ERROR: " + error);
+    }
+    else {
+      console.log("OK")
+      res.statusCode = 200;
+    }
+  }
+
+function GetValokuvaTiedosto(req, res) {
+    let params = req.query;
+    let filename = params.valokuva
+    let fileType = params.paate
+
+    let options = {
+        root: root,
+        dotfiles: 'deny',
+        headers: {
+          'x-timestamp': Date.now(),
+          'x-sent': true
+        }
+      }
+
+    res.sendFile(filepath + filename, options, function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('Sent:', filename)
+        }
+      })
+      
+}
+
+function PostValokuvaTiedostolla(req, res) {
+    const body = req.body;
+    const images = req.files.files;
+    console.log(req);
+
+    let imageList = []
+    let image = images
+    if (!image) return res.sendStatus(400);
+    if (!(image.mimetype)) return res.sendStatus(400);
+
+    let nameSplit = image.name.split('.')
+    let name = nameSplit[0] + "_" + getNanoSecTime() + "." + nameSplit[1]
+    image.mv(root + filepath + name);
+    
+    imageList.push({nimi: name})
+
+    let objectList = [];
+
+    for (let i in imageList) {
+        let image = imageList[i]
+        let valokuva = {
+            valokuva_id: 0,
+            valokuva: image.nimi,
+            sivunumero: body.sivunumero,
+            nimi: body.nimi
+        }
+        objectList.push(valokuva);
+    }
+
+    for (let i in objectList) {
+        req.body.valokuva = objectList[i].valokuva
+        let queryJson = valokuva_functions.PostValokuva(req)
+        connect(res, queryJson.query, queryJson.queryList)
+    }
+
+    res.json({ status: "OK", message: "handled", data: imageList})
+}
+
+function getNanoSecTime() {
+    var hrTime = process.hrtime();
+    return hrTime[0] * 1000000000 + hrTime[1];
+  }
+
+exports.GetValokuvaTiedosto = GetValokuvaTiedosto
+exports.PostValokuvaTiedostolla = PostValokuvaTiedostolla
