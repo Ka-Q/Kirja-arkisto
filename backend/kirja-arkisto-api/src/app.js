@@ -14,6 +14,7 @@ const valokuva_functions=require('./functions/valokuva_functions')
 const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
 const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_functions')
+const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuvat_functions')
 
 const cors = require('cors');
 
@@ -217,6 +218,27 @@ app.get('/valokuvatiedosto', (req, res) => {
 app.post('/valokuva_tiedostolla', (req, res) => {          // Lisää valokuvatiedoston serverille
   valokuva_tiedosto_functions.PostValokuvaTiedostolla(req, res);
 });
+
+// Oman kirjan valokuvat
+app.get('/oman_kirjan_valokuvat', (req, res) => {
+  let queryJson = oman_kirjan_valokuvat_functions.GetOmanKirjanValokuva(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/oman_kirjan_valokuvat', (req, res) => {
+  let queryJson = oman_kirjan_valokuvat_functions.PostOmanKirjanValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/oman_kirjan_valokuvat', (req, res) => {
+  let queryJson = oman_kirjan_valokuvat_functions.DeleteOmanKirjanValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/oman_kirjan_valokuvat', (req, res) => {
+  let queryJson = oman_kirjan_valokuvat_functions.PutOmanKirjanValokuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
 
 // hyllyn_sarjat
 app.get('/hyllyn_sarjat', (req, res) => {
