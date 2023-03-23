@@ -15,6 +15,7 @@ const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
 const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_functions')
 const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuvat_functions')
+const kirjan_kuvat_functions = require('./functions/kirjan_kuvat_functions')
 
 const cors = require('cors');
 
@@ -177,6 +178,27 @@ app.delete('/kuva', (req, res) => {
 
 app.put('/kuva', (req, res) => {
   let queryJson = kuva_functions.PutKuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+
+// Kirjan kuvat
+app.get('/kirjan_kuvat', (req, res) => {
+  let queryJson = kirjan_kuvat_functions.GetKirjanKuva(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/kirjan_kuvat', (req, res) => {
+  let queryJson = kirjan_kuvat_functions.PostKirjanKuva(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/kirjan_kuvat', (req, res) => {
+  let queryJson = kirjan_kuvat_functions.DeleteKirjanKuva(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/kirjan_kuvat', (req, res) => {
+  let queryJson = kirjan_kuvat_functions.PutKirjanKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
