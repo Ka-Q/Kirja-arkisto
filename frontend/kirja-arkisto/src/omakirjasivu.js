@@ -50,7 +50,7 @@ const OmaKirjaSivu = () => {
                     </Col>
                 </Row>
             }
-            {/* Testailua kuvatiedostolle*/ <UploadComponent/>}
+            {/* Testailua kuvatiedostolle <UploadComponent/>*/}
         </div>
     )
 }
