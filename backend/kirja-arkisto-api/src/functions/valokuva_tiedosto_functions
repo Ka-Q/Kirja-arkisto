@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const valokuva_functions = require('./valokuva_functions')
 
 const root = "./content"
-const filepath = '/images/'
+const filepath = '/pictures/'
 
 const connect = (res, query, queryList) => {
   let connection = mysql.createConnection({

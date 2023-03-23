@@ -7,29 +7,31 @@ const root = "./content"
 const filepath = '/images/'
 
 const connect = (res, query, queryList) => {
-    let connection = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "root",
-      database: "mydb",
-      dateStrings: true,
-  
-    });
-    connection.query(query, queryList, (error, SQLresult, fields) => {
-      connection.end();
-      return handleConnection(res, error, SQLresult);
-    });
+  let connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "mydb",
+    dateStrings: true,
+
+  });
+  connection.query(query, queryList, (error, SQLresult, fields) => {
+    connection.end();
+    return handleConnection(res, error, SQLresult);
+  });
+}
+
+const handleConnection = (res, error, SQLresult) => {
+  if (error || SQLresult.length == 0) {
+    console.log("ERROR: " + error);
+    res.json({ status: "NOT OK", message: "Virheellinen haku", data: [] })
   }
-  
-  const handleConnection = (res, error, SQLresult) => {
-    if (error || SQLresult.length == 0) {
-      console.log("ERROR: " + error);
-    }
-    else {
-      console.log("OK")
-      res.statusCode = 200;
-    }
+  else {
+    console.log("OK")
+    res.statusCode = 200;
+    res.json({ status: "OK", message: "handled", data: SQLresult })
   }
+}
 
 function GetKuvaTiedosto(req, res) {
     let params = req.query;
@@ -92,8 +94,6 @@ function PostKuvaTiedostolla(req, res) {
         let queryJson = kuva_functions.PostKuva(req)
         connect(res, queryJson.query, queryJson.queryList)
     }
-
-    res.json({ status: "OK", message: "handled", data: imageList})
 }
 
 function getNanoSecTime() {
