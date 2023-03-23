@@ -7,7 +7,6 @@ const OmaKirjaSivu = () => {
     const [lisaaClicked, setLisaaClicked] = useState(false)
     const [lisaaBtnText, setLisaaBtnText] = useState("Lisää oma kirja")
 
-
     const handleLisaaClicked = () => {
         
         if (!lisaaClicked) {
@@ -51,7 +50,20 @@ const OmaKirjaSivu = () => {
                     </Col>
                 </Row>
             }
+            {/* Testailua kuvatiedostolle*/ <UploadComponent/>}
         </div>
+    )
+}
+
+const UploadComponent = () => {
+    return (
+        <form action="http://localhost:5000/valokuva_tiedostolla" method="POST" encType="multipart/form-data">
+            <input type="file" name="files" />
+            <input type="text" name="sivunumero" placeholder="snro"/>
+            <input type="text" name="nimi" placeholder="nimi"/>
+            
+            <button type="submit">Upload</button>
+        </form>
     )
 }
 
@@ -257,8 +269,7 @@ const BookCard = (props) => {
     console.log(etukansikuva)
 
     if (etukansikuva.kuva) {
-        let kuvaSplit = etukansikuva.kuva.split('.')
-        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + kuvaSplit[0] + "&paate=" + kuvaSplit[1]
+        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + etukansikuva.kuva
     }
 
     return (
