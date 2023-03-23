@@ -1,7 +1,35 @@
 const fs = require('fs')
+const mysql = require('mysql');
 
+const kuva_functions = require('./kuva_functions')
 
+const root = "./content"
 const filepath = '/images/'
+
+const connect = (res, query, queryList) => {
+    let connection = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "root",
+      database: "mydb",
+      dateStrings: true,
+  
+    });
+    connection.query(query, queryList, (error, SQLresult, fields) => {
+      connection.end();
+      return handleConnection(res, error, SQLresult);
+    });
+  }
+  
+  const handleConnection = (res, error, SQLresult) => {
+    if (error || SQLresult.length == 0) {
+      console.log("ERROR: " + error);
+    }
+    else {
+      console.log("OK")
+      res.statusCode = 200;
+    }
+  }
 
 function GetKuvaTiedosto(req, res) {
     let params = req.query;
@@ -9,7 +37,7 @@ function GetKuvaTiedosto(req, res) {
     let fileType = params.paate
 
     let options = {
-        root: "./content",
+        root: root,
         dotfiles: 'deny',
         headers: {
           'x-timestamp': Date.now(),
@@ -17,7 +45,7 @@ function GetKuvaTiedosto(req, res) {
         }
       }
 
-    res.sendFile(filepath + filename + "." + fileType, options, function (err) {
+    res.sendFile(filepath + filename, options, function (err) {    //Palauttaa kaiken jpg:inä. Toimii kai?????
         if (err) {
           console.log(err)
         } else {
@@ -27,103 +55,51 @@ function GetKuvaTiedosto(req, res) {
       
 }
 
-function PostKuvaTiedosto(req) {
-    let returnJson = {}
-    let params = req.body
-    let keys = Object.keys(params)
-    console.log(keys.length)
+function PostKuvaTiedostolla(req, res) {
+    const body = req.body;
+    const images = req.files.files;
+    console.log(req);
 
-    let listOfKeys = []
-    let listOfValues = []
+    let imageList = []
+    let image = images
+    if (!image) return res.sendStatus(400);
+    if (!(image.mimetype)) return res.sendStatus(400);
 
-    let query = "INSERT INTO kuva ("
+    let nameSplit = image.name.split('.')
+    let name = nameSplit[0] + "_" + getNanoSecTime() + "." + nameSplit[1]
+    image.mv(root + filepath + name);
+    
+    imageList.push({nimi: name})
 
-    for (let key in keys) {
-        query += "??,"
-        let avain = keys[key]
-        listOfKeys.push(avain)
+    let objectList = [];
+
+    for (let i in imageList) {
+        let image = imageList[i]
+        let kuva = {
+            kuva_id: 0,
+            kuva: image.nimi,
+            kuva_tyyppi_id: body.kuva_tyyppi_id,
+            julkaisuvuosi: body.julkaisuvuosi,
+            taiteilija: body.taiteilija,
+            tyyli: body.tyyli,
+            kuvaus: body.kuvaus
+        }
+        objectList.push(kuva);
     }
 
-    query = query.substring(0, query.length - 1)
-
-    query += ") VALUES("
-
-    for (let key in keys) {
-        query += "?,"
-        let avain = keys[key]
-        listOfValues.push(params[avain])
+    for (let i in objectList) {
+        req.body.kuva = objectList[i].kuva
+        let queryJson = kuva_functions.PostKuva(req)
+        connect(res, queryJson.query, queryJson.queryList)
     }
 
-    query = query.substring(0, query.length - 1)
-
-    query += ")"
-    let queryList = listOfKeys.concat(listOfValues);
-
-    console.log(query)
-    returnJson.query=query
-    returnJson.queryList=queryList
-    return returnJson
+    res.json({ status: "OK", message: "handled", data: imageList})
 }
 
-function PutKuvaTiedosto(req) {
-    let returnJson = {}
-    let set = req.body.set
-    let where = req.body.where
-
-    let setKeys = Object.keys(set)
-    let whereKeys = Object.keys(where)
-
-    let queryList = []
-
-    let query = "UPDATE kuva SET "
-
-    for (let x in setKeys) {
-        let key = setKeys[x];
-        query += "?? = ?,";
-        queryList.push(setKeys[x]);
-        queryList.push(set[key]);
-    }
-
-    query = query.substring(0, query.length - 1);
-
-    query += " WHERE (1=1)"
-
-    for (let x in whereKeys) {
-        let key = whereKeys[x];
-        query += " AND ?? = ?";
-        queryList.push(whereKeys[x]);
-        queryList.push(where[key]);
-    }
-
-    console.log(query)
-    returnJson.query=query
-    returnJson.queryList=queryList
-    return returnJson
-}
-
-function DeleteKuvaTiedosto(req) {
-    let returnJson = {}
-    let where = req.body;
-    let whereKeys = Object.keys(where);
-
-    let queryList = [];
-
-    let query = "DELETE FROM kuva WHERE (1=1)";
-
-    for (let x in whereKeys) {
-        let key = whereKeys[x];
-        query += " AND ?? = ?";
-        queryList.push(key);
-        queryList.push(where[key]);
-    }
-
-    console.log(query);
-    returnJson.query = query
-    returnJson.queryList = queryList
-    return returnJson
-}
+function getNanoSecTime() {
+    var hrTime = process.hrtime();
+    return hrTime[0] * 1000000000 + hrTime[1];
+  }
 
 exports.GetKuvaTiedosto = GetKuvaTiedosto
-exports.PostKuvaTiedosto = PostKuvaTiedosto
-exports.DeleteKuvaTiedosto = DeleteKuvaTiedosto
-exports.PutKuvaTiedosto = PutKuvaTiedosto
+exports.PostKuvaTiedostolla = PostKuvaTiedostolla
