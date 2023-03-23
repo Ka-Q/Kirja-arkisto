@@ -74,7 +74,7 @@ const AddComponent = (props) => {
     const [esittelyteksti, setEsittelyteksti] = useState("");
     const [painosvuosi, setPainosvuosi] = useState(-1);
     const [hankintaAika, setHankintaAika] = useState(new Date);
-    const [kirjaId, setKirjaId] = useState({});
+    const [kirjaId, setKirjaId] = useState(1);
     const [valokuvat, setValokuvat] = useState([]);
 
     const [addPicComponents, setAddPicComponents] = useState([]);
@@ -82,16 +82,128 @@ const AddComponent = (props) => {
 
     const inputStyle = {width: "60%", paddingLeft: "1em"}
 
+    const [saveClicked, setSaveClicked] = useState(false)
+    const [finalOmaKirja, setfinalOmaKirja] = useState({})
+
+    const [insertedBookId, setInsertedBookId] = useState(-1)
+    const [insertedPicId, setInsertedPicId] = useState(-1)
+
+    console.log("INSERTED BOOK: " + insertedBookId)
+
+    useEffect(() => {
+        const addOwnBook = async () => {
+            const f = await fetch("http://localhost:5000/oma_kirja", {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(finalOmaKirja)})
+            const data = await f.json();
+            setInsertedBookId(data.data.insertId)
+        };
+        if (saveClicked) {
+            addOwnBook();
+            setSaveClicked(false)
+        }
+    }, [saveClicked]);
+
+
+    useEffect(() => {
+        const addPicToBook = async () => {
+            for (let i = 0; i < addPicKeys; i++) {
+                let form = document.getElementById("picForm" + i);
+                form.requestSubmit();
+            }
+        };
+        if (insertedBookId > -1) {
+            addPicToBook();
+        }
+    }, [insertedBookId]);
+
+    useEffect(() => {
+        const addPicToBook = async () => {
+            let obj = {oma_kirja_id: insertedBookId, valokuva_id: insertedPicId}
+            console.log(obj);
+
+            const f = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)})
+            const data = await f.json()
+        };
+        if (insertedPicId > -1) {
+            addPicToBook();
+        }
+    }, [insertedPicId]);
+
+
     const handleDeletePicClicked = () => {
         let list = addPicComponents.slice(0, addPicComponents.length-1)
         setAddPicComponents(list)
+        setAddPicKeys(addPicKeys - 1)
     }
 
     const handleAddPictureClicked = (e) => {
         setAddPicKeys(addPicKeys + 1)
         setAddPicComponents([...addPicComponents, <AddPictureComponent 
-            key={addPicComponents.length} 
-            inputStyle={inputStyle} />])
+            key={addPicKeys} 
+            inputStyle={inputStyle} 
+            formId={"picForm" + addPicKeys}
+            handleSubmit={handleSubmit}/>])
+    }
+
+    const handleSaveClicked = () => {
+        let omaKirja = {
+            oma_kirja_id: 0,
+            kuntoluokka: kuntoluokka,
+            hankintahinta: hankintahinta,
+            esittelyteksti: esittelyteksti,
+            painosvuosi: painosvuosi,
+            hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
+            kirja_id: kirjaId
+        }
+
+        setfinalOmaKirja(omaKirja);
+        setSaveClicked(true);
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        console.log(e.target);
+        let formdata = new FormData(e.target)
+        console.log(formdata);
+
+        const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+            method: 'POST',
+            body: formdata})
+        const data = await f.json()
+
+        console.log(data.data);
+        setInsertedPicId(data.data.insertId)
+    }
+
+    const AddPictureComponent = (props) => {
+        const inputStyle = props.inputStyle
+        const formId = props.formId
+
+        const handleSub = props.handleSubmit
+    
+        return (
+            <Row className="mt-2 mb-3">
+                <hr/>
+                <Col>
+                <form id={formId} onSubmit={(e) => handleSub(e, insertedBookId)}>
+                    <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
+                        <div><input type={"file"} name="files" style={inputStyle}/></div>
+                        <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/></div>
+                        <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/></div>
+                    </Stack>
+                </form>
+                </Col>
+            </Row>
+        )
     }
 
     return (
@@ -143,33 +255,12 @@ const AddComponent = (props) => {
                             <Button onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
                         </div>
                         <div className="my-5">
-                            <Button>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
+                            <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
                         </div>
                     </Col>
                 </Row>
             </Card.Body>
         </Card>
-    )
-}
-
-const AddPictureComponent = (props) => {
-    const inputStyle = props.inputStyle
-
-    const [tiedosto, setTiedosto] = useState("");
-    const [nimi, setNimi] = useState("");
-    const [sivunumero, setSivunumero] = useState("");
-
-    return (
-        <Row className="mt-2 mb-3">
-            <hr/>
-            <Col>
-                <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                    <div><input onChange={(e) => setTiedosto(e.target.value)} type={"file"} style={inputStyle}/></div>
-                    <div><input onChange={(e) => setNimi(e.target.value)} type={"text"} placeholder="nimi/kuvaus" style={inputStyle}/></div>
-                    <div><input onChange={(e) => setSivunumero(e.target.value)} type={"number"} placeholder="sivunumero" style={inputStyle}/></div>
-                </Stack>
-            </Col>
-        </Row>
     )
 }
 
