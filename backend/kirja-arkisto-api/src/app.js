@@ -1,6 +1,8 @@
 const express = require('express');
 const mysql = require('mysql');
-const bodyParser = require("body-parser")
+//const bodyParser = require("body-parser")
+const fileUpload = require('express-fileupload');
+
 const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const oma_kirja_functions = require('./functions/oma_kirja_functions')
@@ -11,13 +13,19 @@ const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
 const valokuva_functions=require('./functions/valokuva_functions')
 const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
+const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_functions')
 
 const cors = require('cors');
 
 const app = express();
 
 app.use(cors({origin: 'http://localhost:3000'}));
-app.use(bodyParser.json());
+
+app.use(express.json())
+
+app.use(
+  fileUpload()
+);
 
 const connect = (res, query, queryList) => {
   let connection = mysql.createConnection({
@@ -54,11 +62,6 @@ app.get('/', (req, res) => {
   res.json({
     message: 'root',
   });
-});
-
-// Kuvatiedosto
-app.get('/kuvatiedosto', (req, res) => {
-  kuva_tiedosto_functions.GetKuvaTiedosto(req, res);
 });
 
 // Kirja
@@ -161,7 +164,7 @@ app.get('/kuva', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/kuva', (req, res) => {
+app.post('/kuva_tiedot', (req, res) => {                // Ei lisää kuvatiedostoa serverille
   let queryJson = kuva_functions.PostKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
@@ -175,13 +178,23 @@ app.put('/kuva', (req, res) => {
   let queryJson = kuva_functions.PutKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+
+// Kuvatiedosto
+app.get('/kuvatiedosto', (req, res) => {
+  kuva_tiedosto_functions.GetKuvaTiedosto(req, res);
+});
+
+app.post('/kuva_tiedostolla', (req, res) => {          // Lisää kuvatiedoston serverille
+  kuva_tiedosto_functions.PostKuvaTiedostolla(req, res);
+});
+
 // valokuva
 app.get('/valokuva', (req, res) => {
   let queryJson = valokuva_functions.GetValokuva(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/valokuva', (req, res) => {
+app.post('/valokuva_tiedot', (req, res) => {        // Ei lisää valokuvatiedostoa serverille
   let queryJson = valokuva_functions.PostValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
@@ -195,6 +208,16 @@ app.put('/valokuva', (req, res) => {
   let queryJson = valokuva_functions.PutValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+
+// Valokuvatiedosto
+app.get('/valokuvatiedosto', (req, res) => {
+  valokuva_tiedosto_functions.GetValokuvaTiedosto(req, res);
+});
+
+app.post('/valokuva_tiedostolla', (req, res) => {          // Lisää valokuvatiedoston serverille
+  valokuva_tiedosto_functions.PostValokuvaTiedostolla(req, res);
+});
+
 // hyllyn_sarjat
 app.get('/hyllyn_sarjat', (req, res) => {
   let queryJson = hyllyn_sarjat_functions.GetHylly(req);
