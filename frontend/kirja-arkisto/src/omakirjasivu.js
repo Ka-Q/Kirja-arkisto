@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Button, Card, Col, Row, Stack } from "react-bootstrap"
+import { Alert, Button, Card, Col, Row, Stack } from "react-bootstrap"
 //import etukansi from "../../../backend/content/images/Taru_sormusten_herrasta_etukansi"
 
 const OmaKirjaSivu = () => {
@@ -56,9 +56,8 @@ const OmaKirjaSivu = () => {
 
 const AddComponent = (props) => {
 
-    // Lista kirjoille
+    // Haetaan sivun auetessa kirjat ja asetetaan listaan
     const [bookList, setBookList] = useState([])
-
     useEffect(() => {
         const fetchBook = async () => {
             const f = await fetch("http://localhost:5000/kirja")
@@ -75,7 +74,7 @@ const AddComponent = (props) => {
         fetchBook();
     }, []);
 
-    // kirjat kirjailijoineen option-elementteihin ja listaan
+    // kirjat kirjailijoineen option-elementteihin. Valuena Id
     let optionList = []
     if (bookList.length > 0){
         optionList = bookList.map((n, index) => {
@@ -89,17 +88,16 @@ const AddComponent = (props) => {
         });
     }
     else {
-        optionList = [<option key={0}>Ei kirjoja</option>]
+        optionList = [<option key={0} value={-1}>Ei kirjoja</option>]
     }
     
-
     // oman kirjan tietoja
     const [kuntoluokka, setKuntoluokka] = useState(-1);
     const [hankintahinta, sethankintahinta] = useState(-1);
     const [esittelyteksti, setEsittelyteksti] = useState("");
     const [painosvuosi, setPainosvuosi] = useState(-1);
     const [hankintaAika, setHankintaAika] = useState(new Date);
-    const [kirjaId, setKirjaId] = useState(1);
+    const [kirjaId, setKirjaId] = useState(-1);
 
     // aputietoa valokuvien lisäykseen
     const [addPicComponents, setAddPicComponents] = useState([]);
@@ -112,9 +110,15 @@ const AddComponent = (props) => {
     const [saveClicked, setSaveClicked] = useState(false)
     const [finalOmaKirja, setfinalOmaKirja] = useState({})
 
-    // ylläpidetään lisättyjen objektien id:itä
+    // Ilmoituksia käyttäjälle
+    const [omaKirjaFilled, setOmaKirjaFilled] = useState(true)
+    const [filesFilled, setFilesFilled] = useState(true)
+    const [saveSuccessful, setSaveSuccessful] = useState(false)
+
+    // ylläpidetään lisättyjen objektien id:itä ja määrää
     const [insertedBookId, setInsertedBookId] = useState(-1)
     const [insertedPicId, setInsertedPicId] = useState(-1)
+    const [insertedPicCount, setInsertedPicCount] = useState(0)
 
     // Kun klikataan tallenna => lähetetään oma kirja ja odotetaan oma_kirja_id:tä
     useEffect(() => {
@@ -126,7 +130,12 @@ const AddComponent = (props) => {
                 },
                 body: JSON.stringify(finalOmaKirja)})
             const data = await f.json();
+            if (addPicKeys == 0) {
+                setSaveSuccessful(true)
+                return null
+            }
             setInsertedBookId(data.data.insertId)
+
         };
         if (saveClicked) {
             addOwnBook();
@@ -152,7 +161,6 @@ const AddComponent = (props) => {
     useEffect(() => {
         const addPicToBook = async () => {
             let obj = {oma_kirja_id: insertedBookId, valokuva_id: insertedPicId}
-            console.log(obj);
 
             const f = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
                 method: 'POST',
@@ -161,6 +169,9 @@ const AddComponent = (props) => {
                 },
                 body: JSON.stringify(obj)})
             const data = await f.json()
+            setInsertedPicCount(insertedPicCount + 1)
+
+            setSaveSuccessful(true)
         };
         if (insertedPicId > -1) {
             addPicToBook();
@@ -172,16 +183,26 @@ const AddComponent = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(e.target);
-        let formdata = new FormData(e.target)
-        console.log(formdata);
 
-        const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+        let formdata = new FormData(e.target)
+
+        // jos sivunumeroa ei ole, laitetaan -1
+        if (!formdata.get("sivunumero")) { 
+            formdata.set("sivunumero", -1)
+        }
+
+        try{
+            const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
             method: 'POST',
             body: formdata})
-        const data = await f.json()
+            const data = await f.json()
 
-        console.log(data.data);
-        setInsertedPicId(data.data.insertId)
+            console.log(data.data);
+            setInsertedPicId(data.data.insertId)
+        } catch (e) {
+            console.log("jotain meni pieleen")
+        }
+        
     }
 
     // Poistaa viimeisimmän valokuvanuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
@@ -203,18 +224,44 @@ const AddComponent = (props) => {
 
     // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
     const handleSaveClicked = () => {
-        let omaKirja = {
-            oma_kirja_id: 0,
-            kuntoluokka: kuntoluokka,
-            hankintahinta: hankintahinta,
-            esittelyteksti: esittelyteksti,
-            painosvuosi: painosvuosi,
-            hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
-            kirja_id: kirjaId
+        checkInputs()
+        console.log("omakirja: " + omaKirjaFilled + ", files: " + filesFilled)
+        if (checkInputs()) {
+            let omaKirja = {
+                oma_kirja_id: 0,
+                kuntoluokka: kuntoluokka,
+                hankintahinta: hankintahinta,
+                esittelyteksti: esittelyteksti,
+                painosvuosi: painosvuosi,
+                hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
+                kirja_id: kirjaId
+            }
+            setfinalOmaKirja(omaKirja);
+            setSaveClicked(true);
+        }
+    }
+
+    // Tarkistaa lisättävän oman kirjan ja mahdollisien valokuvien syötteiden oikeellisuudet
+    const checkInputs = () => {
+
+        // Tarkistetaan oman kirjan syötteet
+        let omaKirjaOK = false
+        if (kuntoluokka >= 0 && hankintahinta >= 0 && painosvuosi >= 0 && kirjaId >= 0) omaKirjaOK = true;
+
+        // Tarkistetaan valokuvatiedostojen syötteet
+        let fileInputsOK = true
+        let fileInputs = document.getElementsByName("files");
+        for (let i = 0; i < fileInputs.length; i++) {
+            let fi = fileInputs[i];
+            if (!fi.value) {
+                fileInputsOK = false
+            }
         }
 
-        setfinalOmaKirja(omaKirja);
-        setSaveClicked(true);
+        setOmaKirjaFilled(omaKirjaOK)
+        setFilesFilled(fileInputsOK)
+
+        return (omaKirjaOK && fileInputsOK)
     }
 
     return (
@@ -227,27 +274,16 @@ const AddComponent = (props) => {
                         <div>Valitse kirja (jos kirjaa ei löydy listasta, voit lisätä sellaisen <a href="http://localhost:3000/kirja">täältä</a>):</div>
                         <div> 
                             <select onChange={(e) => setKirjaId(e.target.value)} style={inputStyle}>
-                                <option value={0}>--Kirja--</option>
+                                <option value={-1}>--Kirja--</option>
                                 {optionList}
                             </select> 
                         </div>
-                        <div>
-                            <input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/>
-                        </div>
-                        <div>
-                            <input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/>
-                        </div>
-                        <div>
-                            <textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/>
-                        </div>
-                        <div>
-                            <input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/> 
-                        </div>
-                        <div>hankinta-aika:</div>
-                        <div>
-                            <input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/>
-                        </div>
-                        
+                        <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/></div>
+                        <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/></div>
+                        <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/></div>
+                        <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/> </div>
+                        <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
+                        <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/></div>
                     </Stack>
                     </Col>
                 </Row>
@@ -267,7 +303,18 @@ const AddComponent = (props) => {
                             <Button onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
                         </div>
                         <div className="my-5">
-                            <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
+                            {!omaKirjaFilled?<WarningComponent text="Vaadittuja tietoja puuttuu"/>:<></>}
+                            {!filesFilled?<WarningComponent text="Valokuvatiedosto puuttuu"/>:<></>}
+                            {saveSuccessful?
+                            <>
+                                <SuccessComponent text="Tallennus onnistui"/>
+                                <Button onClick={(e) => props.handleLisaaClicked()}>Sulje</Button>
+                            </>:
+                            <>
+                                <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
+                            </>
+                            }
+                            
                         </div>
                     </Col>
                 </Row>
@@ -323,7 +370,7 @@ const SearchBar = (props) => {
             });
         }
         else if (searchCounter != 0 ) {
-            BookCardList = [<ErrorCard />]
+            BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia"/>]
         }
     } 
     
@@ -426,14 +473,20 @@ const BookCard = (props) => {
     )
 }
 
-// Komponentti virhetilanteen näyttämiselle. Näytetään, jos haku ei tuottanut tuloksia.
-const ErrorCard = () => {
+// Komponentti virhetilanteen näyttämiselle. Näytetään esim. jos haku ei tuottanut tuloksia.
+const WarningComponent = (props) => {
     return (
-        <Card border="dark" className="mb-1">
-            <Card.Body>
-                <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
-            </Card.Body>
-        </Card>
+        <Alert variant="danger">
+            {props.text}
+        </Alert>
+    )
+}
+
+const SuccessComponent = (props) => {
+    return (
+        <Alert variant="success">
+            {props.text}
+        </Alert>
     )
 }
 
