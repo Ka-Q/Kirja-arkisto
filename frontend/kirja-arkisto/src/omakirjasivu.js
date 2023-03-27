@@ -56,6 +56,43 @@ const OmaKirjaSivu = () => {
 
 const AddComponent = (props) => {
 
+    // Lista kirjoille
+    const [bookList, setBookList] = useState([])
+
+    useEffect(() => {
+        const fetchBook = async () => {
+            const f = await fetch("http://localhost:5000/kirja")
+            const data = await f.json();
+            // Järjestetään aakkosellisesti
+            let sortedBooks = data.data.sort((a, b) => {
+                if (a.nimi < b.nimi) return -1;
+                if (a.nimi > b.nimi) return 1;
+                return 0
+            })
+            setBookList(sortedBooks)
+            
+        };
+        fetchBook();
+    }, []);
+
+    // kirjat kirjailijoineen option-elementteihin ja listaan
+    let optionList = []
+    if (bookList.length > 0){
+        optionList = bookList.map((n, index) => {
+            return (
+                <option 
+                    key={index} 
+                    value={n.kirja_id}>
+                        {n.nimi + " (" + n.kirjailijat + ")"}
+                </option>
+            )
+        });
+    }
+    else {
+        optionList = [<option key={0}>Ei kirjoja</option>]
+    }
+    
+
     // oman kirjan tietoja
     const [kuntoluokka, setKuntoluokka] = useState(-1);
     const [hankintahinta, sethankintahinta] = useState(-1);
@@ -191,6 +228,7 @@ const AddComponent = (props) => {
                         <div> 
                             <select onChange={(e) => setKirjaId(e.target.value)} style={inputStyle}>
                                 <option value={0}>--Kirja--</option>
+                                {optionList}
                             </select> 
                         </div>
                         <div>
