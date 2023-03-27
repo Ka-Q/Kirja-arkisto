@@ -294,15 +294,15 @@ const SearchBar = (props) => {
         setSearchCounter(searchCounter + 1)
         let q = "";
         if (nimi.length > 0) {
-            let splitName = nimi.split(' ');
+            let splitName = nimi.trim().split(' ');
             if (splitName.length > 1) {
                 q += "&kirjan_nimi="
-                for (let wrd in splitName) {
-                    q += wrd + "%20"
+                for (let i = 0; i < splitName.length; i++) {
+                    if (splitName[i].length > 0) q += splitName[i] + "%20";
                 }
-                q = q.substring(0, q.length-3)
+                q = q.substring(0, q.length-3);
             } else {
-                q += ("&kirjan_nimi=%" + nimi + "%");
+                q += ("&kirjan_nimi=%" + nimi.trim() + "%");
             }
         }
         console.log(q)
