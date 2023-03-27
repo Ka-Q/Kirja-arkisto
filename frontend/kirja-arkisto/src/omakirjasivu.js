@@ -279,13 +279,14 @@ const AddComponent = (props) => {
                                     <option value={-1}>--Kirja--</option>
                                     {optionList}
                                 </select> 
+                                <RequiredComponent yes/>
                             </div>
-                            <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/></div>
-                            <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/></div>
-                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/></div>
-                            <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/> </div>
+                            <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/><RequiredComponent/></div>
+                            <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/><RequiredComponent yes/></div>
                             <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
-                            <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/></div>
+                            <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/><RequiredComponent/></div>
                         </Stack>
                         </Col>
                     </Row>
@@ -322,6 +323,18 @@ const AddComponent = (props) => {
     )
 }
 
+// Näyttää, onko kenttä vaadittu vai ei
+const RequiredComponent = (props) => {
+    return (
+        <>
+        {props.yes?
+            <span style={{color: "red", fontWeight: "bold", marginLeft: "1.5em"}}>*</span>:
+            <span style={{marginLeft: "1.9em"}}/>
+        }
+        </>
+    )
+}
+
 // Komponentti valokuvan lisäykseen. Sisältää formin tiedostolle, nimelle ja sivunumerolle
 const AddPictureComponent = (props) => {
     const inputStyle = props.inputStyle
@@ -335,7 +348,7 @@ const AddPictureComponent = (props) => {
             <Col>
             <form id={formId} onSubmit={(e) => handleSub(e)}>
                 <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                    <div><input type={"file"} name="files" style={inputStyle}/></div>
+                    <div><input type={"file"} name="files" style={inputStyle}/><RequiredComponent yes/></div>
                     <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/></div>
                     <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/></div>
                 </Stack>
@@ -481,6 +494,7 @@ const WarningComponent = (props) => {
     )
 }
 
+// Komponentti toiminnon onnistumisen näyttämiselle. Näytetään esim. jos tallennus onnistui
 const SuccessComponent = (props) => {
     return (
         <Alert variant="success">
