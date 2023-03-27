@@ -267,57 +267,56 @@ const AddComponent = (props) => {
     return (
         <Card border="dark" className="mb-1">
             <Card.Body>
-                <Card.Title>Lisää uusi Oma Kirja</Card.Title>
-                <Row className="mb-2">
-                    <Col>
-                    <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                        <div>Valitse kirja (jos kirjaa ei löydy listasta, voit lisätä sellaisen <a href="http://localhost:3000/kirja">täältä</a>):</div>
-                        <div> 
-                            <select onChange={(e) => setKirjaId(e.target.value)} style={inputStyle}>
-                                <option value={-1}>--Kirja--</option>
-                                {optionList}
-                            </select> 
-                        </div>
-                        <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/></div>
-                        <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/></div>
-                        <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/></div>
-                        <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/> </div>
-                        <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
-                        <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/></div>
-                    </Stack>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <div>valokuvat:</div>
-                        <div>
-                            {addPicComponents}
-                            {addPicComponents.length > 0?
-                            <Row  className="mb-3">
-                                <Col>
-                                    <Button variant="danger" onClick={(e) => handleDeletePicClicked()}>Poista valokuva</Button>
-                                </Col>
-                            </Row>
-                            : <></>}
-                            <hr/>
-                            <Button onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
-                        </div>
-                        <div className="my-5">
-                            {!omaKirjaFilled?<WarningComponent text="Vaadittuja tietoja puuttuu"/>:<></>}
-                            {!filesFilled?<WarningComponent text="Valokuvatiedosto puuttuu"/>:<></>}
-                            {saveSuccessful?
-                            <>
-                                <SuccessComponent text="Tallennus onnistui"/>
-                                <Button onClick={(e) => props.handleLisaaClicked()}>Sulje</Button>
-                            </>:
-                            <>
+                {!saveSuccessful?
+                <>
+                    <Card.Title>Lisää uusi Oma Kirja</Card.Title>
+                    <Row className="mb-2">
+                        <Col>
+                        <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
+                            <div>Valitse kirja (jos kirjaa ei löydy listasta, voit lisätä sellaisen <a href="http://localhost:3000/kirja">täältä</a>):</div>
+                            <div> 
+                                <select onChange={(e) => setKirjaId(e.target.value)} style={inputStyle}>
+                                    <option value={-1}>--Kirja--</option>
+                                    {optionList}
+                                </select> 
+                            </div>
+                            <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/></div>
+                            <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/></div>
+                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/></div>
+                            <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/> </div>
+                            <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
+                            <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/></div>
+                        </Stack>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <div>valokuvat:</div>
+                            <div>
+                                {addPicComponents}
+                                {addPicComponents.length > 0?
+                                <Row  className="mb-3">
+                                    <Col>
+                                        <Button variant="danger" onClick={(e) => handleDeletePicClicked()}>Poista valokuva</Button>
+                                    </Col>
+                                </Row>
+                                : <></>}
+                                <hr/>
+                                <Button onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
+                            </div>
+                            <div className="my-5">
+                                {!omaKirjaFilled?<WarningComponent text="Vaadittuja tietoja puuttuu"/>:<></>}
+                                {!filesFilled?<WarningComponent text="Valokuvatiedosto puuttuu"/>:<></>}
                                 <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
-                            </>
-                            }
-                            
-                        </div>
-                    </Col>
-                </Row>
+                            </div>
+                        </Col>
+                    </Row>
+                </>:
+                <>
+                    <SuccessComponent text="Tallennus onnistui"/>
+                    <Button onClick={(e) => props.handleLisaaClicked()}>Sulje</Button>
+                </>
+                }
             </Card.Body>
         </Card>
     )
