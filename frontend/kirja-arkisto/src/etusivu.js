@@ -33,7 +33,7 @@ function Etusivu () {
                   <LinkContainer to="/kirja"><Nav.Link className="mx-2">Kirjat</Nav.Link></LinkContainer>
                   <LinkContainer  to="/sarjasivu"><Nav.Link className="mx-2">Sarjat</Nav.Link></LinkContainer>
                   <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Oma kirja</Nav.Link></LinkContainer>
-                  <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma Sarja</Nav.Link></LinkContainer>
+                  <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma sarja</Nav.Link></LinkContainer>
               </Nav>
               </Navbar.Collapse>
           </Container>
