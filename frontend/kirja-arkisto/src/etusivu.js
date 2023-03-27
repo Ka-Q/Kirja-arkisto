@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
 import {Row, Col} from "react-bootstrap"
-import {OmaKirjaSivu} from "./omakirjasivu";
+import {OmaKirjaSivu} from "./omakirja/omakirjasivu";
 import {SarjaSivu} from "./Sarjasivu";
 import {OmaSarjaSivu} from "./omasarjasivu";
 
