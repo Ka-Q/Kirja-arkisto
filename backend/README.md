@@ -7,6 +7,8 @@ Tänne hakemistoon backendin koodit ml. tietokanta ja api.
 -Nimi mydb 
 -käyttäjä root 
 -salasana root 
+Koodi jolla muuttaa salasanan MySQL WorkBenchiin
+alter user 'root'@'localhost' identified with mysql_native_password by 'root';
 
 ##Rest Api:
 Express-apin portti oletuksena 5000
@@ -15,7 +17,7 @@ Rajapinta käynnistetään syöttämällä komento ```npm run dev``` **kirja-ark
 
 ##Rajapinnan toiminnallisuudesta
 
-GET, POST, PUT ja DELETE useimpiin tietokannan tauluihin. Parametrien nimet annetaan tällä hetkellä suoraan tietokannan taulujen sarakkeina.
+GET, POST, PUT ja DELETE (Haku, lisäys, muokkaus ja poisto) useimpiin tietokannan tauluihin. Parametrien nimet annetaan tällä hetkellä suoraan tietokannan taulujen sarakkeina.
 
 ###Get
 Gettien tulosten rajaus onnistuu millä vain taulun sarakkeella ja haun voi tehdä "sumeasti" käyttämällä %-merkkejä parametrin halutu(i)lla puolilla. 
@@ -215,3 +217,17 @@ sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisest
     ]
 }
 ```
+
+## Kuvatiedostot
+
+**Kuva ja valokuva**
+
+Esimerkiksi kuvaa hakiessa ```http://localhost:5000/kuva```, palautuu lista objekteja, joilla on kuvasta tietoa, kuten taiteilija, tyyli yms. Tietojen mukana tulee myös kenttä ```"kuva"```, jossa on kyseisen kuvan tiedostonimi tiedostopäätteineen (esim ```taru_sormusten_herrasta_etukansi.jpg```) 
+
+Varsinaisen **kuvatiedoston saadakseen**, tulee käyttäjän kutsua GET-metodilla osoitetta ```http://localhost:5000/kuvatiedosto```, johon liitetään queryna kuvatiedoston tiedostonimi: ```http://localhost:5000/kuvatiedosto?kuva=taru_sormusten_herrasta_etukansi.jpg```
+
+Valokuva toimii täysin samalla periaattella, mutta osoite on ```http://localhost:5000/valokuva``` ja valokuvatiedoston nimi on kentässä```"valokuva"```. 
+**Valokuvatiedoston saadakseen** GET esim:  "```http://localhost:5000/valokuva?valokuvakuva=tiedosto_nimi.jpg```"
+
+
+
