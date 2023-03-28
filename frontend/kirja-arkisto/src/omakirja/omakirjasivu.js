@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { Button, Card, Col, Row, Stack } from "react-bootstrap"
-import { WarningComponent } from "./utlilityComponents"
+import { Button, Col, Row, Stack } from "react-bootstrap"
+import { WarningComponent, ListBookCard, GridBookCard } from "./utlilityComponents"
 import { AddComponent } from "./addOmaKirja"
 
 //Tyyliä
@@ -39,7 +39,7 @@ const OmaKirjaSivu = () => {
                 <Row className="mt-3" >
                     <Col>
                     <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <SearchBar />
+                        <SearchComponent />
                     </div>
                     </Col>
                 </Row>
@@ -56,8 +56,8 @@ const OmaKirjaSivu = () => {
     )
 }
 
-// Komponentti hakukentälle. Tekee sumean haun oman kirjan nimellä ja asettaa tulokset hakukentän alle listana
-const SearchBar = (props) => {
+// Komponentti hakukentälle. Tekee sumean haun oman kirjan nimellä ja asettaa tulokset hakukentän alle listana tai ruudukkona
+const SearchComponent = (props) => {
 
     const [searchCounter, setSearchCounter] = useState(0);
     const [bookList, setBookList] = useState([]);
@@ -67,61 +67,65 @@ const SearchBar = (props) => {
     const [gridView, setGridView] = useState(true)
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
 
-    //Mapping JSON to BookCards
+    //Data JSON:ista korteiksi joko ruudukkoon tai listaan
     let bookData = bookList.data
     let BookCardList = []
     let width = 6
-
-    if (gridView) {
-        let bookDataSep = []
-        if (bookData) {
-            for (let i = 0; i < bookData.length; i++) {
-                let row = []
-                if (i == 0 || i % width == 0) {
-                    for (let j = 0; j < width; j++) {
-                        row.push(bookData[i+j])
+    
+    if (bookData) {
+        // Jos ei tuloksia, niin viesti
+        if (bookData.length == 0 ) {
+            BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia" key={0}/>]
+        }
+        else {
+            
+            if (gridView) {
+                // Eritellään data kaksiuloitteiseksi taulukoksi
+                let bookData2D = []
+                for (let i = 0; i < bookData.length; i++) {
+                    let row = []
+                    if (i == 0 || i % width == 0) {
+                        for (let j = 0; j < width; j++) {
+                            row.push(bookData[i+j])
+                        }
+                        bookData2D.push(row)
                     }
-                    bookDataSep.push(row)
                 }
-            }
-            if (bookDataSep.length > 0){
-                BookCardList = bookDataSep.map((n, index) => {
-                    let row = n.map((n2, index2) => {
-                        return(
-                            <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2}>
-                                <GridBookCard 
-                                    key={index2} 
-                                    omakirja={n2} >
-                                </GridBookCard>
-                            </Col>
+
+                // Ruudukon map
+                if (bookData2D.length > 0){
+                    BookCardList = bookData2D.map((n, index) => {
+                        // Sarakkeet riville
+                        let row = n.map((n2, index2) => {
+                            return(
+                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2}>
+                                    <GridBookCard 
+                                        omakirja={n2} >
+                                    </GridBookCard>
+                                </Col>
+                            )
+                        });
+                        // Rivit listaan
+                        return (
+                            <Row key={index}>
+                                {row}
+                            </Row>
                         )
-                    })
-                    return (
-                        <Row key={index}>
-                            {row}
-                        </Row>
-                    )
-                });
+                    });
+                } 
             }
-        }
-        else if (searchCounter != 0 ) {
-            BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia"/>]
-        }
-    }
-    else {
-        if (bookData) {
-            if (bookData.length > 0){
-                BookCardList = bookData.map((n, index) => {
-                    return (
-                        <ListBookCard 
-                            key={index} 
-                            omakirja={n} >
-                        </ListBookCard>
-                    )
-                });
-            }
-            else if (searchCounter != 0 ) {
-                BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia"/>]
+            else {
+                // Listan map
+                if (bookData.length > 0){
+                    BookCardList = bookData.map((n, index) => {
+                        return (
+                            <ListBookCard 
+                                key={index} 
+                                omakirja={n} >
+                            </ListBookCard>
+                        )
+                    });
+                }
             }
         }
     }
@@ -142,7 +146,6 @@ const SearchBar = (props) => {
                 q += ("&kirjan_nimi=%" + nimi.trim() + "%");
             }
         }
-        console.log(q)
         setQuery(q)
     }
 
@@ -153,9 +156,7 @@ const SearchBar = (props) => {
             const data = await f.json();
             setBookList(data)
         };
-        if (searchCounter != 0) {
-            fetchOwnBook();
-        }
+        fetchOwnBook();
     }, [searchCounter]);
 
     // Laukaisee ylemmän useEffectin searchCounterin avulla.
@@ -180,105 +181,6 @@ const SearchBar = (props) => {
             </div>
 
         </div>
-    )
-}
-
-// Komponentti oman kirjan esittämiseen listassa.
-const ListBookCard = (props) => {
-
-    let omakirja = props.omakirja
-    let kirja = omakirja.kirja
-    let kirjankuvat = []
-    kirjankuvat = kirja.kuvat
-
-    let imgsrc = "";
-
-    let etukansikuva = {}
-    for (let row in kirjankuvat) {
-        let kuva = kirjankuvat[row]
-        if (kuva.kuva_tyyppi_id == 1) {
-            etukansikuva = kuva
-            break;
-        }
-    }
-
-    console.log(etukansikuva)
-
-    if (etukansikuva.kuva) {
-        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + etukansikuva.kuva
-    }
-
-    return (
-        <Card border="dark" className="mb-1">
-            <Card.Body>
-                <Card.Title>{kirja.nimi}</Card.Title>
-                <Row className="mb-2">
-                    <Col md={2}>
-                        <img src={imgsrc} style={{height: "10em"}}></img>
-                    </Col>
-                    <Col>
-                        <Card.Text>
-                            Kuntoluokka: {omakirja.kuntoluokka} <br/>
-                            Hankittu: {omakirja.hankinta_aika}
-                        </Card.Text>
-                    </Col>
-                    <Col md={2}>
-                        <Card.Text style={{fontSize:"3em"}}>
-                            <a href={"#id:" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>➡</a>
-                        </Card.Text>
-                    </Col>
-                </Row>
-            </Card.Body>
-        </Card>
-    )
-}
-
-// Komponentti oman kirjan esittämiseen listassa.
-const GridBookCard = (props) => {
-
-    if (!props.omakirja) {
-        return (
-            <></>
-        )
-    }
-
-    let omakirja = props.omakirja
-    let kirja = omakirja.kirja
-    let kirjankuvat = []
-    kirjankuvat = kirja.kuvat
-
-    let imgsrc = "";
-
-    let etukansikuva = {}
-    for (let row in kirjankuvat) {
-        let kuva = kirjankuvat[row]
-        if (kuva.kuva_tyyppi_id == 1) {
-            etukansikuva = kuva
-            break;
-        }
-    }
-
-    console.log(etukansikuva)
-
-    if (etukansikuva.kuva) {
-        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + etukansikuva.kuva
-    }
-
-    return (
-        <a href={"#" + omakirja.oma_kirja_id}>
-        <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden"}}>
-            <div style={{color: "white", background: "rgba(30,30,30,0.9)",position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%"}}>
-                <h3>{kirja.nimi}</h3>
-            </div>
-            <div id="item">
-                <h3>^</h3>
-                <b id="info" style={{marginTop: "20em", display:"block"}}>Kuntoluokka: {omakirja.kuntoluokka} <br/>Hankittu: {omakirja.hankinta_aika} </b>
-            </div>
-            <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
-                <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>
-            </div>
-        </Card>
-        </a>
     )
 }
 
