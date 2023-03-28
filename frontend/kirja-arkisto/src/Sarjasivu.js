@@ -6,48 +6,86 @@ const SarjaSivu = () => {
     const [selectedSeries, setSelectedSeries] = useState(null);
     const [action, setAction] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [editedSeries, setEditedSeries] = useState(null);
+
+    
 
     const handleDeleteClick = async (sarja_id) => {
         if (sarja_id) {
-          // Send DELETE request to server to delete the specified sarja object
-          await fetch(`http://localhost:5000/sarja?sarja_id=${sarja_id}`, { method: "DELETE" });
-          
-          // Update the list of series by filtering out the deleted sarja object
-          setListOfSeries(ListOfSeries.filter((s) => s.sarja_id !== sarja_id));
-          
-          // Deselect the deleted sarja object by setting selectedSeries to null
-          setSelectedSeries(null);
+            // Send DELETE request to server to delete the specified sarja object
+            await fetch('http://localhost:5000/sarja', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ sarja_id }),
+            });
+
+            // Clear the editedSeries state if the deleted series was being edited
+            if (editedSeries?.sarja_id === sarja_id) {
+                setEditedSeries(null);
+            }
+
+            // Update the list of series by filtering out the deleted sarja object
+            setListOfSeries(ListOfSeries.filter((s) => s.sarja_id !== sarja_id));
+
+            // Deselect the deleted sarja object by setting selectedSeries to null
+            setSelectedSeries(null);
         }
-      };
+    };
 
+    
+    
+  const handleEditClick = (sarja) => {
+    // Set the edited series to the clicked series
+    setEditedSeries(sarja);
+    // Set the action to "edit" to indicate that the modal should show the edit form
+    setAction("edit");
+    // Show the modal
+    setShowModal(true);
+  };
 
-    return (
-        <div className="mx-5">
-            <div className="text-center" style={{ marginTop: "2em" }}>
-                <h1>Sarjat</h1>
+  return (
+    <div className="mx-5">
+      <div className="text-center" style={{ marginTop: "2em" }}>
+        <h1>Sarjat</h1>
+      </div>
+      <Row>
+        <Col>
+          <Stack direction="horizontal" gap={3}>
+            <div className="bg-light border ms-auto">
+              <Button variant="secondary">Lisää</Button>
             </div>
-            <Row>
-                <Col>
-                    <Stack direction="horizontal" gap={3}>
-                        <div className="bg-light border ms-auto"><Button variant="secondary" >Lisää</Button></div>
-                        <div className="bg-light border"><Button variant="secondary" >Muokkaa</Button></div>
-                        <div className="bg-light border">
-                            <Button variant="secondary" onClick={() => handleDeleteClick(selectedSeries?.sarja_id)}>Poista</Button>
-                        </div>
-                    </Stack>
-                </Col>
-            </Row>
-            <Row className="mt-3" >
-                <Col>
-                    <div className="text-center" style={{ verticalAlign: "center", lineHeight: "2.3em" }}>
-                    <SearchBar list={ListOfSeries} setList={setListOfSeries} handleDeleteClick={handleDeleteClick} />
+            <div className="bg-light border">
+              <Button
+                variant="secondary"
+                onClick={() => handleDeleteClick(selectedSeries?.sarja_id)}
+              >
+                Poista
+              </Button>
+            </div>
+          </Stack>
+        </Col>
+      </Row>
+      <Row className="mt-3">
+        <Col>
+          <div
+            className="text-center"
+            style={{ verticalAlign: "center", lineHeight: "2.3em" }}
+          >
+            <SearchBar
+              list={ListOfSeries}
+              setList={setListOfSeries}
+              handleDeleteClick={handleDeleteClick}
+              handleEditClick={handleEditClick} // Pass the function down to SearchBar
+            />
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
+};
 
-                    </div>
-                </Col>
-            </Row>
-        </div>
-    )
-}
 
 const SearchBar = (props) => {
 
@@ -60,24 +98,23 @@ const SearchBar = (props) => {
 
 
     let seriesData = serieslist.data
-    let SeriesCardList = []
-
-    if (seriesData) {
-        if (seriesData.length > 0) {
-            SeriesCardList = seriesData.map((n, index) => {
-                return (
-                    <SeriesCard
-                        key={index}
-                        sarja={n}
-                        setSelectedSeries={props.setSelectedSeries}>
-                    </SeriesCard>
-                )
-            });
-        }
-        else if (searchCounter != 0) {
-            SeriesCardList = [<ErrorCard />]
-        }
+    let SeriesCardList = [];
+  if (seriesData) {
+    if (seriesData.length > 0) {
+      SeriesCardList = seriesData.map((n, index) => {
+        return (
+          <SeriesCard
+            key={index}
+            sarja={n}
+            setSelectedSeries={props.setSelectedSeries}
+            handleEditClick={props.handleEditClick} // Pass the function down to SeriesCard
+          />
+        );
+      });
+    } else if (searchCounter != 0) {
+      SeriesCardList = [<ErrorCard />];
     }
+  }
 
 
     const updateQuery = () => {
@@ -127,7 +164,11 @@ const SearchBar = (props) => {
 }
 
 const SeriesCard = (props) => {
-    let sarja = props.sarja
+    let sarja = props.sarja;
+    const handleEditClick = () => {
+      props.handleEditClick(sarja); // Call the function passed down as a prop
+    };
+
 
     return (
         <Card border="dark" className="mb-1">
@@ -147,15 +188,17 @@ const SeriesCard = (props) => {
                             <a href={"#id:" + sarja.sarja_id} style={{ textDecoration: "none" }}>➡</a>
                         </Card.Text>
                     </Col>
+                    <Col>
+                        <div>
+                            <Button variant="primary" onClick={handleEditClick}>Muokkaa</Button>
+
+                        </div>
+                    </Col>
                 </Row>
             </Card.Body>
         </Card>
     )
 }
-
-
-
-
 
 const ErrorCard = () => {
     return (
