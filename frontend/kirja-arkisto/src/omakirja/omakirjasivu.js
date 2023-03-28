@@ -266,13 +266,13 @@ const GridBookCard = (props) => {
 
     return (
         <a href={"#" + omakirja.oma_kirja_id}>
-        <Card className="mb-4" style={{height: "30em", cursor: "pointer"}}>
+        <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden"}}>
             <div style={{color: "white", background: "rgba(30,30,30,0.9)",position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%"}}>
                 <h3>{kirja.nimi}</h3>
             </div>
             <div id="item">
                 <h3>^</h3>
-                <p id="info" style={{marginTop: "20em"}}>Kuntoluokka: {omakirja.kuntoluokka} <br/>Hankittu: {omakirja.hankinta_aika} </p>
+                <b id="info" style={{marginTop: "20em", display:"block"}}>Kuntoluokka: {omakirja.kuntoluokka} <br/>Hankittu: {omakirja.hankinta_aika} </b>
             </div>
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
                 <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>
