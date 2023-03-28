@@ -34,12 +34,36 @@ insert into kirja values(7, "Hopeinen tuoli", 4, "Neljäs osa Narnia-sarjaa", "C
 insert into kirja values(8, "Hevonen ja poika", 5, "Viides osa Narnia-sarjaa", "C. S. Lewis", "-", 1954, 15);
 insert into kirja values(9, "Taikurin sisarenpoika", 6, "Kuudes osa Narnia-sarjaa", "C. S. Lewis", "-", 1955, 14);
 insert into kirja values(10, "Narnian viimeinen taistelu", 7, "Seitsemäs ja viimeinen osa Narnia-sarjaa", "C. S. Lewis", "-", 1956, 14);
+
+-- Harry Potter -sarja
+insert into sarja values(3,"Harry Potter","Harry Potter -sarjan 9 osaa");
+-- Harry Potter -kirjat
 insert into kirja values(11, "Harry Potter ja viisasten kivi", 1, "Ensimmäinen osa Harry Potter -sarjaa", "J.K. Rowling", "-", 1997, 50);
-insert into kirja values(12, "The Shining", NULL, "A horror novel about a family staying at an isolated hotel", "Stephen King", "-", 1977, 30);
-insert into kirja values(13, "Watchmen", NULL, "A graphic novel exploring the dark side of superheroes", "Alan Moore", "Dave Gibbons", 1986, 10);
-insert into kirja values(14, "Murder on the Orient Express", NULL, "A classic murder mystery novel set on a train", "Agatha Christie", "-", 1934, 40);
-insert into kirja values(15, "A Game of Thrones", 1, "The first book in the A Song of Ice and Fire series", "George R.R. Martin", "-", 1996, 20);
-insert into kirja values(16, "The Old Man and the Sea", NULL, "A short novel about an aging fisherman's struggle with a giant marlin", "Ernest Hemingway", "-", 1952, 25);
+INSERT INTO kirja VALUES (12, 'Harry Potter ja salaisuuksien kammio', 2, 'Toinen osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 1998, 50);
+INSERT INTO kirja VALUES (13, 'Harry Potter ja Azkabanin vanki', 3, 'Kolmas osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 1999, 50);
+INSERT INTO kirja VALUES (14, 'Harry Potter ja liekehtivä pikari', 4, 'Neljäs osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 2000, 50);
+INSERT INTO kirja VALUES (15, 'Harry Potter ja Feeniksin kilta', 5, 'Viides osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 2003, 50);
+INSERT INTO kirja VALUES (16, 'Harry Potter ja puoliverinen prinssi', 6, 'Kuudes osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 2005, 50);
+INSERT INTO kirja VALUES (17, 'Harry Potter ja kuoleman varjelukset', 7, 'Viimeinen osa Harry Potter -sarjaa', 'J.K. Rowling', '-', 2007, 50);
+
+-- young samurai -sarja
+Insert into sarja values(4,"Young Samurai","9-osaa");
+-- Young samurai -kirjat
+INSERT INTO kirja VALUES (18, 'Young Samurai: The Way of the Warrior', 1, 'First book in the Young Samurai series', 'Chris Bradford', '-', 2008, 25);
+INSERT INTO kirja VALUES (19, 'Young Samurai: The Way of the Sword', 2, 'Second book in the Young Samurai series', 'Chris Bradford', '-', 2009, 25);
+INSERT INTO kirja VALUES (20, 'Young Samurai: The Way of the Dragon', 3, 'Third book in the Young Samurai series', 'Chris Bradford', '-', 2010, 25);
+INSERT INTO kirja VALUES (21, 'Young Samurai: The Ring of Water', 4, 'Fourth book in the Young Samurai series', 'Chris Bradford', '-', 2011, 25);
+INSERT INTO kirja VALUES (22, 'Young Samurai: The Ring of Earth', 5, 'Fifth book in the Young Samurai series', 'Chris Bradford', '-', 2012, 25);
+INSERT INTO kirja VALUES (23, 'Young Samurai: The Ring of Fire', 6, 'Sixth book in the Young Samurai series', 'Chris Bradford', '-', 2013, 25);
+INSERT INTO kirja VALUES (24, 'Young Samurai: The Ring of Wind', 7, 'Seventh book in the Young Samurai series', 'Chris Bradford', '-', 2014, 25);
+
+
+-- Muita kirjoja
+insert into kirja values(25, "The Shining", NULL, "A horror novel about a family staying at an isolated hotel", "Stephen King", "-", 1977, 30);
+insert into kirja values(26, "Watchmen", NULL, "A graphic novel exploring the dark side of superheroes", "Alan Moore", "Dave Gibbons", 1986, 10);
+insert into kirja values(27, "Murder on the Orient Express", NULL, "A classic murder mystery novel set on a train", "Agatha Christie", "-", 1934, 40);
+insert into kirja values(28, "A Game of Thrones", 1, "The first book in the A Song of Ice and Fire series", "George R.R. Martin", "-", 1996, 20);
+insert into kirja values(29, "The Old Man and the Sea", NULL, "A short novel about an aging fisherman's struggle with a giant marlin", "Ernest Hemingway", "-", 1952, 25);
 
 
 -- Narnia -kirjat sarjaan
