@@ -83,7 +83,6 @@ const AddComponent = (props) => {
                 return null
             }
             setInsertedBookId(data.data.insertId)
-
         };
         if (saveClicked) {
             addOwnBook();
