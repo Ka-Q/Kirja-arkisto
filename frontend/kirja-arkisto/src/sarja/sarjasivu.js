@@ -11,7 +11,7 @@ const SarjaSivu = () => {
     
     const [editedSeries, setEditedSeries] = useState(null);
     const [lisaaClicked, setLisaaClicked] = useState(false)
-    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää oma kirja")
+    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää sarja")
   
     // Näyttää ja/tai piilottaa oman kirja lisäys -näkymän
     const handleLisaaClicked = () => {
@@ -20,7 +20,7 @@ const SarjaSivu = () => {
             setLisaaBtnText("Palaa omien kirjojen hakuun")
         } else {
             setLisaaClicked(false)
-            setLisaaBtnText("Lisää oma kirja")
+            setLisaaBtnText("Lisää sarja")
         }
     }
    
@@ -142,7 +142,7 @@ const SearchBar = (props) => {
 const SeriesCard = (props) => {
     let sarja = props.sarja;
     const [lisaaClicked, setLisaaClicked] = useState(false)
-    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää oma kirja")
+    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää sarja")
     const [editClicked, setEditClicked] = useState(false)
     
     const handleEditClicked = () => {
@@ -151,7 +151,7 @@ const SeriesCard = (props) => {
           setLisaaBtnText("Palaa omien kirjojen hakuun")
       } else {
           setEditClicked(false)
-          setLisaaBtnText("Lisää oma kirja")
+          setLisaaBtnText("Lisää sarja")
       }
   }
 
