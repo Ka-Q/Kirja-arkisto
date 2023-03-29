@@ -8,30 +8,7 @@ const SarjaSivu = ({ seriesList }) => {
     setSelectedSeries(series);
   };
   
-  const handleDeleteClick = async (sarja_id) => {
-    if (sarja_id) {
-        // Send DELETE request to server to delete the specified sarja object
-        await fetch('http://localhost:5000/sarja', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ sarja_id }),
-        });
-
-        // Clear the editedSeries state if the deleted series was being edited
-        if (editedSeries?.sarja_id === sarja_id) {
-            setEditedSeries(null);
-        }
-
-        // Update the list of series by filtering out the deleted sarja object
-        setListOfSeries(ListOfSeries.filter((s) => s.sarja_id !== sarja_id));
-
-        // Deselect the deleted sarja object by setting selectedSeries to null
-        setSelectedSeries(null);
-    }
-};
-
+ 
   return (
     <>
       {seriesList.map((series) => (
