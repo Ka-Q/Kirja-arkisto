@@ -11,7 +11,7 @@ import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
 import {Row, Col} from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirja/omakirjasivu";
 import {SarjaSivu} from "./sarja/sarjasivu";
-import {OmaSarjaSivu} from "./omasarjasivu";
+import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
 
 
 
