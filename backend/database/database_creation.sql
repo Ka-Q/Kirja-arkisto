@@ -16,79 +16,6 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8mb3 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`kirjahylly`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`kirjahylly` ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`kirjahylly` (
-  `kirjahylly_id` INT NOT NULL AUTO_INCREMENT,
-  `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`kirjahylly_id`),
-  UNIQUE INDEX `kirjahylly_id_UNIQUE` (`kirjahylly_id` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 4
-DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`sarja`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`sarja` ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`sarja` (
-  `sarja_id` INT NOT NULL AUTO_INCREMENT,
-  `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
-  PRIMARY KEY (`sarja_id`),
-  UNIQUE INDEX `sarja_id_UNIQUE` (`sarja_id` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 3
-DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`oma_sarja`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`oma_sarja` ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`oma_sarja` (
-  `oma_sarja_id` INT NOT NULL AUTO_INCREMENT,
-  `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
-  `sarja_sarja_id` INT NOT NULL,
-  PRIMARY KEY (`oma_sarja_id`),
-  UNIQUE INDEX `oma_sarja_id_UNIQUE` (`oma_sarja_id` ASC) VISIBLE,
-  INDEX `fk_oma_sarja_sarja1_idx` (`sarja_sarja_id` ASC) VISIBLE,
-  CONSTRAINT `fk_oma_sarja_sarja1`
-    FOREIGN KEY (`sarja_sarja_id`)
-    REFERENCES `mydb`.`sarja` (`sarja_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 5
-DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`hyllyn_sarjat`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`hyllyn_sarjat` ;
-
-CREATE TABLE IF NOT EXISTS `mydb`.`hyllyn_sarjat` (
-  `kirjahylly_id` INT NOT NULL,
-  `oma_sarja_id` INT NOT NULL,
-  PRIMARY KEY (`kirjahylly_id`, `oma_sarja_id`),
-  INDEX `fk_kirjahylly_has_oma_sarja_oma_sarja1_idx` (`oma_sarja_id` ASC) VISIBLE,
-  INDEX `fk_kirjahylly_has_oma_sarja_kirjahylly_idx` (`kirjahylly_id` ASC) VISIBLE,
-  CONSTRAINT `fk_kirjahylly_has_oma_sarja_kirjahylly`
-    FOREIGN KEY (`kirjahylly_id`)
-    REFERENCES `mydb`.`kirjahylly` (`kirjahylly_id`),
-  CONSTRAINT `fk_kirjahylly_has_oma_sarja_oma_sarja1`
-    FOREIGN KEY (`oma_sarja_id`)
-    REFERENCES `mydb`.`oma_sarja` (`oma_sarja_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
 -- Table `mydb`.`kirja`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `mydb`.`kirja` ;
@@ -106,6 +33,43 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kirja` (
   UNIQUE INDEX `kirja_id_UNIQUE` (`kirja_id` ASC) VISIBLE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 23
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`rooli`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`rooli` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`rooli` (
+  `rooli_id` INT NOT NULL,
+  `nimi` VARCHAR(45) NULL,
+  `kuvaus` VARCHAR(200) NULL,
+  PRIMARY KEY (`rooli_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`kayttaja`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`kayttaja` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`kayttaja` (
+  `kayttaja_id` INT NOT NULL AUTO_INCREMENT,
+  `sposti` VARCHAR(200) NOT NULL,
+  `salasana` VARCHAR(20) NOT NULL,
+  `istuntoavain` VARCHAR(200) NULL,
+  `rooli_id` INT NOT NULL,
+  PRIMARY KEY (`kayttaja_id`),
+  UNIQUE INDEX `kirjahylly_id_UNIQUE` (`kayttaja_id` ASC) VISIBLE,
+  INDEX `fk_kayttaja_rooli1_idx` (`rooli_id` ASC) VISIBLE,
+  CONSTRAINT `fk_kayttaja_rooli1`
+    FOREIGN KEY (`rooli_id`)
+    REFERENCES `mydb`.`rooli` (`rooli_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -142,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kuva` (
     FOREIGN KEY (`kuva_tyyppi_id`)
     REFERENCES `mydb`.`kuva_tyyppi` (`kuva_tyyppi_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 10
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -180,14 +144,65 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja` (
   `painosvuosi` INT NULL DEFAULT NULL,
   `hankinta_aika` DATE NULL DEFAULT NULL,
   `kirja_id` INT NOT NULL,
+  `kayttaja_kayttaja_id` INT NOT NULL,
   PRIMARY KEY (`oma_kirja_id`),
   UNIQUE INDEX `oma_kirja_id_UNIQUE` (`oma_kirja_id` ASC) VISIBLE,
   INDEX `fk_oma_kirja_kirja1_idx` (`kirja_id` ASC) VISIBLE,
+  INDEX `fk_oma_kirja_kayttaja1_idx` (`kayttaja_kayttaja_id` ASC) VISIBLE,
   CONSTRAINT `fk_oma_kirja_kirja1`
     FOREIGN KEY (`kirja_id`)
-    REFERENCES `mydb`.`kirja` (`kirja_id`))
+    REFERENCES `mydb`.`kirja` (`kirja_id`),
+  CONSTRAINT `fk_oma_kirja_kayttaja1`
+    FOREIGN KEY (`kayttaja_kayttaja_id`)
+    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 71
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`sarja`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`sarja` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`sarja` (
+  `sarja_id` INT NOT NULL AUTO_INCREMENT,
+  `nimi` VARCHAR(45) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  PRIMARY KEY (`sarja_id`),
+  UNIQUE INDEX `sarja_id_UNIQUE` (`sarja_id` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`oma_sarja`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`oma_sarja` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`oma_sarja` (
+  `oma_sarja_id` INT NOT NULL AUTO_INCREMENT,
+  `nimi` VARCHAR(45) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  `sarja_sarja_id` INT NOT NULL,
+  `kayttaja_kayttaja_id` INT NOT NULL,
+  PRIMARY KEY (`oma_sarja_id`),
+  UNIQUE INDEX `oma_sarja_id_UNIQUE` (`oma_sarja_id` ASC) VISIBLE,
+  INDEX `fk_oma_sarja_sarja1_idx` (`sarja_sarja_id` ASC) VISIBLE,
+  INDEX `fk_oma_sarja_kayttaja1_idx` (`kayttaja_kayttaja_id` ASC) VISIBLE,
+  CONSTRAINT `fk_oma_sarja_sarja1`
+    FOREIGN KEY (`sarja_sarja_id`)
+    REFERENCES `mydb`.`sarja` (`sarja_id`),
+  CONSTRAINT `fk_oma_sarja_kayttaja1`
+    FOREIGN KEY (`kayttaja_kayttaja_id`)
+    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -198,7 +213,7 @@ DROP TABLE IF EXISTS `mydb`.`valokuva` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`valokuva` (
   `valokuva_id` INT NOT NULL AUTO_INCREMENT,
-  `valokuva` VARCHAR(1024) NULL,
+  `valokuva` VARCHAR(1024) NULL DEFAULT NULL,
   `sivunumero` INT NULL DEFAULT NULL,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`valokuva_id`),
@@ -283,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja_kaikella` (`oma_kirja_id` INT, `kun
 DROP TABLE IF EXISTS `mydb`.`oma_kirja_kaikella`;
 DROP VIEW IF EXISTS `mydb`.`oma_kirja_kaikella` ;
 USE `mydb`;
-CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `mydb`.`oma_kirja_kaikella` AS select `mydb`.`oma_kirja`.`oma_kirja_id` AS `oma_kirja_id`,`mydb`.`oma_kirja`.`kuntoluokka` AS `kuntoluokka`,`mydb`.`oma_kirja`.`hankintahinta` AS `hankintahinta`,`mydb`.`oma_kirja`.`esittelyteksti` AS `esittelyteksti`,`mydb`.`oma_kirja`.`painosvuosi` AS `painosvuosi`,`mydb`.`oma_kirja`.`hankinta_aika` AS `hankinta_aika`,`mydb`.`valokuva`.`valokuva_id` AS `valokuva_id`,`mydb`.`valokuva`.`sivunumero` AS `sivunumero`,`mydb`.`valokuva`.`nimi` AS `valokuvan_nimi`,`mydb`.`kirja`.`kirja_id` AS `kirja_id`,`mydb`.`kirja`.`nimi` AS `kirjan_nimi`,`mydb`.`kirja`.`jarjestysnumero` AS `jarjestysnumero`,`mydb`.`kirja`.`kuvaus` AS `kirjan_kuvaus`,`mydb`.`kirja`.`kirjailijat` AS `kirjailijat`,`mydb`.`kirja`.`piirtajat` AS `piirtajat`,`mydb`.`kirja`.`ensipainosvuosi` AS `ensipainosvuosi`,`mydb`.`kirja`.`painokset` AS `painokset`,`mydb`.`kuva`.`kuva_id` AS `kuva_id`,`mydb`.`kuva`.`kuva` AS `kuva`,`mydb`.`kuva`.`kuva_tyyppi_id` AS `kuva_tyyppi_id`,`mydb`.`kuva`.`julkaisuvuosi` AS `julkaisuvuosi`,`mydb`.`kuva`.`taiteilija` AS `taiteilija`,`mydb`.`kuva`.`tyyli` AS `tyyli`,`mydb`.`kuva`.`kuvaus` AS `kuvan_kuvaus` from (((((`mydb`.`oma_kirja` left join `mydb`.`oman_kirjan_valokuvat` on((`mydb`.`oma_kirja`.`oma_kirja_id` = `mydb`.`oman_kirjan_valokuvat`.`oma_kirja_id`))) left join `mydb`.`valokuva` on((`mydb`.`oman_kirjan_valokuvat`.`valokuva_id` = `mydb`.`valokuva`.`valokuva_id`))) left join `mydb`.`kirja` on((`mydb`.`oma_kirja`.`kirja_id` = `mydb`.`kirja`.`kirja_id`))) left join `mydb`.`kirjan_kuvat` on((`mydb`.`kirja`.`kirja_id` = `mydb`.`kirjan_kuvat`.`kirja_kirja_id`))) left join `mydb`.`kuva` on((`mydb`.`kirjan_kuvat`.`kuva_kuva_id` = `mydb`.`kuva`.`kuva_id`)));
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `mydb`.`oma_kirja_kaikella` AS select `mydb`.`oma_kirja`.`oma_kirja_id` AS `oma_kirja_id`,`mydb`.`oma_kirja`.`kuntoluokka` AS `kuntoluokka`,`mydb`.`oma_kirja`.`hankintahinta` AS `hankintahinta`,`mydb`.`oma_kirja`.`esittelyteksti` AS `esittelyteksti`,`mydb`.`oma_kirja`.`painosvuosi` AS `painosvuosi`,`mydb`.`oma_kirja`.`hankinta_aika` AS `hankinta_aika`,`mydb`.`valokuva`.`valokuva_id` AS `valokuva_id`,`mydb`.`valokuva`.`valokuva` AS `valokuva`,`mydb`.`valokuva`.`sivunumero` AS `sivunumero`,`mydb`.`valokuva`.`nimi` AS `valokuvan_nimi`,`mydb`.`kirja`.`kirja_id` AS `kirja_id`,`mydb`.`kirja`.`nimi` AS `kirjan_nimi`,`mydb`.`kirja`.`jarjestysnumero` AS `jarjestysnumero`,`mydb`.`kirja`.`kuvaus` AS `kirjan_kuvaus`,`mydb`.`kirja`.`kirjailijat` AS `kirjailijat`,`mydb`.`kirja`.`piirtajat` AS `piirtajat`,`mydb`.`kirja`.`ensipainosvuosi` AS `ensipainosvuosi`,`mydb`.`kirja`.`painokset` AS `painokset`,`mydb`.`kuva`.`kuva_id` AS `kuva_id`,`mydb`.`kuva`.`kuva` AS `kuva`,`mydb`.`kuva`.`kuva_tyyppi_id` AS `kuva_tyyppi_id`,`mydb`.`kuva`.`julkaisuvuosi` AS `julkaisuvuosi`,`mydb`.`kuva`.`taiteilija` AS `taiteilija`,`mydb`.`kuva`.`tyyli` AS `tyyli`,`mydb`.`kuva`.`kuvaus` AS `kuvan_kuvaus` from (((((`mydb`.`oma_kirja` left join `mydb`.`oman_kirjan_valokuvat` on((`mydb`.`oma_kirja`.`oma_kirja_id` = `mydb`.`oman_kirjan_valokuvat`.`oma_kirja_id`))) left join `mydb`.`valokuva` on((`mydb`.`oman_kirjan_valokuvat`.`valokuva_id` = `mydb`.`valokuva`.`valokuva_id`))) left join `mydb`.`kirja` on((`mydb`.`oma_kirja`.`kirja_id` = `mydb`.`kirja`.`kirja_id`))) left join `mydb`.`kirjan_kuvat` on((`mydb`.`kirja`.`kirja_id` = `mydb`.`kirjan_kuvat`.`kirja_kirja_id`))) left join `mydb`.`kuva` on((`mydb`.`kirjan_kuvat`.`kuva_kuva_id` = `mydb`.`kuva`.`kuva_id`)));
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
