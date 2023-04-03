@@ -5,20 +5,37 @@ import { AddComponent } from "./addOmaKirja"
 
 //Tyyliä
 import './omakirjaStyle.css'
+import { ViewComponent } from "./viewOmaKirja"
 
 const OmaKirjaSivu = () => {
 
-    const [lisaaClicked, setLisaaClicked] = useState(false)
-    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää oma kirja")
+    const [isBackButton, setIsBackButton] = useState(false)
+    const [btnText, setBtnText] = useState("Lisää oma kirja")
+
+    const [bookClicked, setBookClicked] = useState(false)
+    const [selectedBook, setSelectedBook] = useState(null)
 
     // Näyttää ja/tai piilottaa oman kirja lisäys -näkymän
-    const handleLisaaClicked = () => {
-        if (!lisaaClicked) {
-            setLisaaClicked(true)
-            setLisaaBtnText("Palaa omien kirjojen hakuun")
+    const handleButtonClicked = () => {
+        if (!isBackButton) {
+            setIsBackButton(true)
+            setBtnText("Palaa omien kirjojen hakuun")
+            //if (bookClicked) setBookClicked(false)
         } else {
-            setLisaaClicked(false)
-            setLisaaBtnText("Lisää oma kirja")
+            setIsBackButton(false)
+            setBtnText("Lisää oma kirja")
+            if (bookClicked) setBookClicked(false)
+        }
+    }
+
+    const handleBookClicked = (book) => {
+        if (!bookClicked) {
+            setIsBackButton(true)
+            setBookClicked(true)
+            setSelectedBook(book)
+            setBtnText("Palaa omien kirjojen hakuun")
+        } else {
+            setBookClicked(false)
         }
     }
 
@@ -30,27 +47,36 @@ const OmaKirjaSivu = () => {
             <Row>
                 <Col>
                     <Stack direction="horizontal" gap={3}>
-                        <div className="bg-light border ms-auto"><Button onClick={(e) => handleLisaaClicked(e.target)}>{lisaaBtnText}</Button></div>
+                        <div className="bg-light border ms-auto"><Button onClick={(e) => handleButtonClicked(e.target)}>{btnText}</Button></div>
                     </Stack>
                 </Col>
             </Row>
             {
-            !lisaaClicked ?
+            !isBackButton && !bookClicked ?
                 <Row className="mt-3" >
                     <Col>
                     <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <SearchComponent />
+                        <SearchComponent bookClicked={handleBookClicked}/>
                     </div>
                     </Col>
                 </Row>
             :
+            isBackButton && !bookClicked?
                 <Row className="mt-3" >
                     <Col>
                     <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <AddComponent handleLisaaClicked={handleLisaaClicked}/>
+                        <AddComponent handleLisaaClicked={handleButtonClicked}/>
                     </div>
                     </Col>
                 </Row>
+            :
+            <Row className="mt-3" >
+                <Col>
+                <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                    <ViewComponent omakirja={selectedBook}/>
+                </div>
+                </Col>
+            </Row>
             }
         </div>
     )
@@ -66,6 +92,8 @@ const SearchComponent = (props) => {
 
     const [gridView, setGridView] = useState(true)
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
+
+    const bookClicked = props.bookClicked
 
     //Data JSON:ista korteiksi joko ruudukkoon tai listaan
     let bookData = bookList.data
@@ -98,8 +126,8 @@ const SearchComponent = (props) => {
                         // Sarakkeet riville
                         let row = n.map((n2, index2) => {
                             return(
-                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2}>
-                                    <GridBookCard 
+                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2} onClick={(e) => bookClicked(n2)}>
+                                    <GridBookCard
                                         omakirja={n2} >
                                     </GridBookCard>
                                 </Col>
