@@ -29,7 +29,7 @@ const OmaKirjaSivu = () => {
     }
 
     const handleBookClicked = (book) => {
-        if (!bookClicked) {
+        if (!bookClicked && book) {
             setIsBackButton(true)
             setBookClicked(true)
             setSelectedBook(book)
@@ -147,10 +147,11 @@ const SearchComponent = (props) => {
                 if (bookData.length > 0){
                     BookCardList = bookData.map((n, index) => {
                         return (
-                            <ListBookCard 
-                                key={index} 
-                                omakirja={n} >
-                            </ListBookCard>
+                            <div onClick={(e) => bookClicked(n)} style={{cursor:"pointer"}} key={index}>
+                                <ListBookCard  
+                                    omakirja={n} >
+                                </ListBookCard>
+                            </div>
                         )
                     });
                 }

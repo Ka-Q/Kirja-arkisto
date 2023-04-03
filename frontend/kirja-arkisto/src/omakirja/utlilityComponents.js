@@ -54,7 +54,7 @@ const ListBookCard = (props) => {
                     </Col>
                     <Col md={2}>
                         <Card.Text style={{fontSize:"3em"}}>
-                            <a href={"#id:" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>➡</a>
+                            ➡
                         </Card.Text>
                     </Col>
                 </Row>
