@@ -76,6 +76,7 @@ const handleConnection = (res, error, SQLresult) => {                           
 
                 let valokuva = {
                     valokuva_id: omaKirja.valokuva_id,
+                    valokuva: omaKirja.valokuva,
                     sivunumero: omaKirja.sivunumero,
                     nimi: omaKirja.valokuvan_nimi
                 }
@@ -101,6 +102,7 @@ const handleConnection = (res, error, SQLresult) => {                           
 
                 let valokuva = {
                     valokuva_id: omaKirja.valokuva_id,
+                    valokuva: omaKirja.valokuva,
                     sivunumero: omaKirja.sivunumero,
                     nimi: omaKirja.valokuvan_nimi
                 }
