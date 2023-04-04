@@ -12,6 +12,7 @@ import {Row, Col} from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirja/omakirjasivu";
 import {SarjaSivu} from "./sarja/sarjasivu";
 import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
+import { KirjaSivu } from "./kirja/kirjasivu";
 
 
 
@@ -19,9 +20,9 @@ import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
 function Etusivu () {
 
     return (
-      <div>
+      <div >
       <Router>
-      <Navbar bg="light" expand="lg">
+      <Navbar style={{backgroundColor: "#131415"}} variant="dark" expand="lg">
           <Container>
               <LinkContainer to="/"><Navbar.Brand>
                   Kirjasovellus
@@ -53,20 +54,22 @@ function Etusivu () {
 
 const FrontPage = (props) => {
   return (
+    <div style={{height: "100%",width: '100%',padding: '10px', backgroundColor: "#202020"}}>
     <Row className="mx-5 my-5">
       <Col>
         <img src="https://dbdzm869oupei.cloudfront.net/img/sticker/preview/90751.png"/>
       </Col>
       <Col >
-        <h1  className="item-main">Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1>
+        <h1  className="" style={{color: "white"}}>Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1>
       </Col>
     </Row>
+    </div>
   )
 }
 
 const BookPage = (props) => {
   return (
-    <>Kirja</>
+    <KirjaSivu/>
   )
 }
 
