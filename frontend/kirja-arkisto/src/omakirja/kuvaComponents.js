@@ -36,7 +36,7 @@ const KuvaViewerComponent = (props) => {
     if (remainingImages < 0) remainingImages = 0
     
     return(
-        <div style={{width:"25em"}}>
+        <div style={{MaxWidth:"25em"}}>
             <div className="mx-auto" style={{width:"25em", height: "40em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.kuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.kuva} fluid style={{width:"100%"}}/>
@@ -122,7 +122,7 @@ const ValokuvaViewerComponent = (props) => {
     
     
     return(
-        <div style={{width:"25em"}}>
+        <div style={{MaxWidth:"25em"}}>
             <div className="mx-auto" style={{width:"25em", height: "40em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
