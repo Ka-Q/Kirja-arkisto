@@ -20,48 +20,54 @@ const ViewComponent = (props) => {
         <Row>
             {
             kuvat.length > 0?
-                <Col lg={4} xxl={3}>
+                <Col sm={12} lg={3}>
                     <Card>
-                        <Card.Title>
-                            Kuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <KuvaViewerComponent kuvat={kuvat}/>
-                        </Card.Body>
+                        <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
+                            <Card.Title className="mt-3">
+                                Kuvat
+                            </Card.Title>
+                            <Card.Body>
+                                <KuvaViewerComponent kuvat={kuvat}/>
+                            </Card.Body>
+                        </div>
                     </Card>
                 </Col>
             :
                 <></>
             }
             
-            <Col lg={8} xxl={6}>
+            <Col sm={12} lg={6}>
                 <Card>
-                    <h1>{kirja.nimi}</h1>
-                    <hr/>
-                    <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
-                    <Card.Body>
-                        Kirjailijat: {kirja.kirjailijat} <br/>
-                        Painettu: {omakirja.painosvuosi} <br/>
-                        Hankittu: {omakirja.hankinta_aika} <br/>
-                        Hankintahinta: {omakirja.hankintahinta} € <br/>
-                        Esittely: {omakirja.esittelyteksti} <br/>
-                        <br/>
-                        Kirjan kuvaus: <br/>
-                        {kirja.kuvaus} <br/>
-                        <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id}>Lisää kirjasta {"->"}</Button>
-                    </Card.Body>
+                    <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
+                        <h1>{kirja.nimi}</h1>
+                        <hr/>
+                        <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
+                        <Card.Body>
+                            Kirjailijat: {kirja.kirjailijat} <br/>
+                            Painettu: {omakirja.painosvuosi} <br/>
+                            Hankittu: {omakirja.hankinta_aika} <br/>
+                            Hankintahinta: {omakirja.hankintahinta} € <br/>
+                            Esittely: {omakirja.esittelyteksti} <br/>
+                            <br/>
+                            Kirjan kuvaus: <br/>
+                            {kirja.kuvaus} <br/>
+                            <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: "#424242", marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
+                        </Card.Body>
+                    </div>
                 </Card>
             </Col>
             {
             valokuvat.length > 0?
-                <Col lg={12} xxl={3}>
+                <Col sm={12} lg={3}>
                     <Card>
-                        <Card.Title>
-                            Valokuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <ValokuvaViewerComponent valokuvat={valokuvat}/>
-                        </Card.Body>
+                        <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
+                            <Card.Title className="mt-3">
+                                Valokuvat
+                            </Card.Title>
+                            <Card.Body>
+                                <ValokuvaViewerComponent valokuvat={valokuvat}/>
+                            </Card.Body>
+                        </div>
                     </Card>
                 </Col>
             :
