@@ -26,9 +26,10 @@ app.use(session({
   secret: "salaisuus",
   resave: true,
   saveUninitialized: true,
+  rolling: true,
   cookie: {
     secure: false,
-    maxAge: 6000000000000
+    maxAge: 60000 * 30 // 1 min * 30  
   }
 }));
 
