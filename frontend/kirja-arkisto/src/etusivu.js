@@ -8,16 +8,29 @@ import Button from "react-bootstrap/esm/Button";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
-import {Row, Col} from "react-bootstrap"
+import {Row, Col, Card, Form} from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirja/omakirjasivu";
 import {SarjaSivu} from "./sarja/sarjasivu";
 import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
 import { KirjaSivu } from "./kirja/kirjasivu";
-
-
-
+import { WarningComponent } from "./omakirja/utlilityComponents";
 
 function Etusivu () {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const sendAuth = async () => {
+        const f = await fetch("http://localhost:5000/check_login", {
+            credentials: "include",
+            method: 'GET'
+        })
+        const data = await f.json();
+        console.log(data.data);
+        if (data.data) { setIsLoggedIn(true) } else setIsLoggedIn(false)
+    };
+    sendAuth();
+  }, [isLoggedIn]);
 
     return (
       <div >
@@ -36,6 +49,15 @@ function Etusivu () {
                   <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Oma kirja</Nav.Link></LinkContainer>
                   <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma sarja</Nav.Link></LinkContainer>
               </Nav>
+                  {isLoggedIn?
+                  <LogoutComponent setIsLoggedIn={setIsLoggedIn}/>
+                  :
+                  <NavDropdown title={<Button variant="success">Kirjaudu sisään</Button>} style={{color:"white"}}>
+                    <div className="mx-2">
+                      <LoginComponent setIsLoggedIn={setIsLoggedIn}/>
+                    </div>
+                  </NavDropdown>
+                  }
               </Navbar.Collapse>
           </Container>
       </Navbar>
@@ -63,7 +85,6 @@ const FrontPage = (props) => {
         <h1  className="" style={{color: "white"}}>Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1>
       </Col>
     </Row>
-    <Logincomponent />
     </div>
   )
 }
@@ -92,12 +113,12 @@ const OwnedSeriePage = (props) => {
   )
 }
 
-const Logincomponent = () => {
+const LoginComponent = (props) => {
 
   const [sposti, setSposti] = useState("");
   const [salasana, setSalasana] = useState("");
   const [clickCounter, setClickCounter] = useState(0);
-  const [clickCounter2, setClickCounter2] = useState(0);
+  const [error, setError] = useState(false)
 
   useEffect(() => {
       const sendAuth = async () => {
@@ -111,39 +132,53 @@ const Logincomponent = () => {
           })
           const data = await f.json();
           console.log(data);
+          if (data.status == "OK") {props.setIsLoggedIn(true)} else {setError(true)}
+
       };
       if (clickCounter > 0) sendAuth();
   }, [clickCounter]);
 
-  useEffect(() => {
-      const sendAuth = async () => {
-          const f = await fetch("http://localhost:5000/logout", {
-              credentials: "include",
-              method: 'POST'
-          })
-          const data = await f.json();
-          console.log(data);
-      };
-      if (clickCounter2 > 0) sendAuth();
-  }, [clickCounter2]);
-
-
   const handleClick = () => {
       setClickCounter(clickCounter + 1);
   }
-  const handleClick2 = () => {
-      setClickCounter2(clickCounter2 + 1);
-  }
 
   return (
-      <>
-          <input placeholder="sposti" onChange={(e) => setSposti(e.target.value)}/>
-          <input placeholder="salasana" onChange={(e) => setSalasana(e.target.value)}/>
-          <button onClick={(e) => handleClick()}>Kirjaudu</button>
-          <button onClick={(e) => handleClick2()}>Kirjaudu ulos</button>
-      </>
-
+      <div className="text-center">
+          <input className="mb-1" placeholder="tunnus" onChange={(e) => setSposti(e.target.value)}/>
+          <input className="mb-1" placeholder="salasana" onChange={(e) => setSalasana(e.target.value)}/>
+          <Button variant="success" onClick={(e) => handleClick()} style={{width: "100%"}}>Kirjaudu</Button>
+          {error?<div className="mt-4"><WarningComponent text="Tarkista tunnus ja salasana"/></div>:<></>}
+      </div>
   )
+}
+
+const LogoutComponent = (props) => {
+
+  const [clickCounter, setClickCounter] = useState(0);
+
+  useEffect(() => {
+    const sendAuth = async () => {
+        const f = await fetch("http://localhost:5000/logout", {
+            credentials: "include",
+            method: 'POST'
+        })
+        const data = await f.json();
+        console.log(data);
+        if (data) {props.setIsLoggedIn(false)} else {console.log("jotain meni pieleen")}
+    };
+    if (clickCounter > 0) sendAuth();
+  }, [clickCounter]);
+
+  const handleClick = () => {
+    setClickCounter(clickCounter + 1);
+}
+
+  return (
+    <div className="text-center">
+        <Button variant="danger" onClick={(e) => handleClick()} style={{width: "100%"}}>Kirjaudu ulos</Button>
+    </div>
+)
+
 }
 
 
