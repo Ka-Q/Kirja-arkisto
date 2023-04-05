@@ -40,10 +40,8 @@ const OmaKirjaSivu = () => {
     }
 
     return (
-        <div className="mx-3">
-            <div className="text-center" style={{marginTop: "2em"}}>
-                <h1>Oma kirja</h1>
-            </div>
+
+        <div className="mx-3 mt-5">
             <Row>
                 <Col>
                     <Stack direction="horizontal" gap={3}>
@@ -181,8 +179,12 @@ const SearchComponent = (props) => {
     // Hakee omat kirjat queryllä
     useEffect(() => {
         const fetchOwnBook = async () => {
-            const f = await fetch("http://localhost:5000/oma_kirja_kaikella" + "?" + query)
+            const f = await fetch("http://localhost:5000/oma_kirja_kaikella" + "?" + query, {
+                method: "GET",
+                credentials: "include"
+            })
             const data = await f.json();
+            console.log(data)
             setBookList(data)
         };
         fetchOwnBook();
@@ -201,15 +203,75 @@ const SearchComponent = (props) => {
     }
 
     return (
-        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-            <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em"}} placeholder="Hae omista kirjoista"></input>
-            <Button onClick={handleSearchClick} style={{width: "3.5em", height: "3.5em", marginLeft: "1em"}}>🔎</Button>
-            <Button onClick={handleViewModeClick} style={{width: "3.5em", height: "3.5em", marginLeft: "1em"}}>{viewModeIcon}</Button>
-            <div  className="mx-5" style={{marginTop: "3em", marginBottom: "25em"}}>
-                {BookCardList}
+        <div>
+            <div className="text-center">
+                <h1>Oma kirja</h1>
+            </div>
+            <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em"}} placeholder="Hae omista kirjoista"></input>
+                <Button onClick={handleSearchClick} style={{width: "3.5em", height: "3.5em", marginLeft: "1em"}}>🔎</Button>
+                <Button onClick={handleViewModeClick} style={{width: "3.5em", height: "3.5em", marginLeft: "1em"}}>{viewModeIcon}</Button>
+                <div  className="mx-5" style={{marginTop: "3em", marginBottom: "25em"}}>
+                    {BookCardList}
+                </div>
+                <Logincomponent/>
             </div>
 
         </div>
+    )
+}
+
+const Logincomponent = () => {
+
+    const [sposti, setSposti] = useState("");
+    const [salasana, setSalasana] = useState("");
+    const [clickCounter, setClickCounter] = useState(0);
+    const [clickCounter2, setClickCounter2] = useState(0);
+
+    useEffect(() => {
+        const sendAuth = async () => {
+            const f = await fetch("http://localhost:5000/login", {
+                credentials: "include",
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({sposti: sposti, salasana: salasana})
+            })
+            const data = await f.json();
+            console.log(data);
+        };
+        if (clickCounter > 0) sendAuth();
+    }, [clickCounter]);
+
+    useEffect(() => {
+        const sendAuth = async () => {
+            const f = await fetch("http://localhost:5000/logout", {
+                credentials: "include",
+                method: 'POST'
+            })
+            const data = await f.json();
+            console.log(data);
+        };
+        if (clickCounter2 > 0) sendAuth();
+    }, [clickCounter2]);
+
+
+    const handleClick = () => {
+        setClickCounter(clickCounter + 1);
+    }
+    const handleClick2 = () => {
+        setClickCounter2(clickCounter2 + 1);
+    }
+
+    return (
+        <>
+            <input placeholder="sposti" onChange={(e) => setSposti(e.target.value)}/>
+            <input placeholder="salasana" onChange={(e) => setSalasana(e.target.value)}/>
+            <button onClick={(e) => handleClick()}>Kirjaudu</button>
+            <button onClick={(e) => handleClick2()}>Kirjaudu ulos</button>
+        </>
+
     )
 }
 

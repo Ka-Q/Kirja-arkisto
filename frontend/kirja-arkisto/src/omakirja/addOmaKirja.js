@@ -72,6 +72,7 @@ const AddComponent = (props) => {
     useEffect(() => {
         const addOwnBook = async () => {
             const f = await fetch("http://localhost:5000/oma_kirja", {
+                credentials: "include",
                 method: 'POST', 
                 headers: {
                     'Content-Type': 'application/json'
@@ -110,6 +111,7 @@ const AddComponent = (props) => {
             let obj = {oma_kirja_id: insertedBookId, valokuva_id: insertedPicId}
 
             const f = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
+                credentials: "include",
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -140,6 +142,7 @@ const AddComponent = (props) => {
 
         try{
             const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+            credentials: "include",
             method: 'POST',
             body: formdata})
             const data = await f.json()
@@ -182,6 +185,7 @@ const AddComponent = (props) => {
                 painosvuosi: painosvuosi,
                 hankinta_aika: new Date(hankintaAika).toISOString().split('T')[0],
                 kirja_id: kirjaId
+                //kayttaja_kayttaja_id: 1                                             // TODO: Vaihda tähän kirjautuneen käyttäjän id
             }
             setfinalOmaKirja(omaKirja);
             setSaveClicked(true);
