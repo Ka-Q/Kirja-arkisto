@@ -116,12 +116,12 @@ const checkSessionRole = (req, res, next) => {
   console.log(req.session);
   console.log("USER ON");
   console.log(req.session.user);
-  next();   //kaikki toistaiseksi läpi
-  /*
+  //next();   //kaikki toistaiseksi läpi
+  
   if (req.session.user) {
     if (req.session.user.sposti) {
       console.log("UID: "+ req.session.user.uid)
-      if (req.session.user.rooli == 2){
+      if (req.session.user.rooli == 1){
         next();
       } else {
         res.json({status: "OK", message: "NOT ADMIN"})
@@ -132,7 +132,7 @@ const checkSessionRole = (req, res, next) => {
   }
   else {
     res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
-  }*/
+  }
 };
 
 // Kirjautuminen sisään
