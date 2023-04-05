@@ -7,8 +7,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from "react-bootstrap/esm/Button";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {LinkContainer} from 'react-router-bootstrap'
-import {Routes, Route, BrowserRouter as Router} from 'react-router-dom'
-import {Row, Col, Card, Form} from "react-bootstrap"
+import { Routes, Route, BrowserRouter as Router} from 'react-router-dom'
+import { Row, Col, Dropdown } from "react-bootstrap"
 import {OmaKirjaSivu} from "./omakirja/omakirjasivu";
 import {SarjaSivu} from "./sarja/sarjasivu";
 import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
@@ -46,17 +46,27 @@ function Etusivu () {
                   <LinkContainer to="/"><Nav.Link className="mx-2" >Etusivu</Nav.Link></LinkContainer>
                   <LinkContainer to="/kirja"><Nav.Link className="mx-2">Kirjat</Nav.Link></LinkContainer>
                   <LinkContainer  to="/sarjasivu"><Nav.Link className="mx-2">Sarjat</Nav.Link></LinkContainer>
+                  {isLoggedIn? 
+                  <>
                   <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Oma kirja</Nav.Link></LinkContainer>
                   <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma sarja</Nav.Link></LinkContainer>
+                  </>: 
+                  <>
+                  <Nav.Link className="mx-2" disabled>Oma kirja</Nav.Link>
+                  <Nav.Link className="mx-2" disabled>Oma sarja</Nav.Link>
+                  </> }
               </Nav>
                   {isLoggedIn?
-                  <LogoutComponent setIsLoggedIn={setIsLoggedIn}/>
+                    <LogoutComponent setIsLoggedIn={setIsLoggedIn}/>
                   :
-                  <NavDropdown title={<Button variant="success">Kirjaudu sisään</Button>} style={{color:"white"}}>
-                    <div className="mx-2">
-                      <LoginComponent setIsLoggedIn={setIsLoggedIn}/>
-                    </div>
-                  </NavDropdown>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="success" style={{width:"10em"}}>Kirjaudu sisään</Dropdown.Toggle>
+                      <Dropdown.Menu className="mt-1" variant="dark" style={{backgroundColor: "#131415", borderRadius: "0.5rem"}}>
+                        <div className="px-2 py-2">
+                          <LoginComponent setIsLoggedIn={setIsLoggedIn}/>
+                        </div>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   }
               </Navbar.Collapse>
           </Container>
@@ -142,10 +152,12 @@ const LoginComponent = (props) => {
       setClickCounter(clickCounter + 1);
   }
 
+  let inputStyle = {backgroundColor:"#3a3a3a", borderRadius: '0.5rem', color: "white", lineHeight: "2rem"}
+
   return (
       <div className="text-center">
-          <input className="mb-1" placeholder="tunnus" onChange={(e) => setSposti(e.target.value)}/>
-          <input className="mb-1" placeholder="salasana" onChange={(e) => setSalasana(e.target.value)}/>
+          <input className="mb-2" placeholder="tunnus" onChange={(e) => setSposti(e.target.value)} style={inputStyle}/>
+          <input className="mb-2" placeholder="salasana" onChange={(e) => setSalasana(e.target.value)} style={inputStyle}/>
           <Button variant="success" onClick={(e) => handleClick()} style={{width: "100%"}}>Kirjaudu</Button>
           {error?<div className="mt-4"><WarningComponent text="Tarkista tunnus ja salasana"/></div>:<></>}
       </div>
@@ -175,7 +187,7 @@ const LogoutComponent = (props) => {
 
   return (
     <div className="text-center">
-        <Button variant="danger" onClick={(e) => handleClick()} style={{width: "100%"}}>Kirjaudu ulos</Button>
+        <Button variant="danger" onClick={(e) => handleClick()} style={{width:"10em"}}>Kirjaudu ulos</Button>
     </div>
 )
 
