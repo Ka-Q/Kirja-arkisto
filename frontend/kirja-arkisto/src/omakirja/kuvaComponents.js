@@ -35,17 +35,19 @@ const KuvaViewerComponent = (props) => {
     let remainingImages = kuvat.length - rollIndex - width
     if (remainingImages < 0) remainingImages = 0
     
+    let BtnStyle = {backgroundColor: "#424242"};
+
     return(
         <div style={{MaxWidth:"25em"}}>
-            <div className="mx-auto" style={{width:"25em", height: "40em"}}>
+            <div className="mx-auto" style={{width:"100%", height: "auto", marginBottom: "1em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.kuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.kuva} fluid style={{width:"100%"}}/>
                 </a>
             </div>
             <Stack direction="horizontal" gap={1}>
-                <Button onClick={(e) => handleDecrease()}> {"< " + rollIndex} </Button>
+                <Button onClick={(e) => handleDecrease()} className='btn btn-dark' style={BtnStyle}> {"< " + rollIndex} </Button>
                 {previewList}
-                <Button onClick={(e) => handleIncrease()}> {"> " + (remainingImages)} </Button>
+                <Button onClick={(e) => handleIncrease()} className='btn btn-dark' style={BtnStyle}> {"> " + (remainingImages)} </Button>
             </Stack>
             <div style={{textAlign: "left"}}>
                 Tyyppi: {clickedPic.kuva_tyyppi_id}<br/>
@@ -120,18 +122,19 @@ const ValokuvaViewerComponent = (props) => {
     let remainingImages = valokuvat.length - rollIndex - width
     if (remainingImages < 0) remainingImages = 0
     
+    let BtnStyle = {backgroundColor: "#424242"};
     
     return(
         <div style={{MaxWidth:"25em"}}>
-            <div className="mx-auto" style={{width:"25em", height: "40em"}}>
+            <div className="mx-auto" style={{width:"100%", height: "auto", marginBottom: "1em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
                 </a>
             </div>
             <Stack direction="horizontal" gap={1}>
-                <Button onClick={(e) => handleDecrease()}> {"< " + rollIndex} </Button>
+                <Button onClick={(e) => handleDecrease()} className='btn btn-dark' style={BtnStyle}> {"< " + rollIndex} </Button>
                 {previewList}
-                <Button onClick={(e) => handleIncrease()}> {"> " + (remainingImages)} </Button>
+                <Button onClick={(e) => handleIncrease()} className='btn btn-dark' style={BtnStyle}> {"> " + (remainingImages)} </Button>
             </Stack>
             <div style={{textAlign: "left"}}>
                 Sivunumero: {clickedPic.sivunumero}<br/>
