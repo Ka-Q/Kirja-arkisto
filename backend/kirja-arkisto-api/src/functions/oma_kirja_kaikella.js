@@ -135,7 +135,7 @@ function GetOmaKirjaKaikella(req, res) {
     //LEFT OUTER JOIN kirjan_kuvat ON kirja.kirja_id = kirja_kirja_id 
     //LEFT OUTER JOIN kuva ON kuva_kuva_id = kuva_id;
 
-    query = "select * from oma_kirja_kaikella WHERE (1=1)"
+    let query = "select * from oma_kirja_kaikella WHERE (1=1)"
 
     for (let key in keys) {
         query += " AND ?? LIKE ?"

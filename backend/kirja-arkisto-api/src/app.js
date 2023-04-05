@@ -1,7 +1,8 @@
 const express = require('express');
 const mysql = require('mysql');
-//const bodyParser = require("body-parser")
 const fileUpload = require('express-fileupload');
+
+const session = require("express-session")
 
 const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
@@ -17,11 +18,27 @@ const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_funct
 const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuvat_functions')
 const kirjan_kuvat_functions = require('./functions/kirjan_kuvat_functions')
 
-const cors = require('cors');
-
 const app = express();
 
-app.use(cors({origin: 'http://localhost:3000'}));
+app.set('trust proxy', 1)
+
+app.use(session({
+  secret: "salaisuus",
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,
+    maxAge: 60000000
+  }
+}));
+
+//CORS-juttuja
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials", true)
+  next();
+});
 
 app.use(express.json())
 
@@ -58,13 +75,127 @@ const handleConnection = (res, error, SQLresult) => {
   }
 }
 
-//Root
-app.get('/', (req, res) => {
-  res.statusCode = 200
-  res.json({
-    message: 'root',
-  });
+// Tarkistaa onko kirjautunut sisään
+const checkSessionUser = (req, res, next) => {
+  console.log("IN CHECKER");
+  console.log(req.session);
+  console.log("USER ON");
+  console.log(req.session.user);
+  if (req.session.user) {
+    if (req.session.user.sposti) {
+      console.log("UID: "+ req.session.user.uid)
+
+      // Rajataan vielä käyttäjällä
+      let query = req.query
+      let body = req.body;
+      
+      if (query) {
+        req.query.kayttaja_kayttaja_id = req.session.user.uid
+      }
+      if (body) {
+        let where = body.where;
+        if (where) {
+          req.body.where.kayttaja_kayttaja_id = req.session.user.uid
+        } else {
+          req.body.kayttaja_kayttaja_id = req.session.user.uid
+        }
+      }
+      
+      next();
+    } else {
+      res.json({status: "OK", message: "NOT LOGGED IN :) (wrong credentials)"})
+    }
+  }
+  else {
+    res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
+  }
+};
+
+const checkSessionRole = (req, res, next) => {
+  console.log("IN CHECKER");
+  console.log(req.session);
+  console.log("USER ON");
+  console.log(req.session.user);
+  next();   //kaikki toistaiseksi läpi
+  /*
+  if (req.session.user) {
+    if (req.session.user.sposti) {
+      console.log("UID: "+ req.session.user.uid)
+      if (req.session.user.rooli == 2){
+        next();
+      } else {
+        res.json({status: "OK", message: "NOT ADMIN"})
+      }
+    } else {
+      res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
+    }
+  }
+  else {
+    res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
+  }*/
+};
+
+// Kirjautuminen sisään
+app.post('/login', (req, res) => {
+  console.log("LOGIN")
+  console.log(req.body)
+
+  let sposti = req.body.sposti;
+  let salasana = req.body.salasana;
+
+  // Jos käyttäjä antaa sähköpostin, niin tarkistaa, löytyykö kannasta käyttäjää spostilla
+  if (sposti) {
+    let query = "SELECT * FROM kayttaja WHERE ?? = ?"
+    let queryList = ["sposti", sposti]
+
+    let connection = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "root",
+      database: "mydb",
+      dateStrings: true,
+    });
+
+    connection.query(query, queryList, (error, SQLresult, fields) => {  // Query
+      connection.end();
+      if (error || SQLresult.length == 0) {
+        console.log("ERROR: " + error);
+        res.json({ status: "NOT OK", message: "Käyttäjää ei löytynyt"})
+      }
+      else {
+        console.log("OK")
+        res.statusCode = 200;
+        let user = SQLresult[0];
+        // Käyttäjä löytyi. Verrataan salasanaa kantaan
+        if (salasana == user.salasana) {
+
+          // Tallennetaan käyttäjän tiedot sessioon myöhempää käyttöä varten
+          req.session.user = {sposti: sposti, uid: user.kayttaja_id, rooli: user.rooli_id}
+          req.session.save()
+          console.log("Asetettu user");
+          console.log(req.session);
+          res.json({status: "OK", message: "Kirjauduttu sisään"})
+        }
+        else {
+          req.session.destroy((err) => {
+            console.log("Session destroyed!")
+          });
+          res.json({status: "OK", message: "Kirjauduttu ulos"})
+        }
+      }
+    });
+  } else {
+    res.json({ status: "NOT OK", message: "Käyttäjää ei löytynyt"})
+  }
 });
+
+// Kirjautuminen ulos
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    console.log("Session destroyed!")
+  });
+    res.json({status: "OK", message: "Kirjauduttu ulos"})
+})
 
 // Kirja
 app.get('/kirja', (req, res) => {
@@ -72,49 +203,49 @@ app.get('/kirja', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/kirja', (req, res) => {
+app.post('/kirja', checkSessionRole, (req, res) => {
   let queryJson = kirja_functions.PostKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.put('/kirja', (req, res) => {
+app.put('/kirja', checkSessionRole, (req, res) => {
   let queryJson = kirja_functions.PutKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/kirja', (req, res) => {
+app.delete('/kirja', checkSessionRole, (req, res) => {
   let queryJson = kirja_functions.DeleteKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
 // Kirja Kaikella
-app.get('/kirja_kaikella', (req, res) => {
+app.get('/kirja_kaikella', checkSessionUser, (req, res) => {
   kirja_kaikella_functions.GetKirjaKaikella(req, res)
 });
 
 // Oma kirja
-app.get('/oma_kirja', (req, res) => {
+app.get('/oma_kirja', checkSessionUser, (req, res) => {
   let queryJson = oma_kirja_functions.GetOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/oma_kirja', (req, res) => {
+app.post('/oma_kirja', checkSessionUser, (req, res) => {
   let queryJson = oma_kirja_functions.PostOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.put('/oma_kirja', (req, res) => {
+app.put('/oma_kirja', checkSessionUser, (req, res) => {
   let queryJson = kirja_functions.PutOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/oma_kirja', (req, res) => {
+app.delete('/oma_kirja', checkSessionUser, (req, res) => {
   let queryJson = oma_kirja_functions.DeleteOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
 // Oma kirja Kaikella
-app.get('/oma_kirja_kaikella', (req, res) => {
+app.get('/oma_kirja_kaikella', checkSessionUser, (req, res) => {
   oma_kirja_kaikella_functions.GetOmaKirjaKaikella(req, res)
 });
 
@@ -124,17 +255,17 @@ app.get('/sarja', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/sarja', (req, res) => {
+app.post('/sarja', checkSessionRole, (req, res) => {
   let queryJson = sarja_functions.PostSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/sarja', (req, res) => {
+app.delete('/sarja', checkSessionRole, (req, res) => {
   let queryJson = sarja_functions.DeleteSarja(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/sarja', (req, res) => {
+app.put('/sarja', checkSessionRole, (req, res) => {
   let queryJson = sarja_functions.PutSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
@@ -166,17 +297,17 @@ app.get('/kuva', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/kuva_tiedot', (req, res) => {                // Ei lisää kuvatiedostoa serverille
+app.post('/kuva_tiedot', checkSessionRole, (req, res) => {                // Ei lisää kuvatiedostoa serverille
   let queryJson = kuva_functions.PostKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/kuva', (req, res) => {
+app.delete('/kuva', checkSessionRole, (req, res) => {
   let queryJson = kuva_functions.DeleteKuva(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/kuva', (req, res) => {
+app.put('/kuva', checkSessionRole, (req, res) => {
   let queryJson = kuva_functions.PutKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
@@ -187,17 +318,17 @@ app.get('/kirjan_kuvat', (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/kirjan_kuvat', (req, res) => {
+app.post('/kirjan_kuvat', checkSessionRole, (req, res) => {
   let queryJson = kirjan_kuvat_functions.PostKirjanKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/kirjan_kuvat', (req, res) => {
+app.delete('/kirjan_kuvat', checkSessionRole, (req, res) => {
   let queryJson = kirjan_kuvat_functions.DeleteKirjanKuva(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/kirjan_kuvat', (req, res) => {
+app.put('/kirjan_kuvat', checkSessionRole, (req, res) => {
   let queryJson = kirjan_kuvat_functions.PutKirjanKuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
@@ -207,57 +338,57 @@ app.get('/kuvatiedosto', (req, res) => {
   kuva_tiedosto_functions.GetKuvaTiedosto(req, res);
 });
 
-app.post('/kuva_tiedostolla', (req, res) => {          // Lisää kuvatiedoston serverille
+app.post('/kuva_tiedostolla', checkSessionRole, (req, res) => {          // Lisää kuvatiedoston serverille
   kuva_tiedosto_functions.PostKuvaTiedostolla(req, res);
 });
 
 // valokuva
-app.get('/valokuva', (req, res) => {
+app.get('/valokuva', checkSessionUser, (req, res) => {
   let queryJson = valokuva_functions.GetValokuva(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/valokuva_tiedot', (req, res) => {        // Ei lisää valokuvatiedostoa serverille
+app.post('/valokuva_tiedot', checkSessionUser, (req, res) => {        // Ei lisää valokuvatiedostoa serverille
   let queryJson = valokuva_functions.PostValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/valokuva', (req, res) => {
+app.delete('/valokuva', checkSessionUser, (req, res) => {
   let queryJson = valokuva_functions.DeleteValokuva(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/valokuva', (req, res) => {
+app.put('/valokuva', checkSessionUser, (req, res) => {
   let queryJson = valokuva_functions.PutValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
 // Valokuvatiedosto
-app.get('/valokuvatiedosto', (req, res) => {
+app.get('/valokuvatiedosto', checkSessionUser, (req, res) => {
   valokuva_tiedosto_functions.GetValokuvaTiedosto(req, res);
 });
 
-app.post('/valokuva_tiedostolla', (req, res) => {          // Lisää valokuvatiedoston serverille
+app.post('/valokuva_tiedostolla', checkSessionUser, (req, res) => {          // Lisää valokuvatiedoston serverille
   valokuva_tiedosto_functions.PostValokuvaTiedostolla(req, res);
 });
 
 // Oman kirjan valokuvat
-app.get('/oman_kirjan_valokuvat', (req, res) => {
+app.get('/oman_kirjan_valokuvat', checkSessionUser, (req, res) => {
   let queryJson = oman_kirjan_valokuvat_functions.GetOmanKirjanValokuva(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/oman_kirjan_valokuvat', (req, res) => {
+app.post('/oman_kirjan_valokuvat', checkSessionUser, (req, res) => {
   let queryJson = oman_kirjan_valokuvat_functions.PostOmanKirjanValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/oman_kirjan_valokuvat', (req, res) => {
+app.delete('/oman_kirjan_valokuvat', checkSessionUser, (req, res) => {
   let queryJson = oman_kirjan_valokuvat_functions.DeleteOmanKirjanValokuva(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/oman_kirjan_valokuvat', (req, res) => {
+app.put('/oman_kirjan_valokuvat', checkSessionUser, (req, res) => {
   let queryJson = oman_kirjan_valokuvat_functions.PutOmanKirjanValokuva(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
