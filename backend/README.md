@@ -10,14 +10,17 @@ Tänne hakemistoon backendin koodit ml. tietokanta ja api.
 Koodi jolla muuttaa salasanan MySQL WorkBenchiin
 alter user 'root'@'localhost' identified with mysql_native_password by 'root';
 
+
 ##Rest Api:
 Express-apin portti oletuksena 5000
 
 Rajapinta käynnistetään syöttämällä komento ```npm run dev``` **kirja-arkisto-api** -hakemistossa.
-
+___
 ##Rajapinnan toiminnallisuudesta
 
 GET, POST, PUT ja DELETE (Haku, lisäys, muokkaus ja poisto) useimpiin tietokannan tauluihin. Parametrien nimet annetaan tällä hetkellä suoraan tietokannan taulujen sarakkeina.
+
+ **Pitää muistaa laittaa ```credentials: "include"``` requestin mukana!!**
 
 ###Get
 Gettien tulosten rajaus onnistuu millä vain taulun sarakkeella ja haun voi tehdä "sumeasti" käyttämällä %-merkkejä parametrin halutu(i)lla puolilla. 
@@ -112,10 +115,10 @@ Ja backend palauttaa jälleen esim:
 Delete toimii samalla tavalla kuin POST, mutta body-lohkoon tulee poistettavien rivien rajaavat tiedot. **Tämäkin yleensä varmaan uniikilla id:llä.** 
 Palauttaa tiedon tietokantaan tehdyistä operaatiosta samassa muodossa.
 
-
+___
 ## Custom Getit
 
-**Kirja kaikella ja Oma kirja kaikella**
+###Kirja kaikella ja Oma kirja kaikella
 
 Getit polkuihin ``` http://localhost:5000/kirja_kaikella ``` ja ``` http://localhost:5000/oma_kirja_kaikella ``` palauttavat yhdistettyä dataa kirjoista ja/tai omista kirjoista.
 "Kirja_kaikella" palauttaa kirjan tiedot, joihin on liitetty kenttä "kuvat", jonka arvona on kyseisen kirjan kuvat taulukossa, JSON-muodossa.
@@ -217,10 +220,10 @@ sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisest
     ]
 }
 ```
-
+___
 ## Kuvatiedostot
 
-**Kuva ja valokuva**
+###Kuva ja valokuva
 
 Esimerkiksi kuvaa hakiessa ```http://localhost:5000/kuva```, palautuu lista objekteja, joilla on kuvasta tietoa, kuten taiteilija, tyyli yms. Tietojen mukana tulee myös kenttä ```"kuva"```, jossa on kyseisen kuvan tiedostonimi tiedostopäätteineen (esim ```taru_sormusten_herrasta_etukansi.jpg```) 
 
@@ -228,6 +231,37 @@ Varsinaisen **kuvatiedoston saadakseen**, tulee käyttäjän kutsua GET-metodill
 
 Valokuva toimii täysin samalla periaattella, mutta osoite on ```http://localhost:5000/valokuva``` ja valokuvatiedoston nimi on kentässä```"valokuva"```. 
 **Valokuvatiedoston saadakseen** GET esim:  "```http://localhost:5000/valokuva?valokuvakuva=tiedosto_nimi.jpg```"
+
+___
+## Käyttäjän tunnistautuminen
+
+Käyttäjän tunnistautumiseen käytetään Express Session -pakettia. Session aikakatkaisu tapahtuu selaimessa serverin antaman evästeen avulla. Serveri rajaa käyttäjän pääsyä dataan käyttäjän id:n ja roolin mukaan. Kukin käyttäjä näkee ainoastaan henkilökohtaiset omat sarjansa ja omat kirjansa. Vain admin-roolin (1) omaavat käyttäjät voivat lisätä, muokata ja poistaa sarjoja ja kirjoja.
+
+###Kirjautuminen sisään
+POST osoitteeseen ```http://localhost:5000/login```. Body-lohkossa sposti (tai vaan tunnus esim admin) ja salasana esim: ```{sposti: "admin", salasana: "admin"}```
+
+###Kirjautuminen ulos
+POST osoitteeseen ```http://localhost:5000/logout```. Tuhoaa käyttäjän session.
+
+###Kirjautumisen tarkistaminen
+Jos haluaa tarkistaa, onko käyttäjällä aktiivinen sessio, niin GET osoitteeseen ```http://localhost:5000/check_login```. Jos on kirjautuneena sisään, niin palautuu JSON, jossa on käyttäjän sposti ja rooli-id.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
