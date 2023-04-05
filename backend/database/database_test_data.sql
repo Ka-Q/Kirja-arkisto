@@ -4,9 +4,8 @@
 insert into rooli values (1, "Admin", "admin-rooli");
 insert into rooli values (2, "Käyttäjä", "käyttäjä-rooli");
 
-
-insert into kayttaja values(1, "sposti@sposti.com", "salasana", "abc123", 1);
-insert into kayttaja values(2, "sposti2@sposti.com", "salasana2", "abc1234", 2);
+insert into kayttaja values(1, "admin", "admin", "abc123", 1);
+insert into kayttaja values(2, "käyttäjä", "käyttäjä", "abc1234", 2);
 
 -- Kuvien tyypit
 insert into kuva_tyyppi values(1, "etukansi");

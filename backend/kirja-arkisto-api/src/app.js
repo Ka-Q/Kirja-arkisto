@@ -28,7 +28,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     secure: false,
-    maxAge: 60000000
+    maxAge: 6000000000000
   }
 }));
 
@@ -111,12 +111,12 @@ const checkSessionUser = (req, res, next) => {
   }
 };
 
+// Tarkistaa onko käyttäjä admin
 const checkSessionRole = (req, res, next) => {
   console.log("IN CHECKER");
   console.log(req.session);
   console.log("USER ON");
   console.log(req.session.user);
-  //next();   //kaikki toistaiseksi läpi
   
   if (req.session.user) {
     if (req.session.user.sposti) {
