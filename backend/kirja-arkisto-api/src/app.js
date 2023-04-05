@@ -197,6 +197,22 @@ app.post('/logout', (req, res) => {
     res.json({status: "OK", message: "Kirjauduttu ulos"})
 })
 
+// Kirjautuminen ulos
+app.get('/check_login', (req, res) => {
+  console.log("TARKISTETAAN")
+  if (req.session.user) {
+    if (req.session.user.sposti) {
+      console.log("UID: "+ req.session.user.uid)
+      res.json({status: "OK", message: "NOT LOGGED IN :) (no user)", data: {sposti: req.session.user.sposti, rooli: req.session.user.rooli}})
+    } else {
+      res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
+    }
+  }
+  else {
+    res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
+  }
+})
+
 // Kirja
 app.get('/kirja', (req, res) => {
   let queryJson = kirja_functions.GetKirja(req);
