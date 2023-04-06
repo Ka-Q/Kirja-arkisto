@@ -12,13 +12,14 @@ const oma_sarja_functions = require('./functions/oma_sarja_functions')
 const kuva_functions = require('./functions/kuva_functions')
 const oma_kirja_kaikella_functions = require('./functions/oma_kirja_kaikella')
 const valokuva_functions=require('./functions/valokuva_functions')
-const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
 const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_functions')
 const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuvat_functions')
 const kirjan_kuvat_functions = require('./functions/kirjan_kuvat_functions')
 const sarjan_kirjat_functions=require('./functions/sarjan_kirjat_functions')
 const oman_sarjan_kirjat_functions=require('./functions/oman_sarjan_kirjat_functions')
+
+//const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 
 
 const app = express();
@@ -40,7 +41,8 @@ app.use(session({
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); 
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Credentials", true)
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   next();
 });
 
@@ -81,14 +83,11 @@ const handleConnection = (res, error, SQLresult) => {
 
 // Tarkistaa onko kirjautunut sisään
 const checkSessionUser = (req, res, next) => {
-  console.log("IN CHECKER");
+  console.log("Checking Users session and appending userID for queries...");
   console.log(req.session);
-  console.log("USER ON");
-  console.log(req.session.user);
   if (req.session.user) {
     if (req.session.user.sposti) {
-      console.log("UID: "+ req.session.user.uid)
-
+      
       // Rajataan vielä käyttäjällä
       let query = req.query
       let body = req.body;
@@ -98,15 +97,21 @@ const checkSessionUser = (req, res, next) => {
       }
       if (body) {
         let where = body.where;
+        let set = body.set;
+        if (set) {
+          if (set.kayttaja_kayttaja_id) {
+            res.json({status: "OK", message: 'Cant edit field "kayttaja_kayttaja_id2'});
+          }
+        }
         if (where) {
           req.body.where.kayttaja_kayttaja_id = req.session.user.uid
         } else {
           req.body.kayttaja_kayttaja_id = req.session.user.uid
         }
       }
-      
       next();
-    } else {
+    }
+     else {
       res.json({status: "OK", message: "NOT LOGGED IN :) (wrong credentials)"})
     }
   }
@@ -291,22 +296,22 @@ app.put('/sarja', checkSessionRole, (req, res) => {
 })
 
 // Oma sarja
-app.get('/oma_sarja', (req, res) => {
+app.get('/oma_sarja', checkSessionUser, (req, res) => {
   let queryJson = oma_sarja_functions.GetOmaSarja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/oma_sarja', (req, res) => {
+app.post('/oma_sarja', checkSessionUser, (req, res) => {
   let queryJson = oma_sarja_functions.PostOmaSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/oma_sarja', (req, res) => {
+app.delete('/oma_sarja', checkSessionUser, (req, res) => {
   let queryJson = oma_sarja_functions.DeleteOmaSarja(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/oma_sarja', (req, res) => {
+app.put('/oma_sarja', checkSessionUser, (req, res) => {
   let queryJson = oma_sarja_functions.PutOmaSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
@@ -413,26 +418,6 @@ app.put('/oman_kirjan_valokuvat', checkSessionUser, (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 })
 
-// hyllyn_sarjat
-app.get('/hyllyn_sarjat', (req, res) => {
-  let queryJson = hyllyn_sarjat_functions.GetHylly(req);
-  connect(res, queryJson.query, queryJson.queryList)
-});
-
-app.post('/hyllyn_sarjat', (req, res) => {
-  let queryJson = hyllyn_sarjat_functions.PostHylly(req)
-  connect(res, queryJson.query, queryJson.queryList)
-});
-
-app.delete('/hyllyn_sarjat', (req, res) => {
-  let queryJson = hyllyn_sarjat_functions.DeleteHylly(req)
-  connect(res, queryJson.query, queryJson.queryList);
-});
-
-app.put('/hyllyn_sarjat', (req, res) => {
-  let queryJson = hyllyn_sarjat_functions.PutHylly(req)
-  connect(res, queryJson.query, queryJson.queryList)
-})
 // Sarjan kirjat
 app.get('/sarjan_kirjat', (req, res) => {
   let queryJson = sarjan_kirjat_functions.GetSarjat(req);
@@ -453,26 +438,49 @@ app.put('/sarjan_kirjat', checkSessionRole, (req, res) => {
   let queryJson = sarjan_kirjat_functions.PutSarjat(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+
 // Oman sarjan kirjat
-app.get('/oman_sarjan_kirjat', (req, res) => {
+app.get('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
   let queryJson = oman_sarjan_kirjat_functions.GetOmatSarjat(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+app.post('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
   let queryJson = oman_sarjan_kirjat_functions.PostOmatSarjat(req)
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+app.delete('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
   let queryJson = oman_sarjan_kirjat_functions.DeleteOmatSarjat(req)
   connect(res, queryJson.query, queryJson.queryList);
 });
 
-app.put('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+app.put('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
   let queryJson = oman_sarjan_kirjat_functions.PutOmatSarjat(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+
+// HYLLYÄ EI OLE ENÄÄ KANNASSA, MUTTA OLKOON TÄMÄ VIELÄ VARALTA TÄÄLLÄ
+// hyllyn_sarjat
+/*app.get('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.GetHylly(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.PostHylly(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.DeleteHylly(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/hyllyn_sarjat', (req, res) => {
+  let queryJson = hyllyn_sarjat_functions.PutHylly(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})*/
 
 
 
