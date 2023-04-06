@@ -38,7 +38,7 @@ const KuvaViewerComponent = (props) => {
     let BtnStyle = {backgroundColor: "#424242"};
 
     return(
-        <div style={{MaxWidth:"25em"}}>
+        <div>
             <div className="mx-auto" style={{width:"100%", height: "auto", marginBottom: "1em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.kuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.kuva} fluid style={{width:"100%"}}/>
@@ -75,8 +75,8 @@ const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
         if (clickedPic.kuva_id == n.kuva_id){
             return (
                 <div key={index} onClick={(e) => setClickedPic(n)} style={clickedStyle}>
-                <Image src={kuvaSrc + n.kuva} thumbnail fluid/>
-            </div>
+                    <Image src={kuvaSrc + n.kuva} thumbnail fluid/>
+                </div>
             )
         }
         return (
@@ -125,7 +125,7 @@ const ValokuvaViewerComponent = (props) => {
     let BtnStyle = {backgroundColor: "#424242"};
     
     return(
-        <div style={{MaxWidth:"25em"}}>
+        <div style={{width: "100%"}}>
             <div className="mx-auto" style={{width:"100%", height: "auto", marginBottom: "1em"}}>
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
                 <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
@@ -160,8 +160,8 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
         if (clickedPic.valokuva_id == n.valokuva_id){
             return (
                 <div key={index} onClick={(e) => setClickedPic(n)} style={clickedStyle}>
-                <Image src={kuvaSrc + n.valokuva} thumbnail fluid/>
-            </div>
+                    <Image src={kuvaSrc + n.valokuva} thumbnail fluid/>
+                </div>
             )
         }
         return (

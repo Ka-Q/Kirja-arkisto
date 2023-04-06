@@ -100,7 +100,7 @@ const checkSessionUser = (req, res, next) => {
         let set = body.set;
         if (set) {
           if (set.kayttaja_kayttaja_id) {
-            res.json({status: "OK", message: 'Cant edit field "kayttaja_kayttaja_id2'});
+            res.json({status: "OK", message: 'Cant edit field "kayttaja_kayttaja_id'});
           }
         }
         if (where) {
@@ -109,6 +109,7 @@ const checkSessionUser = (req, res, next) => {
           req.body.kayttaja_kayttaja_id = req.session.user.uid
         }
       }
+      console.log(req);
       next();
     }
      else {
