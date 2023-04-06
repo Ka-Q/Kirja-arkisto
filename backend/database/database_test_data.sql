@@ -4,8 +4,8 @@
 insert into rooli values (1, "Admin", "admin-rooli");
 insert into rooli values (2, "Käyttäjä", "käyttäjä-rooli");
 
-insert into kayttaja values(1, "admin", "admin", "abc123", 1);
-insert into kayttaja values(2, "käyttäjä", "käyttäjä", "abc1234", 2);
+insert into kayttaja values(1, "admin", "admin", 1);
+insert into kayttaja values(2, "käyttäjä", "käyttäjä", 2);
 
 -- Kuvien tyypit
 insert into kuva_tyyppi values(1, "etukansi");
@@ -92,9 +92,9 @@ insert into oma_kirja values(70, 3, 5.00, "Antikvariaatista", 2007, "2022-06-08"
 
 -- Kirjojen kuvat
 insert into kuva values(1, "sormuksen_ritarit_etukansi.gif",  1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
-insert into kuva values(2, "sormuksen_ritarit_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
+insert into kuva values(2, "sormuksen_ritarit_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden takakanesta");
 insert into kuva values(3, "kaksi_tornia_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
-insert into kuva values(4, "kaksi_tornia_etukansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
+insert into kuva values(4, "kaksi_tornia_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia takakannesta");
 insert into kuva values(5, "kuninkaan_paluu_etukansi.gif", 3, 1999, "Kalle", "Maalaus", "Kuva Kuninkaan paluun etukannesta");
 
 insert into kuva values(6, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden etukannesta");
@@ -103,20 +103,9 @@ insert into kuva values(7, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kal
 insert into kuva values(8, "prinssi_kaspian_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuvaprinssi kaspian etukannesta");
 insert into kuva values(9, "kaspianin_matka_maailman_aariin_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva kaspianin matka maailman ääriin etukannesta");
 
-insert into kuva values(10, "kaksi_tornia_etukansi.gif", 3, 1999, "Kalle", "Maalaus", "Testikuva");
-insert into kuva values(11, "Taru_sormusten_herrasta_etukansi.jpg", 3, 1999, "Kalle", "Maalaus", "Testikuva");
-insert into kuva values(12, "prinssi_kaspian_etukansi.jpg", 3, 1999, "Kalle", "Maalaus", "Testikuva");
-insert into kuva values(13, "kaspianin_matka_maailman_aariin_etukansi.jpg", 3, 1999, "Kalle", "Maalaus", "Testikuva");
-
 -- kuvat paikoilleen
 insert into kirjan_kuvat values(1, 1);
 insert into kirjan_kuvat values(1, 2);
-insert into kirjan_kuvat values(1, 10);
-insert into kirjan_kuvat values(1, 11);
-insert into kirjan_kuvat values(1, 12);
-insert into kirjan_kuvat values(1, 13);
-
-insert into kirjan_kuvat values(1, 3);
 
 insert into kirjan_kuvat values(2, 3);
 insert into kirjan_kuvat values(2, 4);
@@ -128,15 +117,15 @@ insert into kirjan_kuvat values(10, 7);
 insert into kirjan_kuvat values(5, 8);
 insert into kirjan_kuvat values(6, 9);
 
-insert into valokuva values(1, "paras_valokuva.png", 1234, "testivalokuva");
-insert into valokuva values(2, "paras_valokuva.png", 1235, "testivalokuva2");
-insert into valokuva values(3, "paras_valokuva.png", 1236, "testivalokuva3");
-insert into valokuva values(4, "paras_valokuva.png", 1237, "testivalokuva4");
+insert into valokuva values(1, "paras_valokuva.png", 1234, "testivalokuva", 2);
+insert into valokuva values(2, "paras_valokuva.png", 1235, "testivalokuva2", 2);
+insert into valokuva values(3, "paras_valokuva.png", 1236, "testivalokuva3", 2);
+insert into valokuva values(4, "paras_valokuva.png", 1237, "testivalokuva4", 2);
 
-insert into oman_kirjan_valokuvat values(10, 1);
-insert into oman_kirjan_valokuvat values(10, 2);
-insert into oman_kirjan_valokuvat values(20, 3);
-insert into oman_kirjan_valokuvat values(30, 4);
+insert into oman_kirjan_valokuvat values(10, 1, 2);
+insert into oman_kirjan_valokuvat values(10, 2, 2);
+insert into oman_kirjan_valokuvat values(20, 3, 2);
+insert into oman_kirjan_valokuvat values(30, 4, 2);
 
 -- Omat sarjat
 insert into oma_sarja values(1, "Taru sormusten Herrasta (oma)", "Kokoelmani Taru Sormusten Herrasta - kirjoja", 1, 2);
@@ -144,13 +133,13 @@ insert into oma_sarja values(2, "Narnian tarinoita (oma)", "Kokoelmani Narnia -k
 
 -- Omien sarjojen kirjat
 	-- Taru Sormusten Herrasta:
-insert into oman_sarjan_kirjat values(1, 10);
-insert into oman_sarjan_kirjat values(1, 20);
-insert into oman_sarjan_kirjat values(1, 30);
+insert into oman_sarjan_kirjat values(1, 10, 2);
+insert into oman_sarjan_kirjat values(1, 20, 2);
+insert into oman_sarjan_kirjat values(1, 30, 2);
 
 	-- Narnia:
-insert into oman_sarjan_kirjat values(2, 40);
-insert into oman_sarjan_kirjat values(2, 50);
-insert into oman_sarjan_kirjat values(2, 60);
-insert into oman_sarjan_kirjat values(2, 70);
+insert into oman_sarjan_kirjat values(2, 40, 1);
+insert into oman_sarjan_kirjat values(2, 50, 1);
+insert into oman_sarjan_kirjat values(2, 60, 1);
+insert into oman_sarjan_kirjat values(2, 70, 1);
 
