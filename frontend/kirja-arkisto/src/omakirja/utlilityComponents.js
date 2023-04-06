@@ -1,4 +1,5 @@
 import { Alert, Card, Row, Col } from "react-bootstrap"
+import { Link } from 'react-router-dom'
 import { getCoverArt } from "./utilityFunctions"
 
 // Näyttää, onko kenttä vaadittu vai ei
@@ -39,6 +40,7 @@ const ListBookCard = (props) => {
     let imgsrc = getCoverArt(kirja)
 
     return (
+        <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
         <Card border="dark" className="mb-1">
             <Card.Body>
                 <Card.Title>{kirja.nimi}</Card.Title>
@@ -60,6 +62,7 @@ const ListBookCard = (props) => {
                 </Row>
             </Card.Body>
         </Card>
+        </Link>
     )
 }
 
@@ -77,7 +80,7 @@ const GridBookCard = (props) => {
     let imgsrc = getCoverArt(kirja)
 
     return (
-        <a href={"#" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
+        <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
         <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden"}}>
             <div style={{color: "white", background: "rgba(30,30,30,0.9)",position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%"}}>
                 <h3>{kirja.nimi}</h3>
@@ -90,7 +93,7 @@ const GridBookCard = (props) => {
                 <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>
             </div>
         </Card>
-        </a>
+        </Link>
     )
 }
 

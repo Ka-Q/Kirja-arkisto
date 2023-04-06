@@ -40,7 +40,7 @@ const OmaKirjaSivu = () => {
     }
 
     return (
-        <div  style={{backgroundColor: "#202020"}}>
+        <div  style={{backgroundColor: "#202020", paddingBottom: "20%"}}>
         <div className="mx-3 pt-5">
             <Row>
                 <Col>

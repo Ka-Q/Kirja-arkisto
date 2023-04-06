@@ -14,6 +14,7 @@ import {SarjaSivu} from "./sarja/sarjasivu";
 import {OmaSarjaSivu} from "./omasarja/omasarjasivu";
 import { KirjaSivu } from "./kirja/kirjasivu";
 import { WarningComponent } from "./omakirja/utlilityComponents";
+import { ViewComponent } from "./omakirja/viewOmaKirja";
 
 function Etusivu () {
 
@@ -76,7 +77,8 @@ function Etusivu () {
           <Route path="/" element={<FrontPage/>}/>
           <Route path="/kirja" element={<BookPage />}/>
           <Route path="/sarjasivu" element={<SeriesPage />}/>
-          <Route path="/omakirja" element={<OwnedBookPage/>}/>
+          <Route path="/omakirja/*" element={<OwnedBookPage/>}/>
+            <Route path="/omakirja/:id" element={<ViewComponent/>}/>
           <Route path="/omasarja" element={<OwnedSeriePage/>}/>
       </Routes>
       </Router>
