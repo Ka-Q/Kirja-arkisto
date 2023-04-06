@@ -17,6 +17,9 @@ const kuva_tiedosto_functions = require('./functions/kuva_tiedosto_functions')
 const valokuva_tiedosto_functions = require('./functions/valokuva_tiedosto_functions')
 const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuvat_functions')
 const kirjan_kuvat_functions = require('./functions/kirjan_kuvat_functions')
+const sarjan_kirjat_functions=require('./functions/sarjan_kirjat_functions')
+const oman_sarjan_kirjat_functions=require('./functions/oman_sarjan_kirjat_functions')
+
 
 const app = express();
 
@@ -430,6 +433,47 @@ app.put('/hyllyn_sarjat', (req, res) => {
   let queryJson = hyllyn_sarjat_functions.PutHylly(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+// Sarjan kirjat
+app.get('/sarjan_kirjat', (req, res) => {
+  let queryJson = sarjan_kirjat_functions.GetSarjat(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = sarjan_kirjat_functions.PostSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = sarjan_kirjat_functions.DeleteSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = sarjan_kirjat_functions.PutSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+// Oman sarjan kirjat
+app.get('/oman_sarjan_kirjat', (req, res) => {
+  let queryJson = oman_sarjan_kirjat_functions.GetOmatSarjat(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = oman_sarjan_kirjat_functions.PostOmatSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = oman_sarjan_kirjat_functions.DeleteOmatSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/oman_sarjan_kirjat', checkSessionRole, (req, res) => {
+  let queryJson = oman_sarjan_kirjat_functions.PutOmatSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+
 
 
 module.exports = app;
