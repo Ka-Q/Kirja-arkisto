@@ -1,6 +1,7 @@
 import { Alert, Card, Row, Col } from "react-bootstrap"
 import { Link } from 'react-router-dom'
 import { getCoverArt } from "./utilityFunctions"
+import theme from "./theme.json"
 
 // Näyttää, onko kenttä vaadittu vai ei
 const RequiredComponent = (props) => {
@@ -39,9 +40,14 @@ const ListBookCard = (props) => {
     let kirja = omakirja.kirja
     let imgsrc = getCoverArt(kirja)
 
+    let kuntoluokkaStars = "";
+    for (let i = 0; i < omakirja.kuntoluokka; i++) {
+        kuntoluokkaStars += "⭐"
+    }
+
     return (
-        <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
-        <Card border="dark" className="mb-1">
+        <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none", color: "black"}}>
+        <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
             <Card.Body>
                 <Card.Title>{kirja.nimi}</Card.Title>
                 <Row className="mb-2">
@@ -50,7 +56,9 @@ const ListBookCard = (props) => {
                     </Col>
                     <Col>
                         <Card.Text>
-                            Kuntoluokka: {omakirja.kuntoluokka} <br/>
+                            {kirja.kirjailijat} <br/>
+                            Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 )
+                            <span className="mx-5"/>
                             Hankittu: {omakirja.hankinta_aika}
                         </Card.Text>
                     </Col>
@@ -79,6 +87,11 @@ const GridBookCard = (props) => {
     let kirja = omakirja.kirja
     let imgsrc = getCoverArt(kirja)
 
+    let kuntoluokkaStars = "";
+    for (let i = 0; i < omakirja.kuntoluokka; i++) {
+        kuntoluokkaStars += "⭐"
+    }
+
     return (
         <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
         <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden"}}>
@@ -87,7 +100,10 @@ const GridBookCard = (props) => {
             </div>
             <div id="item">
                 <h3>^</h3>
-                <b id="info" style={{marginTop: "20em", display:"block"}}>Kuntoluokka: {omakirja.kuntoluokka} <br/>Hankittu: {omakirja.hankinta_aika} </b>
+                <b id="info" style={{marginTop: "20em", display:"block"}}>
+                    {kirja.kirjailijat} <br/> 
+                    Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/>
+                    Hankittu: {omakirja.hankinta_aika} </b>
             </div>
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
                 <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>

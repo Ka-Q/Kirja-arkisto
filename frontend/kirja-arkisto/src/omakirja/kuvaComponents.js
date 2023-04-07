@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button, Image,  Stack } from "react-bootstrap"
+import theme from './theme.json'
 
 const KuvaViewerComponent = (props) => {
 
@@ -35,7 +36,7 @@ const KuvaViewerComponent = (props) => {
     let remainingImages = kuvat.length - rollIndex - width
     if (remainingImages < 0) remainingImages = 0
     
-    let BtnStyle = {backgroundColor: "#424242"};
+    let BtnStyle = {backgroundColor:  theme.button};
 
     return(
         <div>
@@ -122,7 +123,7 @@ const ValokuvaViewerComponent = (props) => {
     let remainingImages = valokuvat.length - rollIndex - width
     if (remainingImages < 0) remainingImages = 0
     
-    let BtnStyle = {backgroundColor: "#424242"};
+    let BtnStyle = {backgroundColor:  theme.button};
     
     return(
         <div style={{width: "100%"}}>
