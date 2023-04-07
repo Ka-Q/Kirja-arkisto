@@ -8,6 +8,7 @@ import theme from "./theme.json"
 
 const ViewComponent = (props) => {
     const [deleteClicked, setDeleteClicked] = useState(false)
+    const [editClicked, setEditClicked] = useState(false)
     const [omakirja, setOmakirja] = useState(null)
     const id = useLocation()
 
@@ -65,7 +66,7 @@ const ViewComponent = (props) => {
             
             <Col >
                 <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <h1>{kirja.nimi}</h1>
+                        <h1 className="mt-3">{kirja.nimi}</h1>
                         <hr/>
                         <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
                         <Card.Body>
@@ -86,7 +87,7 @@ const ViewComponent = (props) => {
                             Toiminnot
                         </Card.Title>
                         <Card.Body>
-                            <Button variant="dark" style={{backgroundColor: theme.button}}>✏ Muokkaa</Button> <span className="mx-3"/>
+                            <Button variant="dark" style={{backgroundColor: theme.button}}  onClick={(e) => setEditClicked(true)}>✏ Muokkaa</Button> <span className="mx-3"/>
                             <Button variant="danger" style={{backgroundColor: theme.accent, color: "red"}} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
                         </Card.Body>
                     
@@ -112,6 +113,12 @@ const ViewComponent = (props) => {
             {deleteClicked?
                 <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
                     <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
+                </div>
+            :
+            <></>}
+            {editClicked?
+                <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
+                    <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
                 </div>
             :
             <></>}
@@ -194,7 +201,10 @@ const DeleteOwnBookComponent = (props) => {
         <Card bg="dark" className="px-2 pb-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
             <Card.Title className="mt-5">Haluatko varmasti poistaa kirjan "{omakirja.kirja.nimi}" omista kirjoistasi</Card.Title>
             <Card.Header>
-                Tätä toimintoa ei voi peruuttaa 
+                Poiston yhteydessä poistetaan myös omaan kirjaan liitetyt valokuvat. Oma Kirja poistetaan myös niistä omista sarjoistasi, joihin se kuuluu. 
+                <br/>
+                <br/>
+                <b style={{color:"rgb(250,200, 0)"}}>⚠ Tätä toimintoa ei voi peruuttaa! ⚠</b>
             </Card.Header>
             <Button variant="warning" className="my-5" onClick={(e) => props.setDeleteClicked(false)}>Peruuta</Button> 
             <Button variant="danger" onClick={(e) => setClickCounter(clickCounter + 1)}>Poista</Button>
@@ -202,6 +212,15 @@ const DeleteOwnBookComponent = (props) => {
         </Card>
         }
         </>
+    )
+}
+
+const EditOwnBookComponent = (props) => {
+    return (
+        <div style={{paddingTop: "20em", color: "white"}}>
+            Muokataan kirjaa "{props.omakirja.kirja.nimi}" <br/><br/> 
+            <Button onClick={(e) => props.setEditClicked(false)}>Peruuta</Button>
+            </div>
     )
 }
 
