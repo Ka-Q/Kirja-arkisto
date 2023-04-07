@@ -4,6 +4,7 @@ import { KuvaViewerComponent, ValokuvaViewerComponent } from "./kuvaComponents"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
 import { SuccessComponent } from "./utlilityComponents"
+import theme from "./theme.json"
 
 const ViewComponent = (props) => {
     const [deleteClicked, setDeleteClicked] = useState(false)
@@ -12,9 +13,9 @@ const ViewComponent = (props) => {
 
     // Haetaan osoitekentän id:n avulla oma kirja serveriltä
     useEffect(() => {
-        const fetchBook = async (ids) => {
-            console.log(ids);
-            const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${ids}`, {
+        const fetchBook = async (id) => {
+            let idFormatted = "" + id.pathname.split('/')[2];
+            const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${idFormatted}`, {
                 method: "GET",
                 credentials: "include"
             });
@@ -22,13 +23,13 @@ const ViewComponent = (props) => {
             console.log(data)
             setOmakirja(data.data[0])
         }
-        fetchBook("" + id.pathname.split('/')[2]) 
+        fetchBook(id) 
     }, [])
 
     // Virhesivu jos id:llä ei löydy käyttäjän omistamaa kirjaa
     if (!omakirja) {
         return(
-            <div className="text-center" style={{color: "white", height: "100%", width: '100%', paddingBottom: '100%', paddingTop: "10em", backgroundColor: "#202020"}}>
+            <div className="text-center" style={{color: "white", height: "100%", width: '100%', paddingBottom: '100%', paddingTop: "10em", backgroundColor: theme.bg}}>
                 Odotetaan omaa kirjaa... <br/><br/> Mikäli tämä sivu ei muutu, jotain on mennyt pieleen. Voi olla, ettei sinulla ole oikeuksia tämän kirjan tarkasteluun
             </div>
         )
@@ -38,28 +39,24 @@ const ViewComponent = (props) => {
     let kuvat = kirja.kuvat
     let valokuvat = omakirja.valokuvat
 
-    console.log(valokuvat);
-
     let kuntoluokkaStars = "";
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
         kuntoluokkaStars += "⭐"
     }
 
     return(
-        <div className="text-center" style={{height: "100%",width: '100%',padding: '10px', backgroundColor: "#202020"}}>
+        <div className="text-center px-3 py-1" style={{height: "100%",width: "auto", backgroundColor: theme.bg}}>
         <Row className="mt-5">
             {
             kuvat.length > 0?
                 <Col sm={12} lg={3}>
-                    <Card className="mb-4">
-                        <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
-                            <Card.Title className="mt-3">
-                                Kuvat
-                            </Card.Title>
-                            <Card.Body>
-                                <KuvaViewerComponent kuvat={kuvat}/>
-                            </Card.Body>
-                        </div>
+                    <Card className="mb-4" border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+                        <Card.Title className="mt-3">
+                            Kuvat
+                        </Card.Title>
+                        <Card.Body>
+                            <KuvaViewerComponent kuvat={kuvat}/>
+                        </Card.Body>
                     </Card>
                 </Col>
             :
@@ -67,8 +64,7 @@ const ViewComponent = (props) => {
             }
             
             <Col >
-                <Card>
-                    <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
+                <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <h1>{kirja.nimi}</h1>
                         <hr/>
                         <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
@@ -76,40 +72,37 @@ const ViewComponent = (props) => {
                             Kirjailijat: {kirja.kirjailijat} <br/>
                             Painettu: {omakirja.painosvuosi} <br/>
                             Hankittu: {omakirja.hankinta_aika} <br/>
-                            Hankintahinta: {omakirja.hankintahinta} € <br/>
+                            Hankintahinta: {omakirja.hankintahinta.toFixed(2)} € <br/>
                             Esittely: {omakirja.esittelyteksti} <br/>
                             <br/>
                             Kirjan kuvaus: <br/>
                             {kirja.kuvaus} <br/>
-                            <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: "#424242", marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
+                            <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
                         </Card.Body>
-                    </div>
+                    
                 </Card>
-                <Card className="my-4">
-                    <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
+                <Card className="my-4"  border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <Card.Title className="mt-3">
-                            toiminnot
+                            Toiminnot
                         </Card.Title>
                         <Card.Body>
-                            <Button>Muokkaa</Button> <span className="mx-3"/>
-                            <Button variant="danger" onClick={(e) => setDeleteClicked(true)}>Poista</Button>
+                            <Button variant="dark" style={{backgroundColor: theme.button}}>✏ Muokkaa</Button> <span className="mx-3"/>
+                            <Button variant="danger" style={{backgroundColor: theme.accent, color: "red"}} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
                         </Card.Body>
-                    </div>
+                    
                 </Card>
             </Col>
 
             {
             valokuvat.length > 0?
                 <Col sm={12} lg={3}>
-                    <Card>
-                        <div style={{color: "white", background: "#131415", borderRadius: "inherit"}}>
-                            <Card.Title className="mt-3">
-                                Valokuvat
-                            </Card.Title>
-                            <Card.Body>
-                                <ValokuvaViewerComponent valokuvat={valokuvat}/>
-                            </Card.Body>
-                        </div>
+                    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+                        <Card.Title className="mt-3">
+                            Valokuvat
+                        </Card.Title>
+                        <Card.Body>
+                            <ValokuvaViewerComponent valokuvat={valokuvat}/>
+                        </Card.Body>
                     </Card>
                 </Col>
             :

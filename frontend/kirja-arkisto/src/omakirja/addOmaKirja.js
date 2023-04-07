@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utlilityComponents"
+import theme from "./theme.json"
 
 const AddComponent = (props) => {
 
@@ -52,7 +53,7 @@ const AddComponent = (props) => {
     const [addPicKeys, setAddPicKeys] = useState(0);
 
     // tyyliä
-    const inputStyle = {width: "60%", paddingLeft: "1em"}
+    const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
 
     // onko tallenna-nappia painettu? tiedot kasaan
     const [saveClicked, setSaveClicked] = useState(false)
@@ -216,7 +217,9 @@ const AddComponent = (props) => {
     }
 
     return (
-        <Card border="dark" className="mb-1">
+        <div className="text-center" style={{height: "100%",width: '100%', padding: '10px', backgroundColor: theme.bg}}>
+        <Card border="light" className="mb-1">
+            <div style={{color: "white", background: theme.accent, borderRadius: "inherit"}}>
             <Card.Body>
                 {!saveSuccessful?
                 <>
@@ -233,8 +236,8 @@ const AddComponent = (props) => {
                                 <RequiredComponent yes/>
                             </div>
                             <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/><RequiredComponent yes/></div>
-                            <div><input onChange={(e) => sethankintahinta(e.target.value)} placeholder="hankintahinta" style={inputStyle}/><RequiredComponent yes/></div>
-                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={inputStyle}/><RequiredComponent/></div>
+                            <div><input onChange={(e) => sethankintahinta(e.target.value)} type="number" placeholder="hankintahinta" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={{ width: "60%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}}/><RequiredComponent/></div>
                             <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/><RequiredComponent yes/></div>
                             <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
                             <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/><RequiredComponent/></div>
@@ -249,17 +252,17 @@ const AddComponent = (props) => {
                                 {addPicComponents.length > 0?
                                 <Row  className="mb-3">
                                     <Col>
-                                        <Button variant="danger" onClick={(e) => handleDeletePicClicked()}>Poista valokuva</Button>
+                                        <Button variant="danger" style={{backgroundColor: theme.button, color: "white"}} onClick={(e) => handleDeletePicClicked()}>Poista valokuva</Button>
                                     </Col>
                                 </Row>
                                 : <></>}
                                 <hr/>
-                                <Button onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
+                                <Button variant="warning" style={{backgroundColor: theme.button, color: "white"}} onClick={(e) => handleAddPictureClicked(e)}>+ Lisää uusi valokuva</Button>
                             </div>
                             <div className="my-5">
                                 {!omaKirjaFilled?<WarningComponent text="Vaadittuja tietoja puuttuu"/>:<></>}
                                 {!filesFilled?<WarningComponent text="Valokuvatiedosto puuttuu"/>:<></>}
-                                <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
+                                <Button variant="success" style={{backgroundColor: theme.button}} onClick={(e) => handleSaveClicked()}>Tallenna</Button> <Button variant="dark" onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
                             </div>
                         </Col>
                     </Row>
@@ -270,7 +273,9 @@ const AddComponent = (props) => {
                 </>
                 }
             </Card.Body>
+            </div>
         </Card>
+        </div>
     )
 }
 
@@ -281,15 +286,19 @@ const AddPictureComponent = (props) => {
 
     const handleSub = props.handleSubmit
 
+    const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
+    inputStyleFile.borderRadius = "0.5em";
+    inputStyleFile.padding = "0.5em";
+
     return (
         <Row className="mt-2 mb-3">
             <hr/>
             <Col>
             <form id={formId} onSubmit={(e) => handleSub(e)}>
                 <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                    <div><input type={"file"} name="files" style={inputStyle}/><RequiredComponent yes/></div>
-                    <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/></div>
-                    <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/></div>
+                    <div><input type={"file"} name="files" style={inputStyleFile}/><RequiredComponent yes/></div>
+                    <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
+                    <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/><RequiredComponent/></div>
                 </Stack>
             </form>
             </Col>
