@@ -1,7 +1,7 @@
 
 function GetSarja(req) {
     let returnJson = {}
-    let listOfValues = []
+    let queryList = []
 
     let params = req.query;
     let keys = Object.keys(params);
@@ -28,7 +28,7 @@ function GetSarja(req) {
 
     console.log(query)
     returnJson.query = query
-    returnJson.queryList = listOfValues
+    returnJson.queryList = queryList
     return returnJson
 
 }
