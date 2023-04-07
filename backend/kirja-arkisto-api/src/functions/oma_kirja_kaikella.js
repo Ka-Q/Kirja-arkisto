@@ -141,7 +141,19 @@ function GetOmaKirjaKaikella(req, res) {
         query += " AND ?? LIKE ?"
         let avain = keys[key]
         queryList.push(avain)
-        queryList.push(params[avain])
+        let val = "" + params[avain]
+        // Jos on tehty sumea haku
+        if (val.charAt(0) == '%' && val.charAt(val.length - 1) == '%') {
+            val = val.substring(1, val.length - 1)
+            val = decodeURIComponent(val)
+            val = "%" + val + "%"
+            queryList.push(val)
+        }
+        // Muulloin
+        else {
+            val = decodeURIComponent(val)
+            queryList.push(val)
+        }
     }
 
     console.log(query)
