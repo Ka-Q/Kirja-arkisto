@@ -94,13 +94,25 @@ function GetKirjaKaikella(req, res) {
 
     // Kolmen tietokantataulun JOIN. lopputuloksena jokaiselle kuvalle on oma rivi, jolla on myös kirjan tiedot
     let query = "SELECT *, kirja.kuvaus AS kirjan_kuvaus, kuva.kuvaus AS kuvan_kuvaus FROM kirja LEFT OUTER JOIN kirjan_kuvat ON kirja_id = kirja_kirja_id LEFT OUTER JOIN kuva ON kuva_kuva_id = kuva_id WHERE (1=1)"
-    
-    for (let key in keys){
+
+    for (let key in keys) {
       query += " AND ?? LIKE ?"
       let avain = keys[key]
       queryList.push(avain)
-      queryList.push(params[avain])
-    }
+      let val = "" + params[avain]
+      // Jos on tehty sumea haku
+      if (val.charAt(0) == '%' && val.charAt(val.length - 1) == '%') {
+          val = val.substring(1, val.length - 1)
+          val = decodeURIComponent(val)
+          val = "%" + val + "%"
+          queryList.push(val)
+      }
+      // Muulloin
+      else {
+          val = decodeURIComponent(val)
+          queryList.push(val)
+      }
+  }
   
     console.log(query)
   

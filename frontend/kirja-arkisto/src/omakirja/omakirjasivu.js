@@ -169,16 +169,7 @@ const SearchComponent = (props) => {
         setSearchCounter(searchCounter + 1)
         let q = "";
         if (nimi.length > 0) {
-            let splitName = nimi.trim().split(' ');
-            if (splitName.length > 1) {
-                q += "&kirjan_nimi="
-                for (let i = 0; i < splitName.length; i++) {
-                    if (splitName[i].length > 0) q += splitName[i] + "%20";
-                }
-                q = q.substring(0, q.length-3);
-            } else {
-                q += ("&kirjan_nimi=%" + nimi.trim() + "%");
-            }
+            q = ("&kirjan_nimi=%" + nimi.trim() + "%");
         }
         setQuery(q)
     }
@@ -186,6 +177,7 @@ const SearchComponent = (props) => {
     // Hakee omat kirjat queryllä
     useEffect(() => {
         const fetchOwnBook = async () => {
+            console.log(query);
             const f = await fetch("http://localhost:5000/oma_kirja_kaikella" + "?" + query, {
                 method: "GET",
                 credentials: "include"

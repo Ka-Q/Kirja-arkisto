@@ -11,9 +11,21 @@ function GetKirjanKuva(req) {
     for (let key in keys) {
       query += " AND ?? LIKE ?"
       let avain = keys[key]
-      listOfValues.push(avain)
-      listOfValues.push(params[avain])
-    }
+      queryList.push(avain)
+      let val = "" + params[avain]
+      // Jos on tehty sumea haku
+      if (val.charAt(0) == '%' && val.charAt(val.length - 1) == '%') {
+          val = val.substring(1, val.length - 1)
+          val = decodeURIComponent(val)
+          val = "%" + val + "%"
+          queryList.push(val)
+      }
+      // Muulloin
+      else {
+          val = decodeURIComponent(val)
+          queryList.push(val)
+      }
+  }
   
     console.log(query)
   
