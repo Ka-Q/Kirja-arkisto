@@ -1,4 +1,4 @@
-import { Alert, Card, Row, Col } from "react-bootstrap"
+import { Alert, Card, Row, Col, Image } from "react-bootstrap"
 import { Link } from 'react-router-dom'
 import { getCoverArt } from "./utilityFunctions"
 import theme from "./theme.json"
@@ -94,19 +94,20 @@ const GridBookCard = (props) => {
 
     return (
         <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none"}}>
-        <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden"}}>
+        <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden", backgroundColor: theme.bg}}>
             <div style={{color: "white", background: "rgba(30,30,30,0.9)",position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%"}}>
                 <h3>{kirja.nimi}</h3>
             </div>
             <div id="item">
                 <h3>^</h3>
-                <b id="info" style={{marginTop: "20em", display:"block"}}>
+                <b id="info" style={{marginTop: "16em", display:"block"}}>
                     {kirja.kirjailijat} <br/> 
-                    Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/>
+                    Kuntoluokka:<br/> 
+                    {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/>
                     Hankittu: {omakirja.hankinta_aika} </b>
             </div>
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
-                <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>
+                <Image src={imgsrc} style={{flexShrink: 0, objectFit: "cover", height:"100%", minWidth: "100%"}}></Image>
             </div>
         </Card>
         </Link>

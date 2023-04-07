@@ -53,10 +53,15 @@ const OmaKirjaSivu = () => {
             {
             !isBackButton && !bookClicked ?
                 <Row className="mt-3" >
-                    <Col>
-                    <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <SearchComponent bookClicked={handleBookClicked}/>
-                    </div>
+                    <Col className="px-2 d-md-none">
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                            <SearchComponent bookClicked={handleBookClicked}/>
+                        </div>
+                    </Col>
+                    <Col className="px-5 d-none d-md-block">
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                            <SearchComponent bookClicked={handleBookClicked}/>
+                        </div>
                     </Col>
                 </Row>
             :
@@ -213,7 +218,7 @@ const SearchComponent = (props) => {
                 <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '100px', color: "white" }} placeholder="Hae omista kirjoista"></input>
                 <Button onClick={handleSearchClick} className='btn btn-dark' style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>🔎</Button>
                 <Button onClick={handleViewModeClick} className='btn btn-dark'  style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>{viewModeIcon}</Button>
-                <div  className="mx-5" style={{marginTop: "3em", marginBottom: "25em"}}>
+                <div style={{marginTop: "3em", marginBottom: "25em"}}>
                     {BookCardList}
                 </div>
             </div>
