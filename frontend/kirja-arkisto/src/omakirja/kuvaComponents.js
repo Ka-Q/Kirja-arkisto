@@ -122,23 +122,27 @@ const ValokuvaViewerComponent = (props) => {
 
     let remainingImages = valokuvat.length - rollIndex - width
     if (remainingImages < 0) remainingImages = 0
-    
+
+    let sivunumero = clickedPic.sivunumero;
+    if (sivunumero == -200) sivunumero = "etukansi"
+    if (sivunumero == -100) sivunumero = "takakansi"
+
     let BtnStyle = {backgroundColor:  theme.button};
     
     return(
         <div style={{width: "100%"}}>
-            <div className="mx-auto" style={{width:"100%", height: "auto", marginBottom: "1em"}}>
-                <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
-                <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
-                </a>
-            </div>
             <Stack direction="horizontal" gap={1}>
                 <Button onClick={(e) => handleDecrease()} className='btn btn-dark' style={BtnStyle}> {"< " + rollIndex} </Button>
                 {previewList}
                 <Button onClick={(e) => handleIncrease()} className='btn btn-dark' style={BtnStyle}> {"> " + (remainingImages)} </Button>
             </Stack>
+            <div className="mx-auto" style={{width:"100%", height: "auto", marginTop: "1em"}}>
+                <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
+                <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
+                </a>
+            </div>
             <div style={{textAlign: "left"}}>
-                Sivunumero: {clickedPic.sivunumero}<br/>
+                Sivunumero: {sivunumero}<br/>
                 Nimi/Kuvaus: {clickedPic.nimi} <br/>
             </div>
         </div>
