@@ -136,10 +136,21 @@ const AddComponent = (props) => {
 
         let formdata = new FormData(e.target)
 
+        let type = formdata.get("type");
+
+        // Etukannelle sivunro -200 ja takakannelle sivunro -100
+        if (type == "etukansi") {
+            formdata.set("sivunumero", -200)
+        } else if (type == "takakansi") {
+            formdata.set("sivunumero", -100)
+        }
+
         // jos sivunumeroa ei ole, laitetaan -1
         if (!formdata.get("sivunumero")) { 
             formdata.set("sivunumero", -1)
         }
+
+        formdata.delete("type")
 
         try{
             const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
@@ -285,10 +296,13 @@ const AddPictureComponent = (props) => {
     const formId = props.formId
 
     const handleSub = props.handleSubmit
+    const [showSivu, setShowSivu] = useState(true)
 
     const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
     inputStyleFile.borderRadius = "0.5em";
     inputStyleFile.padding = "0.5em";
+
+
 
     return (
         <Row className="mt-2 mb-3">
@@ -298,7 +312,23 @@ const AddPictureComponent = (props) => {
                 <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
                     <div><input type={"file"} name="files" style={inputStyleFile}/><RequiredComponent yes/></div>
                     <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
-                    <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/><RequiredComponent/></div>
+                    <div className="mx-auto" style={{display:"flex"}}>
+                        <div onClick={(e) => setShowSivu(false)}>
+                            <label for="etukansiRadio" className="pe-3">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
+                        </div>
+                        <div className="mx-5" onClick={(e) => setShowSivu(false)}>
+                            <label for="takakansiRadio" className="pe-3">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
+                        </div>
+                        <div onClick={(e) => setShowSivu(true)}>
+                            <label for="sivuRadio" className="pe-3">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
+                        </div>
+                        <RequiredComponent yes/>
+                    </div>
+                    {showSivu? 
+                        <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/><RequiredComponent/></div>
+                    :
+                        <></>
+                    }
                 </Stack>
             </form>
             </Col>
