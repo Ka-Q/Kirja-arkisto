@@ -38,7 +38,8 @@ const ListBookCard = (props) => {
 
     let omakirja = props.omakirja
     let kirja = omakirja.kirja
-    let imgsrc = getCoverArt(kirja)
+    let coverartData = getCoverArt(omakirja)
+    let imgsrc = coverartData.imgsrc
 
     let kuntoluokkaStars = "";
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
@@ -85,7 +86,8 @@ const GridBookCard = (props) => {
 
     let omakirja = props.omakirja
     let kirja = omakirja.kirja
-    let imgsrc = getCoverArt(kirja)
+    let coverartData = getCoverArt(omakirja)
+    let imgsrc = coverartData.imgsrc
 
     let kuntoluokkaStars = "";
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
@@ -107,6 +109,15 @@ const GridBookCard = (props) => {
                     Hankittu: {omakirja.hankinta_aika} </b>
             </div>
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
+                {coverartData.tyyppi == "kuva"? 
+                    <div className="px-2" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0.5em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em"}}>
+                        🏛️
+                    </div> 
+                : 
+                    <div className="px-2" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0.5em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em"}}>
+                        📷
+                    </div>
+                }
                 <Image src={imgsrc} style={{flexShrink: 0, objectFit: "cover", height:"100%", minWidth: "100%"}}></Image>
             </div>
         </Card>
