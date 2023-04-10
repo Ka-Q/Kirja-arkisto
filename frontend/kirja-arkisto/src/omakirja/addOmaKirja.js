@@ -98,8 +98,9 @@ const AddComponent = (props) => {
         const handlePics = async () => {
             for (let i = 0; i < addPicKeys; i++) {
                 let form = document.getElementById("picForm" + i);
-                form.requestSubmit();
+                const sent = await sendForm(form, insertedBookId)
             }
+            setSaveSuccessful(true)
         };
         if (insertedBookId > -1) {
             handlePics();
@@ -128,13 +129,10 @@ const AddComponent = (props) => {
         }
     }, [insertedPicId]);
 
-    // Lähettää valokuvan tiedoston ja tiedot serverille. 
-    // HUOM! Tiedot lähtevät FORMINA, EIVÄT JSON-muodossa. Tämä siksi, että serveri ei tykkää kuvien vastaanottamisesta jsonissa 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        console.log(e.target);
 
-        let formdata = new FormData(e.target)
+    const sendForm = async (form, bookId) => {
+
+        let formdata = new FormData(form)
 
         let type = formdata.get("type");
 
@@ -152,19 +150,28 @@ const AddComponent = (props) => {
 
         formdata.delete("type")
 
-        try{
-            const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+        const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+        credentials: "include",
+        method: 'POST',
+        body: formdata})
+        const data = await f.json()
+
+        console.log("Insert id: " + data.data.insertId);
+
+        let obj = {oma_kirja_id: bookId, valokuva_id: data.data.insertId}
+
+        const f2 = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
             credentials: "include",
             method: 'POST',
-            body: formdata})
-            const data = await f.json()
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)})
 
-            console.log(data.data);
-            setInsertedPicId(data.data.insertId)
-        } catch (e) {
-            console.log("jotain meni pieleen")
-        }
-        
+        const data2 = await f2.json()
+
+        console.log("Insert id2: " + data2.data.insertId);
+        return true;
     }
 
     // Poistaa viimeisimmän valokuvanuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
@@ -180,8 +187,7 @@ const AddComponent = (props) => {
         setAddPicComponents([...addPicComponents, <AddPictureComponent 
             key={addPicKeys} 
             inputStyle={inputStyle} 
-            formId={"picForm" + addPicKeys}
-            handleSubmit={handleSubmit}/>])
+            formId={"picForm" + addPicKeys}/>])
     }
 
     // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
@@ -302,13 +308,16 @@ const AddPictureComponent = (props) => {
     inputStyleFile.borderRadius = "0.5em";
     inputStyleFile.padding = "0.5em";
 
-
+    // Formia ei lähetetä submitilla, vaan juurikomponentin useEffectissä
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+    }
 
     return (
         <Row className="mt-2 mb-3">
             <hr/>
             <Col>
-            <form id={formId} onSubmit={(e) => handleSub(e)}>
+            <form id={formId} onSubmit={(e) => handleSubmit(e)}>
                 <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
                     <div><input type={"file"} name="files" style={inputStyleFile}/><RequiredComponent yes/></div>
                     <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
