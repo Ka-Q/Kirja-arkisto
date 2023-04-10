@@ -40,6 +40,8 @@ const OmaKirjaSivu = () => {
         }
     }
 
+    const LineHeight = "2.3em"
+
     return (
         <div  style={{backgroundColor: theme.bg, paddingBottom: "20%"}}>
         <div className="mx-3 pt-5">
@@ -54,12 +56,12 @@ const OmaKirjaSivu = () => {
             !isBackButton && !bookClicked ?
                 <Row className="mt-3" >
                     <Col className="px-2 d-md-none">
-                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
                             <SearchComponent bookClicked={handleBookClicked}/>
                         </div>
                     </Col>
                     <Col className="px-5 d-none d-md-block">
-                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
                             <SearchComponent bookClicked={handleBookClicked}/>
                         </div>
                     </Col>
@@ -68,7 +70,7 @@ const OmaKirjaSivu = () => {
             isBackButton && !bookClicked?
                 <Row className="mt-3" >
                     <Col>
-                    <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                    <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
                         <AddComponent handleLisaaClicked={handleButtonClicked}/>
                     </div>
                     </Col>
@@ -76,7 +78,7 @@ const OmaKirjaSivu = () => {
             :
             <Row className="mt-3" >
                 <Col>
-                <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
                     <ViewComponent omakirja={selectedBook}/>
                 </div>
                 </Col>
@@ -131,7 +133,7 @@ const SearchComponent = (props) => {
                         // Sarakkeet riville
                         let row = n.map((n2, index2) => {
                             return(
-                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2} onClick={(e) => bookClicked(n2)}>
+                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2}>
                                     <GridBookCard
                                         omakirja={n2} >
                                     </GridBookCard>
@@ -152,7 +154,7 @@ const SearchComponent = (props) => {
                 if (bookData.length > 0){
                     BookCardList = bookData.map((n, index) => {
                         return (
-                            <div onClick={(e) => bookClicked(n)} style={{cursor:"pointer"}} key={index}>
+                            <div style={{cursor:"pointer"}} key={index}>
                                 <ListBookCard  
                                     omakirja={n} >
                                 </ListBookCard>
