@@ -84,7 +84,7 @@ const handleConnection = (res, error, SQLresult) => {
 // Tarkistaa onko kirjautunut sisään
 const checkSessionUser = (req, res, next) => {
   console.log("Checking Users session and appending userID for queries...");
-  console.log(req.session);
+  //console.log(req.session);
   if (req.session.user) {
     if (req.session.user.sposti) {
       
@@ -109,7 +109,7 @@ const checkSessionUser = (req, res, next) => {
           req.body.kayttaja_kayttaja_id = req.session.user.uid
         }
       }
-      console.log(req);
+      //console.log(req);
       next();
     }
      else {
@@ -124,7 +124,7 @@ const checkSessionUser = (req, res, next) => {
 // Tarkistaa onko käyttäjä admin
 const checkSessionRole = (req, res, next) => {
   console.log("IN CHECKER");
-  console.log(req.session);
+  //console.log(req.session);
   console.log("USER ON");
   console.log(req.session.user);
   
@@ -148,7 +148,7 @@ const checkSessionRole = (req, res, next) => {
 // Kirjautuminen sisään
 app.post('/login', (req, res) => {
   console.log("LOGIN")
-  console.log(req.body)
+  //console.log(req.body)
 
   let sposti = req.body.sposti;
   let salasana = req.body.salasana;
