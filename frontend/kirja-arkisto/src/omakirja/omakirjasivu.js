@@ -29,17 +29,6 @@ const OmaKirjaSivu = () => {
         }
     }
 
-    const handleBookClicked = (book) => {
-        if (!bookClicked && book) {
-            setIsBackButton(true)
-            setBookClicked(true)
-            setSelectedBook(book)
-            setBtnText("Palaa omien kirjojen hakuun")
-        } else {
-            setBookClicked(false)
-        }
-    }
-
     const LineHeight = "2.3em"
 
     return (
@@ -57,12 +46,12 @@ const OmaKirjaSivu = () => {
                 <Row className="mt-3" >
                     <Col className="px-2 d-md-none">
                         <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
-                            <SearchComponent bookClicked={handleBookClicked}/>
+                            <SearchComponent/>
                         </div>
                     </Col>
                     <Col className="px-5 d-none d-md-block">
                         <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
-                            <SearchComponent bookClicked={handleBookClicked}/>
+                            <SearchComponent/>
                         </div>
                     </Col>
                 </Row>
@@ -99,8 +88,6 @@ const SearchComponent = (props) => {
 
     const [gridView, setGridView] = useState(true)
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
-
-    const bookClicked = props.bookClicked
 
     //Data JSON:ista korteiksi joko ruudukkoon tai listaan
     let bookData = bookList.data
