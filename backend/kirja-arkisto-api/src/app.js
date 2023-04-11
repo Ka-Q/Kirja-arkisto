@@ -194,7 +194,7 @@ app.post('/login', (req, res) => {
           req.session.destroy((err) => {
             console.log("Session destroyed!")
           });
-          res.json({status: "OK", message: "Kirjauduttu ulos"})
+          res.json({ status: "NOT OK", message: "Käyttäjää ei löytynyt"})
         }
       }
     });
