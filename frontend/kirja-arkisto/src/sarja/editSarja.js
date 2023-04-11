@@ -201,7 +201,7 @@ const EditSeries = (props) => {
                   value={selectedBook}
                   onChange={(e) => setSelectedBook(e.target.value)}
                 >
-                  <option value="">Select a book</option>
+                  <option value="">Valitse kirja</option>
                   {allBooks.map((book) => (
                     <option key={book.kirja_id} value={book.kirja_id}>
                       {book.nimi}
