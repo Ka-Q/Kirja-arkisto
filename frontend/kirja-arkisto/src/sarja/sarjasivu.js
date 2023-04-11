@@ -2,8 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { AddSeries } from "./addSarja"
 import { EditSeries } from "./editSarja";
-
-
+import theme from './theme.json'
 
 const SarjaSivu = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
@@ -40,14 +39,14 @@ const SarjaSivu = () => {
   };
 
   return (
-    <div style={{ height: "100%", width: '100%', padding: '10px', backgroundColor: "#202020" }}>
-      <div className="text-center" style={{ marginTop: "2em" }}>
+    <div  style={{backgroundColor: theme.bg, paddingBottom: "20%"}}>
+      <div className="text-center" >
         <h1 style={{ color: "white" }}>Sarjat</h1>
       </div>
       <Row>
         <Col>
           <Stack direction='horizontal' gap={3}>
-            <div className=" ms-auto"><Button className='btn btn-dark' style={{ backgroundColor: "#424242" }} onClick={(e) => handleLisaaClicked(e.target)}>{lisaaBtnText}</Button></div>
+            <div className=" ms-auto"><Button className='btn btn-dark' style={{backgroundColor: theme.button}}  onClick={(e) => handleLisaaClicked(e.target)}>{lisaaBtnText}</Button></div>
           </Stack>
         </Col>
       </Row>
@@ -164,8 +163,8 @@ const SearchBar = (props) => {
 
   return (
     <div className="text-center" style={{ verticalAlign: "center", lineHeight: "2.3em" }}>
-      <input onChange={(e) => setNimi(e.target.value)} style={{ width: "65%" }} placeholder="Hae sarjoista"></input>
-      <Button onClick={handleSearchClick} className='btn btn-dark' style={{ backgroundColor: "#424242", width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
+      <input onChange={(e) => setNimi(e.target.value)} style={{backgroundColor:theme.input, width: "65%" }} placeholder="Hae sarjoista"></input>
+      <Button onClick={handleSearchClick} className='btn btn-dark' style={{ backgroundColor:theme.button, width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
       <div style={{ marginTop: "3em" }}>
         {SeriesCardList}
       </div>
@@ -183,7 +182,7 @@ const SeriesCard = (props) => {
 
 
   return (
-    <Card border="dark" className="mb-1">
+    <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
       <Card.Body>
         <Card.Title>{sarja.nimi}</Card.Title>
         <Row>
