@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utilityComponents";
 import { useNavigate } from "react-router-dom";
+import theme from './theme.json'
 
 
 const EditSeries = (props) => {
@@ -12,6 +13,11 @@ const EditSeries = (props) => {
   const [nimi, setNimi] = useState("");
   const [kuvaus, setKuvaus] = useState("");
   const [relatedKirja, setRelatedKirja] = useState([]);
+
+  const [allBooks, setAllBooks] = useState([]);
+  const [selectedBook, setSelectedBook] = useState("");
+
+
 
   useEffect(() => {
     const fetchSeries = async () => {
@@ -30,18 +36,27 @@ const EditSeries = (props) => {
     };
     fetchSeries();
   }, [sarja_id]);
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const b = await fetch("http://localhost:5000/kirja");
+      const allBooksData = await b.json();
+      setAllBooks(allBooksData.data);
+    };
+    fetchBooks();
+  }, []);
+
 
   const handleCancelClicked = () => {
     navigate('/sarjasivu'); // Update this with the correct path for SarjaSivu
   };
 
- 
+
 
   const handleDeleteClicked = async () => {
     const response = await fetch(`http://localhost:5000/sarja?sarja_id=${selectedSeries.sarja_id}`, {
       credentials: "include",
       method: 'DELETE',
-      
+
     });
 
     if (response.ok) {
@@ -59,7 +74,7 @@ const EditSeries = (props) => {
   const [filesFilled, setFilesFilled] = useState(true)
   const [saveSuccessful, setSaveSuccessful] = useState(false)
 
-  
+
 
   async function updateSeries(updatedSeries) {
     const response = await fetch(`http://localhost:5000/sarja`, {
@@ -79,7 +94,35 @@ const EditSeries = (props) => {
   }
 
 
-
+  const handleAddBookToSeries = async () => {
+    if (selectedBook) {
+      const response = await fetch("http://localhost:5000/sarjan_kirjat", {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sarja_id: sarja_id,
+          kirja_id: selectedBook,
+        }),
+      });
+  
+      if (response.ok) {
+        // Fetch the updated related books
+        const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${sarja_id}`);
+        const kirjaData = await k.json();
+        setRelatedKirja(kirjaData.data);
+  
+        // Update the selectedBook state to an empty string
+        setSelectedBook("");
+      } else {
+        console.error("Failed to add the book to the series");
+      }
+    }
+  };
+  
+  
 
   // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
   const handleSaveClicked = () => {
@@ -113,7 +156,7 @@ const EditSeries = (props) => {
 
 
   return (
-    <Card border="dark" className="mb-1">
+    <Card border="secondary" className="mb-1" style={{ backgroundColor: theme.input, color: "white" }}>
       <Card.Body>
         {!saveSuccessful ? (
           <>
@@ -152,6 +195,23 @@ const EditSeries = (props) => {
                   ))}
                 </ul>
               </Col>
+              <Col> <>
+                <h3>Lisää kirja sarjaan:</h3>
+                <select
+                  value={selectedBook}
+                  onChange={(e) => setSelectedBook(e.target.value)}
+                >
+                  <option value="">Select a book</option>
+                  {allBooks.map((book) => (
+                    <option key={book.kirja_id} value={book.kirja_id}>
+                      {book.nimi}
+                    </option>
+                  ))}
+                </select>
+                <Button onClick={handleAddBookToSeries}>Lisää kirja</Button>
+              </>
+              </Col>
+
             </Row>
             <Row>
               <Col>
@@ -161,13 +221,15 @@ const EditSeries = (props) => {
                   ) : (
                     <></>
                   )}
-                  
+
                   <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button>{" "}
                   <Button onClick={(e) => handleCancelClicked()}>
-                  Peruuta
-                </Button>{" "}
-                <Button onClick={(e) => handleDeleteClicked()}>Poista</Button>{" "}
-                
+                    Peruuta
+                  </Button>{" "}
+                  <Button onClick={(e) => handleDeleteClicked()}>Poista</Button>{" "}
+
+
+
                 </div>
               </Col>
             </Row>
@@ -175,7 +237,7 @@ const EditSeries = (props) => {
         ) : (
           <>
             <SuccessComponent text="Tallennus onnistui" />
-            <Button onClick={(e) => props.handleLisaaClicked({selectedSeries})}>Sulje</Button>
+            <Button onClick={(e) => props.handleLisaaClicked({ selectedSeries })}>Sulje</Button>
           </>
         )}
       </Card.Body>
