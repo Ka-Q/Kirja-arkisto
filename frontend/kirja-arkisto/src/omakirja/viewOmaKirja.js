@@ -218,11 +218,11 @@ const DeleteOwnBookComponent = (props) => {
 const EditOwnBookComponent = (props) => {
     const omakirja = props.omakirja;
 
-    const [kuntoluokkaOriginal, setKuntoluokkaOriginal] = useState(omakirja.kuntoluokka)
-    const [hankittuOriginal, setHankittuOriginal] = useState(omakirja.hankinta_aika)
-    const [hankintaHintaOriginal, setHankintaHintaOriginal] = useState(omakirja.hankintahinta)
-    const [esittelyOriginal, setEsittelyOriginal] = useState(omakirja.esittelyteksti)
-    const [painosvuosiOriginal, setPainosvuosiOriginal] = useState(omakirja.painosvuosi)
+    const kuntoluokkaOriginal = omakirja.kuntoluokka
+    const hankittuOriginal = omakirja.hankinta_aika
+    const hankintaHintaOriginal = omakirja.hankintahinta
+    const esittelyOriginal = omakirja.esittelyteksti
+    const painosvuosiOriginal = omakirja.painosvuosi
 
     const [kuntoluokka, setKuntoluokka] = useState(omakirja.kuntoluokka)
     const [hankittu, setHankittu] = useState(omakirja.hankinta_aika)
@@ -253,6 +253,7 @@ const EditOwnBookComponent = (props) => {
                 }
             })
             const data = await f.json()
+            window.location.reload()
         }
         if (clickCounter > 0) updateOwnBook();
     }, [clickCounter])

@@ -217,7 +217,7 @@ app.get('/check_login', (req, res) => {
   if (req.session.user) {
     if (req.session.user.sposti) {
       console.log("UID: "+ req.session.user.uid)
-      res.json({status: "OK", message: "NOT LOGGED IN :) (no user)", data: {sposti: req.session.user.sposti, rooli: req.session.user.rooli}})
+      res.json({status: "OK", message: "LOGGED IN :) (user found)", data: {sposti: req.session.user.sposti, rooli: req.session.user.rooli}})
     } else {
       res.json({status: "OK", message: "NOT LOGGED IN :) (no user)"})
     }
