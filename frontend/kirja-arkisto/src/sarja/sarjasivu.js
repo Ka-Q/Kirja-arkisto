@@ -147,14 +147,13 @@ const SearchBar = (props) => {
 
   useEffect(() => {
     const fetchSeries = async () => {
-      const f = await fetch("http://localhost:5000/sarja" + "?" + query)
+      const f = await fetch("http://localhost:5000/sarja" + "?" + query);
       const data = await f.json();
-      SetSerieslist(data)
+      SetSerieslist(data);
     };
-    if (searchCounter != 0) {
-      fetchSeries();
-    }
+    fetchSeries(); // Remove the condition to fetch data on the initial render
   }, [searchCounter]);
+  
 
   const handleSearchClick = (props) => {
     updateQuery()
