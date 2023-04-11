@@ -1,198 +1,219 @@
-
-
-
 import { useState, useEffect } from "react"
-import { Button, Card, Col, Row, Stack } from "react-bootstrap"
-import { AddSeries } from "./addOmaSarja"
+import { Button, Col, Row, Stack } from "react-bootstrap"
+import { WarningComponent, ListBookCard, GridBookCard } from "./utlilityComponents"
+import { AddComponent } from "./addOmaSarja"
+import { ViewComponent } from "./viewOmaSarja"
+import theme from './theme.json'
 
 const OmaSarjaSivu = () => {
-    const [ListOfSeries, setListOfSeries] = useState([])
-    const [selectedSeries, setSelectedSeries] = useState(null);
-    const [action, setAction] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editedSeries, setEditedSeries] = useState(null);
-    const [lisaaClicked, setLisaaClicked] = useState(false)
-    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää sarja")
-  
 
-    const handleLisaaClicked = () => {
-        if (!lisaaClicked) {
-            setLisaaClicked(true)
-            setLisaaBtnText("Takaisin")
+    const [isBackButton, setIsBackButton] = useState(false)
+    const [btnText, setBtnText] = useState("Lisää oma sarja")
+    const [searchCounter, setSearchCounter] = useState(0);
+
+
+    const [serieClicked, setSerieClicked] = useState(false)
+    const [selectedSerie, setSelectedSerie] = useState(null)
+
+
+    const handleButtonClicked = () => {
+        if (!isBackButton) {
+            setIsBackButton(true)
+            setBtnText("Palaa omien sarjojen hakuun")
+    
         } else {
-            setLisaaClicked(false)
-            setLisaaBtnText("Lisää sarja")
+            setIsBackButton(false)
+            setBtnText("Lisää oma sarja")
+            if (serieClicked) setSerieClicked(false)
         }
     }
-   
 
-  return (
-    <div className="mx-5">
-      <div className="text-center" style={{ marginTop: "2em" }}>
-        <h1>Omat sarjat</h1>
-      </div>
-      <Row>
-        <Col>
-          <Stack direction="horizontal" gap={3}>
-            <div className="bg-light border ms-auto">
-            <div className="bg-light border ms-auto"><Button variant="primary" onClick={(e) => handleLisaaClicked(e.target)}>{lisaaBtnText}</Button></div>
-            </div>
-          </Stack>
-        </Col>
-      </Row>
-     
-      {
-            !lisaaClicked ?
+    const handleSerieClicked = (serie) => {
+        if (!serieClicked && serie) {
+            setIsBackButton(true)
+            setSerieClicked(true)
+            setSelectedSerie(serie)
+            setBtnText("Palaa omien sarjojen hakuun")
+        } else {
+            setSerieClicked(false)
+        }
+    }
+
+    return (
+        <div  style={{backgroundColor: theme.bg, paddingBottom: "20%"}}>
+        <div className="mx-3 pt-5">
+            <Row>
+                <Col>
+                    <Stack direction="horizontal" gap={3}>
+                        <div className="ms-auto"><Button className='btn btn-dark' style={{backgroundColor: theme.button}} onClick={(e) => handleButtonClicked(e.target)}>{btnText}</Button></div>
+                    </Stack>
+                </Col>
+            </Row>
+            {
+            !isBackButton && !serieClicked ?
+                <Row className="mt-3" >
+                    <Col className="px-2 d-md-none">
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                            <SearchComponent serieClicked={handleSerieClicked}/>
+                        </div>
+                    </Col>
+                    <Col className="px-5 d-none d-md-block">
+                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                            <SearchComponent serieClicked={handleSerieClicked}/>
+                        </div>
+                    </Col>
+                </Row>
+            :
+            isBackButton && !serieClicked?
                 <Row className="mt-3" >
                     <Col>
                     <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <SearchBar />
+                        <AddComponent handleLisaaClicked={handleButtonClicked} handleSarjanLisays={() => setSearchCounter(searchCounter + 1)} />
+
                     </div>
                     </Col>
                 </Row>
             :
-                <Row className="mt-3" >
-                    <Col>
-                    <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <AddSeries handleLisaaClicked={handleLisaaClicked}/>
-                    </div>
-                    </Col>
-                </Row>
+            <Row className="mt-3" >
+                <Col>
+                <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                    <ViewComponent omakirja={selectedSerie}/>
+                </div>
+                </Col>
+            </Row>
             }
-    </div>
-  );
-};
-
-const SearchBar = (props) => {
-
-  const [searchCounter, setSearchCounter] = useState(0);
-  const [serieslist, SetSerieslist] = useState([]);
-  const [query, setQuery] = useState("");
-  const [nimi, setNimi] = useState("");
-  console.log(nimi)
-  console.log(searchCounter)
-
-
-  let seriesData = serieslist.data
-  let SeriesCardList = [];
-  if (seriesData) {
-      if (seriesData.length > 0) {
-          const cols = seriesData.map((n, index) => {
-              return (
-                  <Col key={index}>
-                      <SeriesCard
-                          sarja={n}
-                          setSelectedSeries={props.setSelectedSeries}
-                          handleEditClick={props.handleEditClick}
-                      />
-                  </Col>
-              );
-          });
-          SeriesCardList = <Row>{cols}</Row>;
-      } else if (searchCounter !== 0) {
-          SeriesCardList = [<ErrorCard />];
-      }
-  }
-
-
-  const updateQuery = () => {
-      setSearchCounter(searchCounter + 1)
-      let q = "";
-      if (nimi.length > 0) {
-          let splitName = nimi.split(' ');
-          if (splitName.length > 1) {
-              q += "&nimi="
-              for (let wrd in splitName) {
-                  q += wrd + "%20"
-              }
-              q = q.substring(0, q.length - 3)
-          } else {
-              q += ("&nimi=%" + nimi + "%");
-          }
-      }
-      console.log(q)
-      setQuery(q)
-  }
-
-  useEffect(() => {
-      const fetchSeries = async () => {
-          const f = await fetch("http://localhost:5000/sarja" + "?" + query)
-          const data = await f.json();
-          SetSerieslist(data)
-      };
-      if (searchCounter !== 0) {
-          fetchSeries();
-      }
-  }, [searchCounter]);
-
-  const handleSearchClick = (props) => {
-      updateQuery()
-      setSearchCounter(searchCounter + 1)
-  }
-
-  return (
-      <div className="text-center" style={{ verticalAlign: "center", lineHeight: "2.3em" }}>
-          <input onChange={(e) => setNimi(e.target.value)} style={{ width: "65%" }} placeholder="Hae sarjoista"></input>
-          <Button variant="primary" onClick={handleSearchClick} style={{ width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
-          <div style={{ marginTop: "3em" }}>
-              {SeriesCardList}
-          </div>
-      </div>
-  )
+        </div>
+        </div>
+    )
 }
 
 
-const SeriesCard = (props) => {
-    let sarja = props.sarja;
-    const [lisaaClicked, setLisaaClicked] = useState(false)
-    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää sarja")
-    const [editClicked, setEditClicked] = useState(false)
+const SearchComponent = (props) => {
+
+    const [searchCounter, setSearchCounter] = useState(0);
+    const [serieList, setSerieList] = useState([]);
+    const [query, setQuery] = useState("");
+    const [nimi, setNimi] = useState("");
+
+    const [gridView, setGridView] = useState(true)
+    const [viewModeIcon, setViewModeIcon] = useState("🔳")
+
+    const serieClicked = props.serieClicked
+
+    let serieData = serieList.data
+    let BookCardList = []
+    let width = 6
     
-    const handleEditClicked = () => {
-      if (!editClicked) {
-          setEditClicked(true)
-          setLisaaBtnText("Takaisin")
-      } else {
-          setEditClicked(false)
-          setLisaaBtnText("Lisää sarja")
-      }
-  }
+    if (serieData) {
+ 
+        if (serieData.length == 0 ) {
+            BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia" key={0}/>]
+        }
+        else {
+            
+            if (gridView) {
+  
+                let serieData2D = []
+                for (let i = 0; i < serieData.length; i++) {
+                    let row = []
+                    if (i == 0 || i % width == 0) {
+                        for (let j = 0; j < width; j++) {
+                            row.push(serieData[i+j])
+                        }
+                        serieData2D.push(row)
+                    }
+                }
+  
+                if (serieData2D.length > 0){
+                    BookCardList = serieData2D.map((n, index) => {
+              
+                        let row = n.map((n2, index2) => {
+                            return(
+                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2} onClick={(e) => serieClicked(n2)}>
+                                    <GridBookCard
+                                        omakirja={n2} >
+                                    </GridBookCard>
+                                </Col>
+                            )
+                        });
 
+                        return (
+                            <Row key={index}>
+                                {row}
+                            </Row>
+                        )
+                    });
+                } 
+            }
+            else {
+
+                if (serieData.length > 0){
+                    BookCardList = serieData.map((n, index) => {
+                        return (
+                            <div onClick={(e) => serieClicked(n)} style={{cursor:"pointer"}} key={index}>
+                                <ListBookCard  
+                                    omakirja={n} >
+                                </ListBookCard>
+                            </div>
+                        )
+                    });
+                }
+            }
+        }
+    }
+    
+    
+
+    const updateQuery = () => {
+        setSearchCounter(searchCounter + 1)
+        let q = "";
+        if (nimi.length > 0) {
+            q = ("&sarjan_nimi=%" + nimi.trim() + "%");
+        }
+        setQuery(q)
+    }
+
+
+    useEffect(() => {
+        const fetchOwnSerie = async () => {
+            console.log(query);
+            const f = await fetch("http://localhost:5000/oma_sarja" + "?" + query, {
+                method: "GET",
+                credentials: "include"
+            })
+            const data = await f.json();
+            console.log(data)
+            setSerieList(data)
+        };
+        fetchOwnSerie();
+    }, [searchCounter]);
+
+
+    const handleSearchClick = (props) => {
+        updateQuery()
+        setSearchCounter(searchCounter + 1)
+    }
+
+    const handleViewModeClick = (props) => {
+        gridView?setGridView(false):setGridView(true)
+        viewModeIcon=="🔳"?setViewModeIcon("📃"):setViewModeIcon("🔳")
+    }
 
     return (
-        <Card border="dark" className="mb-1">
-            <Card.Body>
-                <Card.Title>{sarja.nimi}</Card.Title>
-                <Row>
-                    <Col md={2}>
-                        
-                    </Col>
-                    <Col>
-                        <Card.Text>
-                            Kuvaus: {sarja.kuvaus} <p> </p>
-                        </Card.Text>
-                    </Col>
-                    <Col md={2}>
-                        <Card.Text style={{ fontSize: "3em" }}>
-                            <a href={"#id:" + sarja.sarja_id} onClick={(e) => handleEditClicked(e.target)} style={{ textDecoration: "none"}}>➡</a>
-                        </Card.Text>
-                    </Col>
-                    
-                </Row>
-            </Card.Body>
-        </Card>
+        <div>
+            <div className="text-center">
+                <h1 style={{color: "white"}}>Omat sarjasi</h1>
+            </div>
+            <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
+                <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '100px', color: "white" }} placeholder="Hae omista sarjoista"></input>
+                <Button onClick={handleSearchClick} className='btn btn-dark' style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>🔎</Button>
+                <Button onClick={handleViewModeClick} className='btn btn-dark'  style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>{viewModeIcon}</Button>
+                <div style={{marginTop: "3em", marginBottom: "25em"}}>
+                    {BookCardList}
+                </div>
+            </div>
+        </div>
     )
 }
 
-const ErrorCard = () => {
-    return (
-        <Card border="dark" className="mb-1">
-            <Card.Body>
-                <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
-            </Card.Body>
-        </Card>
-    )
-}
-
-export { OmaSarjaSivu }
-
+export {OmaSarjaSivu}
