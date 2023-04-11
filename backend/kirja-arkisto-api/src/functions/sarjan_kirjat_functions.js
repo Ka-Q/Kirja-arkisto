@@ -1,36 +1,41 @@
-
 function GetSarjat(req) {
-    let returnJson = {}
-    let queryList = []
-
+    let returnJson = {};
+    let queryList = [];
+  
     let params = req.query;
     let keys = Object.keys(params);
-    let query = "SELECT * FROM sarjan_kirjat WHERE (1=1)"
-
+  
+    // Check if sarja_id is present in the query parameters
+    let isSarjaIdPresent = "sarja_id" in params;
+  
+    // Update the SELECT clause based on the presence of sarja_id
+    let query = isSarjaIdPresent
+      ? "SELECT k.* FROM kirja k JOIN sarjan_kirjat sk ON sk.kirja_id = k.kirja_id WHERE (1=1)"
+      : "SELECT * FROM sarjan_kirjat WHERE (1=1)";
+  
     for (let key in keys) {
-        query += " AND ?? LIKE ?"
-        let avain = keys[key]
-        queryList.push(avain)
-        let val = "" + params[avain]
-        // Jos on tehty sumea haku
-        if (val.charAt(0) == '%' && val.charAt(val.length - 1) == '%') {
-            val = val.substring(1, val.length - 1)
-            val = decodeURIComponent(val)
-            val = "%" + val + "%"
-            queryList.push(val)
-        }
-        // Muulloin
-        else {
-            val = decodeURIComponent(val)
-            queryList.push(val)
-        }
+      query += " AND ?? LIKE ?";
+      let avain = keys[key];
+      queryList.push(avain);
+      let val = "" + params[avain];
+      // Jos on tehty sumea haku
+      if (val.charAt(0) == "%" && val.charAt(val.length - 1) == "%") {
+        val = val.substring(1, val.length - 1);
+        val = decodeURIComponent(val);
+        val = "%" + val + "%";
+        queryList.push(val);
+      }
+      // Muulloin
+      else {
+        val = decodeURIComponent(val);
+        queryList.push(val);
+      }
     }
-    console.log(query)
-    returnJson.query = query
-    returnJson.queryList = queryList
-    return returnJson
-
-}
+    console.log(query);
+    returnJson.query = query;
+    returnJson.queryList = queryList;
+    return returnJson;
+  }
 function PostSarjat(req) {
     let returnJson = {}
     let params = req.body

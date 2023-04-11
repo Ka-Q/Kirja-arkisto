@@ -124,7 +124,7 @@ const AddSeries = (props) => {
                                 </select> 
                                 <RequiredComponent yes/>
                             </div>
-                            <div><input onChange={(e) => setNimi(e.target.value)} type="number" placeholder="nimi" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><input onChange={(e) => setNimi(e.target.value)} placeholder="nimi" style={inputStyle}/><RequiredComponent yes/></div>
                             <div><input onChange={(e) => setKuvaus(e.target.value)} placeholder="kuvaus" style={inputStyle}/><RequiredComponent yes/></div>
                             
                             
@@ -152,5 +152,6 @@ const AddSeries = (props) => {
 }
 
 export {AddSeries}
+
 
 
