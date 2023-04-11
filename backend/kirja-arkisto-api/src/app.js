@@ -4,6 +4,8 @@ const fileUpload = require('express-fileupload');
 
 const session = require("express-session")
 
+const cors = require('cors')
+
 const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const oma_kirja_functions = require('./functions/oma_kirja_functions')
@@ -45,6 +47,8 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   next();
 });
+
+app.options('*', function (req,res) { res.sendStatus(200); });
 
 app.use(express.json())
 
@@ -261,7 +265,7 @@ app.post('/oma_kirja', checkSessionUser, (req, res) => {
 });
 
 app.put('/oma_kirja', checkSessionUser, (req, res) => {
-  let queryJson = kirja_functions.PutOmaKirja(req);
+  let queryJson = oma_kirja_functions.PutOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
