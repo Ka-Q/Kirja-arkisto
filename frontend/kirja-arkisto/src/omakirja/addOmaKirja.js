@@ -308,7 +308,7 @@ const AddComponent = (props) => {
             </Card.Body>
             </div>
         </Card>
-        : <WarningComponent text="Sinun on kirjauduttava sisään lisätäksesi oman kirjan"/>}
+        : <><WarningComponent text="Sinun on kirjauduttava sisään lisätäksesi oman kirjan"/><div style={{paddingBottom: "100%"}}/></>}
         </div>
     )
 }
