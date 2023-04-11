@@ -5,7 +5,6 @@ import { AddComponent } from "./addOmaKirja"
 
 //Tyyliä
 import './omakirjaStyle.css'
-import { ViewComponent } from "./viewOmaKirja"
 import theme from './theme.json'
 
 const OmaKirjaSivu = () => {
@@ -13,19 +12,14 @@ const OmaKirjaSivu = () => {
     const [isBackButton, setIsBackButton] = useState(false)
     const [btnText, setBtnText] = useState("Lisää oma kirja")
 
-    const [bookClicked, setBookClicked] = useState(false)
-    const [selectedBook, setSelectedBook] = useState(null)
-
     // Näyttää ja/tai piilottaa oman kirja lisäys -näkymän
     const handleButtonClicked = () => {
         if (!isBackButton) {
             setIsBackButton(true)
             setBtnText("Palaa omien kirjojen hakuun")
-            //if (bookClicked) setBookClicked(false)
         } else {
             setIsBackButton(false)
             setBtnText("Lisää oma kirja")
-            if (bookClicked) setBookClicked(false)
         }
     }
 
@@ -42,7 +36,7 @@ const OmaKirjaSivu = () => {
                 </Col>
             </Row>
             {
-            !isBackButton && !bookClicked ?
+            !isBackButton?
                 <Row className="mt-3" >
                     <Col className="px-2 d-md-none">
                         <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
@@ -56,7 +50,6 @@ const OmaKirjaSivu = () => {
                     </Col>
                 </Row>
             :
-            isBackButton && !bookClicked?
                 <Row className="mt-3" >
                     <Col>
                     <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
@@ -64,14 +57,6 @@ const OmaKirjaSivu = () => {
                     </div>
                     </Col>
                 </Row>
-            :
-            <Row className="mt-3" >
-                <Col>
-                <div className="text-center" style={{verticalAlign: "center", lineHeight: LineHeight}}>
-                    <ViewComponent omakirja={selectedBook}/>
-                </div>
-                </Col>
-            </Row>
             }
         </div>
         </div>
@@ -82,7 +67,7 @@ const OmaKirjaSivu = () => {
 const SearchComponent = (props) => {
 
     const [searchCounter, setSearchCounter] = useState(0);
-    const [bookList, setBookList] = useState([]);
+    const [fetchData, setFetchData] = useState([]);
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
 
@@ -90,10 +75,14 @@ const SearchComponent = (props) => {
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
 
     //Data JSON:ista korteiksi joko ruudukkoon tai listaan
-    let bookData = bookList.data
+    let bookData = fetchData.data
     let BookCardList = []
     let width = 6
-    
+
+    if ((fetchData.message + "").includes("(no user)")){
+        BookCardList = [<WarningComponent text="Sinun on kirjauduttava sisään tarkastellaksesi omia kirjojasi." key={0}/>]
+    }
+
     if (bookData) {
         // Jos ei tuloksia, niin viesti
         if (bookData.length == 0 ) {
@@ -173,7 +162,7 @@ const SearchComponent = (props) => {
             })
             const data = await f.json();
             console.log(data)
-            setBookList(data)
+            setFetchData(data)
         };
         fetchOwnBook();
     }, [searchCounter]);

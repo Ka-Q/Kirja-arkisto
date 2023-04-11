@@ -5,6 +5,21 @@ import theme from "./theme.json"
 
 const AddComponent = (props) => {
 
+    
+
+    // Tarkistetaan sivun auetessa, onko käyttäjä kirjautunut sisään
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    useEffect (() => {
+        const checkLogin = async () => {
+            const f = await fetch("http://localhost:5000/check_login",{credentials: "include"})
+            const data = await f.json()
+            if ((data.message + "").includes("(no user)")){
+                setIsLoggedIn(false)
+            }
+        }
+        checkLogin()
+    }, [])
+
     // Haetaan sivun auetessa kirjat ja asetetaan listaan
     const [bookList, setBookList] = useState([])
     useEffect(() => {
@@ -235,6 +250,7 @@ const AddComponent = (props) => {
 
     return (
         <div className="text-center" style={{height: "100%",width: '100%', padding: '10px', backgroundColor: theme.bg}}>
+        {isLoggedIn?
         <Card border="light" className="mb-1">
             <div style={{color: "white", background: theme.accent, borderRadius: "inherit"}}>
             <Card.Body>
@@ -292,6 +308,7 @@ const AddComponent = (props) => {
             </Card.Body>
             </div>
         </Card>
+        : <WarningComponent text="Sinun on kirjauduttava sisään lisätäksesi oman kirjan"/>}
         </div>
     )
 }
