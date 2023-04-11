@@ -245,7 +245,7 @@ app.delete('/kirja', checkSessionRole, (req, res) => {
 });
 
 // Kirja Kaikella
-app.get('/kirja_kaikella', checkSessionUser, (req, res) => {
+app.get('/kirja_kaikella', checkSessionRole, (req, res) => {
   kirja_kaikella_functions.GetKirjaKaikella(req, res)
 });
 
