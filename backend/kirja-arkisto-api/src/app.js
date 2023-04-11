@@ -245,27 +245,27 @@ app.delete('/kirja', checkSessionRole, (req, res) => {
 });
 
 // Kirja Kaikella
-app.get('/kirja_kaikella', checkSessionRole, (req, res) => {
+app.get('/kirja_kaikella', (req, res) => {
   kirja_kaikella_functions.GetKirjaKaikella(req, res)
 });
 
 // Oma kirja
-app.get('/oma_kirja', checkSessionUser, (req, res) => {
+app.get('/oma_kirja', (req, res) => {
   let queryJson = oma_kirja_functions.GetOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.post('/oma_kirja', checkSessionUser, (req, res) => {
+app.post('/oma_kirja', checkSessionRole, (req, res) => {
   let queryJson = oma_kirja_functions.PostOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.put('/oma_kirja', checkSessionUser, (req, res) => {
+app.put('/oma_kirja', checkSessionRole, (req, res) => {
   let queryJson = kirja_functions.PutOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
-app.delete('/oma_kirja', checkSessionUser, (req, res) => {
+app.delete('/oma_kirja', checkSessionRole, (req, res) => {
   let queryJson = oma_kirja_functions.DeleteOmaKirja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
