@@ -1,5 +1,5 @@
 
-import { Button, Card, Col, Row } from "react-bootstrap"
+import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { KuvaViewerComponent, ValokuvaViewerComponent } from "./kuvaComponents"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
@@ -216,11 +216,124 @@ const DeleteOwnBookComponent = (props) => {
 }
 
 const EditOwnBookComponent = (props) => {
+    const omakirja = props.omakirja;
+
+    const [kuntoluokkaOriginal, setKuntoluokkaOriginal] = useState(omakirja.kuntoluokka)
+    const [hankittuOriginal, setHankittuOriginal] = useState(omakirja.hankinta_aika)
+    const [hankintaHintaOriginal, setHankintaHintaOriginal] = useState(omakirja.hankintahinta)
+    const [esittelyOriginal, setEsittelyOriginal] = useState(omakirja.esittelyteksti)
+    const [painosvuosiOriginal, setPainosvuosiOriginal] = useState(omakirja.painosvuosi)
+
+    const [kuntoluokka, setKuntoluokka] = useState(omakirja.kuntoluokka)
+    const [hankittu, setHankittu] = useState(omakirja.hankinta_aika)
+    const [hankintaHinta, setHankintaHinta] = useState(omakirja.hankintahinta)
+    const [esittely, setEsittely] = useState(omakirja.esittelyteksti)
+    const [painosvuosi, setPainosvuosi] = useState(omakirja.painosvuosi)
+
+    let kuntoluokkaChanged = kuntoluokkaOriginal != kuntoluokka
+    let hankittuChanged = hankittuOriginal != hankittu
+    let hankintahintaChanged = hankintaHintaOriginal != hankintaHinta
+    let esittelyChanged = esittelyOriginal != esittely
+    let painosvuosiChanged = painosvuosiOriginal != painosvuosi
+
+    let isChanged = kuntoluokkaChanged || hankittuChanged || hankintahintaChanged || esittelyChanged || painosvuosiChanged
+
+    const [clickCounter, setClickCounter] = useState(0)
+    const [updateObject, setUpdateObject] = useState({})
+
+    useEffect(()=> {
+        const updateOwnBook = async () => {
+            console.log(updateObject)
+            const f = await fetch("http://localhost:5000/oma_kirja", {
+                method: "PUT",
+                credentials: "include",
+                body: JSON.stringify(updateObject),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const data = await f.json()
+        }
+        if (clickCounter > 0) updateOwnBook();
+    }, [clickCounter])
+
+    const handleSave = (e) => {
+        if (isChanged) {
+            setUpdateObject(
+                {
+                    where: {
+                        oma_kirja_id: omakirja.oma_kirja_id
+                    },
+                    set: {
+                        kuntoluokka: kuntoluokka,
+                        hankinta_aika: hankittu,
+                        hankintahinta: hankintaHinta,
+                        esittelyteksti: esittely,
+                        painosvuosi: painosvuosi
+                    }
+                }
+            )
+            setClickCounter(clickCounter + 1)
+        } else {
+            props.setEditClicked(false)
+        }
+    }
+
+    const handleRevert  = (e) => {
+        if (kuntoluokkaChanged) setKuntoluokka(kuntoluokkaOriginal)
+        if (hankittuChanged) setHankittu(hankittuOriginal)
+        if (hankintahintaChanged) setHankintaHinta(hankintaHintaOriginal)
+        if (esittelyChanged) setEsittely(esittelyOriginal)
+        if (painosvuosiChanged) setPainosvuosi(painosvuosiOriginal)
+    }
+
+
+    const labelW = "8em"
+    const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
+
     return (
-        <div style={{paddingTop: "20em", color: "white"}}>
-            Muokataan kirjaa "{props.omakirja.kirja.nimi}" <br/><br/> 
-            <Button onClick={(e) => props.setEditClicked(false)}>Peruuta</Button>
-            </div>
+        <div style={{lineHeight: "2.3em"}}>
+            <Card bg="dark" className="px-2 pt-5" style={{color: "white", height: "auto", width:"auto", margin: "10%"}}>
+                <Card.Title>Muokataan omaa kirjaa "{props.omakirja.kirja.nimi}"</Card.Title>
+                    <div>
+                        <label for="kuntoluokka" style={{width:labelW}}>Kuntoluokka: </label>
+                        <input type="number" id="kuntoluokka" value={kuntoluokka} style={inputStyle} onChange={(e) => setKuntoluokka(e.target.value)}/>
+                        <span style={{position:"absolute", marginLeft:"0.5em"}}>/5</span>
+                        {kuntoluokkaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                    </div>
+
+                    <div>
+                        <label for="hankittu" style={{width:labelW}}>Hankittu: </label>
+                        <input type="date" id="hankittu" value={hankittu} style={inputStyle} onChange={(e) => setHankittu(e.target.value)}/>
+                        {hankittuChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                    </div>
+
+                    <div>
+                        <label for="hankintahinta" style={{width:labelW}}>Hankintahinta: </label>
+                        <input type="number" id="hankintahinta" value={hankintaHinta} style={inputStyle} onChange={(e) => setHankintaHinta(e.target.value)}/>
+                        <span style={{position:"absolute", marginLeft:"0.5em"}}>€</span>
+                        {hankintahintaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                    </div>
+
+                    <div>
+                        <label for="painosvuosi" style={{width:labelW}}>Painosvuosi: </label>
+                        <input type="number" id="painosvuosi" value={painosvuosi} style={inputStyle} onChange={(e) => setPainosvuosi(e.target.value)}/>
+                        {painosvuosiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                    </div>
+
+                    <div>
+                        <label for="esittely" style={{width:labelW}}>Esittelyteksti: </label>
+                        <textarea id="esittely" value={esittely} style={{ width: "60%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}} onChange={(e) => setEsittely(e.target.value)}/>
+                        {esittelyChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                    </div>
+
+                    <Stack direction="horizontal" gap={2} className="mx-auto mb-3">
+                        <Button variant="dark" onClick={(e) => props.setEditClicked(false)} style={{backgroundColor: theme.button}}>Peruuta</Button>
+                        <Button variant="warning" onClick={(e) => handleRevert(e)} style={{backgroundColor: theme.button, color: "white"}}>Palauta</Button>
+                        <Button variant="success" onClick={(e) => handleSave(e)} style={{backgroundColor: theme.button}}>Tallenna</Button>
+                    </Stack>
+            </Card>
+        </div>
     )
 }
 
