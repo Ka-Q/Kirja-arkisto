@@ -190,7 +190,7 @@ const AddComponent = (props) => {
                 ensipainosvuosi: ensipainosvuosi,
                 painokset: painokset
             } 
-            console.log("terve")
+
             setfinalKirja(kirja);
             setSaveClicked(true);
         }
