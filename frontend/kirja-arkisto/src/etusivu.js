@@ -146,7 +146,7 @@ const LoginComponent = (props) => {
           })
           const data = await f.json();
           console.log(data);
-          if (data.status == "OK") {props.setIsLoggedIn(true)} else {setError(true)}
+          if (data.status == "OK") {props.setIsLoggedIn(true); window.location.reload()} else {setError(true)}
 
       };
       if (clickCounter > 0) sendAuth();
@@ -180,7 +180,7 @@ const LogoutComponent = (props) => {
         })
         const data = await f.json();
         console.log(data);
-        if (data) {props.setIsLoggedIn(false)} else {console.log("jotain meni pieleen")}
+        if (data) {props.setIsLoggedIn(false); window.location.reload()} else {console.log("jotain meni pieleen")}
     };
     if (clickCounter > 0) sendAuth();
   }, [clickCounter]);
