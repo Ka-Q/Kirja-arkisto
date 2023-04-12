@@ -56,10 +56,10 @@ const AddComponent = (props) => {
     }
     
     // oman kirjan tietoja
-    const [kuntoluokka, setKuntoluokka] = useState(-1);
-    const [hankintahinta, sethankintahinta] = useState(-1);
-    const [esittelyteksti, setEsittelyteksti] = useState("");
-    const [painosvuosi, setPainosvuosi] = useState(-1);
+    const [kuntoluokka, setKuntoluokka] = useState();
+    const [hankintahinta, setHankintaHinta] = useState();
+    const [esittelyteksti, setEsittelyteksti] = useState();
+    const [painosvuosi, setPainosvuosi] = useState();
     const [hankintaAika, setHankintaAika] = useState(new Date);
     const [kirjaId, setKirjaId] = useState(-1);
 
@@ -231,6 +231,7 @@ const AddComponent = (props) => {
         // Tarkistetaan oman kirjan syötteet
         let omaKirjaOK = false
         if (kuntoluokka >= 0 && hankintahinta >= 0 && painosvuosi >= 0 && kirjaId >= 0) omaKirjaOK = true;
+        if (!kuntoluokka || !hankintahinta || !painosvuosi || !kirjaId ) omaKirjaOK = false;
 
         // Tarkistetaan valokuvatiedostojen syötteet
         let fileInputsOK = true
@@ -246,6 +247,22 @@ const AddComponent = (props) => {
         setFilesFilled(fileInputsOK)
 
         return (omaKirjaOK && fileInputsOK)
+    }
+
+    const handleKuntoluokka = (val) => {
+        if (val > 5) {setKuntoluokka(5); return};
+        if (val < 0) {setKuntoluokka(0); return};
+        setKuntoluokka(val)
+    }
+
+    const handleHankintahinta = (val) => {
+        if (val < 0) {setHankintaHinta(0); return};
+        setHankintaHinta(val)
+    }
+
+    const handlePainosvuosi = (val) => {
+        if (val < 0) {setPainosvuosi(0); return};
+        setPainosvuosi(val)
     }
 
     return (
@@ -268,10 +285,10 @@ const AddComponent = (props) => {
                                 </select> 
                                 <RequiredComponent yes/>
                             </div>
-                            <div><input onChange={(e) => setKuntoluokka(e.target.value)} type="number" placeholder="kuntoluokka" style={inputStyle}/><RequiredComponent yes/></div>
-                            <div><input onChange={(e) => sethankintahinta(e.target.value)} type="number" placeholder="hankintahinta" style={inputStyle}/><RequiredComponent yes/></div>
-                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} placeholder="esittelyteksti" style={{ width: "60%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}}/><RequiredComponent/></div>
-                            <div><input onChange={(e) => setPainosvuosi(e.target.value)} type="number" placeholder="painosvuosi" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><input onChange={(e) => handleKuntoluokka(e.target.value)} value={kuntoluokka} type="number" placeholder="kuntoluokka" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><input onChange={(e) => handleHankintahinta(e.target.value)} value={hankintahinta} type="number" placeholder="hankintahinta" style={inputStyle}/><RequiredComponent yes/></div>
+                            <div><textarea onChange={(e) => setEsittelyteksti(e.target.value)} value={esittelyteksti} placeholder="esittelyteksti" style={{ width: "60%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}}/><RequiredComponent/></div>
+                            <div><input onChange={(e) => handlePainosvuosi(e.target.value)} value={painosvuosi} type="number" placeholder="painosvuosi" style={inputStyle}/><RequiredComponent yes/></div>
                             <div>hankinta-aika (mikäli tänään, voit jättää tyhjäksi):</div>
                             <div><input onChange={(e) => setHankintaAika(e.target.value)} type="date" style={inputStyle}/><RequiredComponent/></div>
                         </Stack>
