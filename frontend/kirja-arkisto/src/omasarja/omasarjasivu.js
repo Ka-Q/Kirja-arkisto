@@ -11,7 +11,6 @@ const OmaSarjaSivu = () => {
     const [btnText, setBtnText] = useState("Lisää oma sarja")
     const [searchCounter, setSearchCounter] = useState(0);
 
-
     const [serieClicked, setSerieClicked] = useState(false)
     const [selectedSerie, setSelectedSerie] = useState(null)
 
@@ -86,14 +85,13 @@ const OmaSarjaSivu = () => {
         </div>
     )
 }
-
-
 const SearchComponent = (props) => {
 
     const [searchCounter, setSearchCounter] = useState(0);
     const [serieList, setSerieList] = useState([]);
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
+    const [kuvaus, setKuvaus] = useState("");
 
     const [gridView, setGridView] = useState(true)
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
@@ -161,8 +159,6 @@ const SearchComponent = (props) => {
             }
         }
     }
-    
-    
 
     const updateQuery = () => {
         setSearchCounter(searchCounter + 1)
@@ -172,7 +168,6 @@ const SearchComponent = (props) => {
         }
         setQuery(q)
     }
-
 
     useEffect(() => {
         const fetchOwnSerie = async () => {
@@ -187,6 +182,8 @@ const SearchComponent = (props) => {
         };
         fetchOwnSerie();
     }, [searchCounter]);
+
+   
 
 
     const handleSearchClick = (props) => {
