@@ -76,6 +76,7 @@ const AddComponent = (props) => {
         const addBook = async () => {
             const f = await fetch("http://localhost:5000/kirja", {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },

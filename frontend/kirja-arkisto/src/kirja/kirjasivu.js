@@ -11,7 +11,7 @@ const KirjaSivu = (props) => {
 
 
   const [isBackButton, setIsBackButton] = useState(false)
-  const [btnText, setBtnText] = useState("Lisää oma kirja")
+  const [btnText, setBtnText] = useState("Lisää kirja")
 
   const [bookClicked, setBookClicked] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null)
