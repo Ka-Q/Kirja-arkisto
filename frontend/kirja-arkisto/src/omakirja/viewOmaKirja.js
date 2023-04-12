@@ -288,6 +288,22 @@ const EditOwnBookComponent = (props) => {
         if (painosvuosiChanged) setPainosvuosi(painosvuosiOriginal)
     }
 
+    const handleKuntoluokka = (val) => {
+        if (val > 5) {setKuntoluokka(5); return};
+        if (val < 0) {setKuntoluokka(0); return};
+        setKuntoluokka(val)
+    }
+
+    const handleHankintahinta = (val) => {
+        if (val < 0) {setHankintaHinta(0); return};
+        setHankintaHinta(val)
+    }
+
+    const handlePainosvuosi = (val) => {
+        if (val < 0) {setPainosvuosi(0); return};
+        setPainosvuosi(val)
+    }
+
 
     const labelW = "8em"
     const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
@@ -298,7 +314,7 @@ const EditOwnBookComponent = (props) => {
                 <Card.Title>Muokataan omaa kirjaa "{props.omakirja.kirja.nimi}"</Card.Title>
                     <div>
                         <label for="kuntoluokka" style={{width:labelW}}>Kuntoluokka: </label>
-                        <input type="number" id="kuntoluokka" value={kuntoluokka} style={inputStyle} onChange={(e) => setKuntoluokka(e.target.value)}/>
+                        <input type="number" id="kuntoluokka" value={kuntoluokka} style={inputStyle} onChange={(e) => handleKuntoluokka(e.target.value)}/>
                         <span style={{position:"absolute", marginLeft:"0.5em"}}>/5</span>
                         {kuntoluokkaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
@@ -311,14 +327,14 @@ const EditOwnBookComponent = (props) => {
 
                     <div>
                         <label for="hankintahinta" style={{width:labelW}}>Hankintahinta: </label>
-                        <input type="number" id="hankintahinta" value={hankintaHinta} style={inputStyle} onChange={(e) => setHankintaHinta(e.target.value)}/>
+                        <input type="number" id="hankintahinta" value={hankintaHinta} style={inputStyle} onChange={(e) => handleHankintahinta(e.target.value)}/>
                         <span style={{position:"absolute", marginLeft:"0.5em"}}>€</span>
                         {hankintahintaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
                     <div>
                         <label for="painosvuosi" style={{width:labelW}}>Painosvuosi: </label>
-                        <input type="number" id="painosvuosi" value={painosvuosi} style={inputStyle} onChange={(e) => setPainosvuosi(e.target.value)}/>
+                        <input type="number" id="painosvuosi" value={painosvuosi} style={inputStyle} onChange={(e) => handlePainosvuosi(e.target.value)}/>
                         {painosvuosiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
