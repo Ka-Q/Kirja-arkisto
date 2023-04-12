@@ -27,11 +27,12 @@ const AddComponent = (props) => {
 
     let optionList = serieslist.length > 0
         ? serieslist.map((n, index) => (
-            <option key={index} value={n.kirja_id}>
+            <option key={index} value={n.sarja_id}>
                 {n.nimi}
             </option>
         ))
         : [<option key={0} value={-1}>Ei sarjoja</option>];
+
 
     const [kuvaus, setKuvaus] = useState(-1);
     const [nimi, setNimi] = useState(-1);
@@ -93,7 +94,7 @@ const AddComponent = (props) => {
                 nimi: nimi,
                 sarja_sarja_id: sarjasarjaId
             };
-            
+
             setfinalOmaSarja(omaSarja);
             setSaveClicked(true);
         }
@@ -148,7 +149,15 @@ const AddComponent = (props) => {
                                     <Col>
                                         <div className="my-5">
                                             {!omaSarjaFilled ? <WarningComponent text="Vaadittuja tietoja puuttuu" /> : <></>}
-                                            <Button variant="success" style={{ backgroundColor: theme.button }} onClick={(e) => handleSaveClicked(e)}>Tallenna</Button>
+                                            <Button
+                                                variant="success"
+                                                style={{ backgroundColor: theme.button }}
+                                                onClick={(e) => handleSaveClicked(e)}
+                                                disabled={!nimi || !kuvaus || !sarjasarjaId === -1}
+                                            >
+                                                Tallenna
+                                            </Button>
+
                                             <Button variant="dark" onClick={(e) => props.handleLisaaClicked()}>Peruuta</Button>
                                         </div>
                                     </Col>
