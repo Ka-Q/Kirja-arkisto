@@ -69,10 +69,10 @@ const ViewComponent = (props) => {
             
             <Col >
                 <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                    <div className="mt-3" style={{marginInline: "10em"}}>
+                    <div className="mt-5" style={{}}>
                         <h1>{kirja.nimi}</h1>
                     </div>
-                    <Stack direction="horizontal" gap={0} className="me-3 mt-3" style={{position: "absolute", right: 0}}>
+                    <Stack direction="horizontal" gap={0} className="me-2 mt-2" style={{position: "absolute", right: 0}}>
                         <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => setEditClicked(true)}>✏</Button> <span className="mx-1"/>
                         <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => setDeleteClicked(true)}>🗑</Button>
                     </Stack>

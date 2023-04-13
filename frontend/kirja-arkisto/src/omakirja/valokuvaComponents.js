@@ -134,7 +134,7 @@ const ValokuvaViewerComponent = (props) => {
                     {previewList}
                 </div>
                 <hr/>
-                <Stack direction="horizontal" gap={0} className="me-3 mt-3" style={{position: "relative", top :0}}>
+                <Stack direction="horizontal" gap={0} className="me-2 mt-2" style={{position: "relative", top :0}}>
                     <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => console.log("muokataan")}>✏</Button> <span className="mx-1"/>
                     <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => console.log("poistetaan")}>🗑</Button>
                 </Stack>
