@@ -4,8 +4,6 @@ const fileUpload = require('express-fileupload');
 
 const session = require("express-session")
 
-const cors = require('cors')
-
 const kirja_functions = require('./functions/kirja_functions')
 const kirja_kaikella_functions = require('./functions/kirja_kaikella_functions')
 const oma_kirja_functions = require('./functions/oma_kirja_functions')

@@ -2,10 +2,9 @@ import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utlilityComponents"
 import theme from "./theme.json"
+import { AddValokuvaFormComponent } from "./valokuvaComponents"
 
 const AddComponent = (props) => {
-
-    
 
     // Tarkistetaan sivun auetessa, onko käyttäjä kirjautunut sisään
     const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -199,7 +198,7 @@ const AddComponent = (props) => {
     // Lisää uusen valokuvanlisäyskomponentin listan loppuun. Päivittää formien avaimen/id:n
     const handleAddPictureClicked = (e) => {
         setAddPicKeys(addPicKeys + 1)
-        setAddPicComponents([...addPicComponents, <AddPictureComponent 
+        setAddPicComponents([...addPicComponents, <AddValokuvaFormComponent 
             key={addPicKeys} 
             inputStyle={inputStyle} 
             formId={"picForm" + addPicKeys}/>])
@@ -327,55 +326,6 @@ const AddComponent = (props) => {
         </Card>
         : <><WarningComponent text="Sinun on kirjauduttava sisään lisätäksesi oman kirjan"/><div style={{paddingBottom: "100%"}}/></>}
         </div>
-    )
-}
-
-// Komponentti valokuvan lisäykseen. Sisältää formin tiedostolle, nimelle ja sivunumerolle
-const AddPictureComponent = (props) => {
-    const inputStyle = props.inputStyle
-    const formId = props.formId
-
-    const handleSub = props.handleSubmit
-    const [showSivu, setShowSivu] = useState(true)
-
-    const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
-    inputStyleFile.borderRadius = "0.5em";
-    inputStyleFile.padding = "0.5em";
-
-    // Formia ei lähetetä submitilla, vaan juurikomponentin useEffectissä
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-    }
-
-    return (
-        <Row className="mt-2 mb-3">
-            <hr/>
-            <Col>
-            <form id={formId} onSubmit={(e) => handleSubmit(e)}>
-                <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                    <div><input type={"file"} name="files" style={inputStyleFile}/><RequiredComponent yes/></div>
-                    <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
-                    <div className="mx-auto" style={{display:"flex"}}>
-                        <div onClick={(e) => setShowSivu(false)}>
-                            <label for="etukansiRadio" className="pe-3">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
-                        </div>
-                        <div className="mx-5" onClick={(e) => setShowSivu(false)}>
-                            <label for="takakansiRadio" className="pe-3">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
-                        </div>
-                        <div onClick={(e) => setShowSivu(true)}>
-                            <label for="sivuRadio" className="pe-3">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
-                        </div>
-                        <RequiredComponent yes/>
-                    </div>
-                    {showSivu? 
-                        <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/><RequiredComponent/></div>
-                    :
-                        <></>
-                    }
-                </Stack>
-            </form>
-            </Col>
-        </Row>
     )
 }
 
