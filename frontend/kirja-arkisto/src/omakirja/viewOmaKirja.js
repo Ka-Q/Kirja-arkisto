@@ -1,6 +1,7 @@
 
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
-import { KuvaViewerComponent, ValokuvaViewerComponent } from "./kuvaComponents"
+import { KuvaViewerComponent } from "./kuvaComponents"
+import { AddValokuvaFormComponent, ValokuvaViewerComponent } from "./valokuvaComponents"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
 import { SuccessComponent } from "./utlilityComponents"
@@ -45,6 +46,8 @@ const ViewComponent = (props) => {
         kuntoluokkaStars += "⭐"
     }
 
+    const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
+
     return(
         <div className="text-center px-3 py-1" style={{height: "100%",width: "auto", backgroundColor: theme.bg}}>
         <Row className="mt-5">
@@ -66,37 +69,34 @@ const ViewComponent = (props) => {
             
             <Col >
                 <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <h1 className="mt-3">{kirja.nimi}</h1>
-                        <hr/>
-                        <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
-                        <Card.Body>
-                            Kirjailijat: {kirja.kirjailijat} <br/>
-                            Painettu: {omakirja.painosvuosi} <br/>
-                            Hankittu: {omakirja.hankinta_aika} <br/>
-                            Hankintahinta: {omakirja.hankintahinta.toFixed(2)} € <br/>
-                            Esittely: {omakirja.esittelyteksti} <br/>
-                            <br/>
-                            Kirjan kuvaus: <br/>
-                            {kirja.kuvaus} <br/>
-                            <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
-                        </Card.Body>
-                    
-                </Card>
-                <Card className="my-4"  border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <Card.Title className="mt-3">
-                            Toiminnot
-                        </Card.Title>
-                        <Card.Body>
-                            <Button variant="dark" style={{backgroundColor: theme.button}}  onClick={(e) => setEditClicked(true)}>✏ Muokkaa</Button> <span className="mx-3"/>
-                            <Button variant="danger" style={{backgroundColor: theme.accent, color: "red"}} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
-                        </Card.Body>
+                    <div className="mt-3" style={{marginInline: "10em"}}>
+                        <h1>{kirja.nimi}</h1>
+                    </div>
+                    <Stack direction="horizontal" gap={0} className="me-3 mt-3" style={{position: "absolute", right: 0}}>
+                        <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => setEditClicked(true)}>✏</Button> <span className="mx-1"/>
+                        <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => setDeleteClicked(true)}>🗑</Button>
+                    </Stack>
+                    <hr/>
+                    <Card.Title className="mt-3">
+                        Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/>
+                    </Card.Title>
+                    <Card.Body>
+                        Kirjailijat: {kirja.kirjailijat} <br/>
+                        Painettu: {omakirja.painosvuosi} <br/>
+                        Hankittu: {omakirja.hankinta_aika} <br/>
+                        Hankintahinta: {omakirja.hankintahinta.toFixed(2)} € <br/>
+                        Esittely: {omakirja.esittelyteksti} <br/>
+                        <br/>
+                        Kirjan kuvaus: <br/>
+                        {kirja.kuvaus} <br/>
+                        <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
+                    </Card.Body>
                     
                 </Card>
             </Col>
-
-            {
-            valokuvat.length > 0?
-                <Col sm={12} lg={3}>
+            <Col sm={12} lg={3}>
+                {
+                valokuvat.length > 0?
                     <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <Card.Title className="mt-3">
                             Valokuvat
@@ -105,19 +105,21 @@ const ViewComponent = (props) => {
                             <ValokuvaViewerComponent valokuvat={valokuvat}/>
                         </Card.Body>
                     </Card>
-                </Col>
-            :
-                <></>
-            }
+                :
+                    <></>
+                }
+                <AddPicToOwnBookComponent inputStyle={inputStyle}/>
+
+            </Col>
         </Row>
             {deleteClicked?
-                <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
+                <div style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
                     <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
                 </div>
             :
             <></>}
             {editClicked?
-                <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
+                <div style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
                     <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
                 </div>
             :
@@ -321,7 +323,7 @@ const EditOwnBookComponent = (props) => {
 
                     <div>
                         <label for="hankittu" style={{width:labelW}}>Hankittu: </label>
-                        <input type="date" id="hankittu" value={hankittu} style={inputStyle} onChange={(e) => setHankittu(e.target.value)}/>
+                        <input type="date" id="hankittu" style={inputStyle} onChange={(e) => setHankittu(e.target.value)}/>
                         {hankittuChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
@@ -351,6 +353,33 @@ const EditOwnBookComponent = (props) => {
                     </Stack>
             </Card>
         </div>
+    )
+}
+
+const AddPicToOwnBookComponent = (props) => {
+    const [addPicClicked, setAddPicClicked] = useState(false)
+    const [addPicBtnText, setAddPicBtnText] = useState("Lisää uusi")
+
+    const handleAddPicClicked = () => {
+        if (addPicClicked) {setAddPicClicked(false); setAddPicBtnText("Lisää uusi")}
+        else {setAddPicClicked(true); setAddPicBtnText("Peruuta")}
+    }
+
+    return(
+        <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+            <Card.Title className="mt-3">
+                Lisää valokuva
+            </Card.Title>
+            <Card.Body>
+                <Button variant="dark" style={{width: "100%", height: "3em"}} onClick={(e) => handleAddPicClicked()}>{addPicBtnText}</Button>
+                {addPicClicked?
+                    <AddValokuvaFormComponent 
+                        inputStyle={props.inputStyle}
+                        formId={"picForm0"}
+                    /> 
+                : <></>}
+            </Card.Body>
+        </Card>
     )
 }
 
