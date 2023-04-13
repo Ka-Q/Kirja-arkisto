@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kirja` (
   `kirja_id` INT NOT NULL AUTO_INCREMENT,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
   `jarjestysnumero` INT NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(2048) NULL DEFAULT NULL,
   `kirjailijat` VARCHAR(200) NULL DEFAULT NULL,
   `piirtajat` VARCHAR(200) NULL DEFAULT NULL,
   `ensipainosvuosi` INT NULL DEFAULT NULL,
@@ -94,9 +94,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kuva` (
   `kuva` VARCHAR(1024) NULL DEFAULT NULL,
   `kuva_tyyppi_id` INT NOT NULL,
   `julkaisuvuosi` INT NULL DEFAULT NULL,
-  `taiteilija` VARCHAR(45) NULL DEFAULT NULL,
+  `taiteilija` VARCHAR(200) NULL DEFAULT NULL,
   `tyyli` VARCHAR(45) NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(1024) NULL DEFAULT NULL,
   PRIMARY KEY (`kuva_id`),
   UNIQUE INDEX `kuva_id_UNIQUE` (`kuva_id` ASC) VISIBLE,
   INDEX `fk_kuva_kuva_tyyppi1_idx` (`kuva_tyyppi_id` ASC) VISIBLE,
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`kuva` (
     FOREIGN KEY (`kuva_tyyppi_id`)
     REFERENCES `mydb`.`kuva_tyyppi` (`kuva_tyyppi_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 10
+AUTO_INCREMENT = 20
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja` (
   `oma_kirja_id` INT NOT NULL AUTO_INCREMENT,
   `kuntoluokka` INT NULL DEFAULT NULL,
   `hankintahinta` DOUBLE NULL DEFAULT NULL,
-  `esittelyteksti` VARCHAR(200) NULL DEFAULT NULL,
+  `esittelyteksti` VARCHAR(2048) NULL DEFAULT NULL,
   `painosvuosi` INT NULL DEFAULT NULL,
   `hankinta_aika` DATE NULL DEFAULT NULL,
   `kirja_id` INT NOT NULL,
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_kirja` (
     FOREIGN KEY (`kirja_id`)
     REFERENCES `mydb`.`kirja` (`kirja_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 71
+AUTO_INCREMENT = 74
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -166,7 +166,7 @@ DROP TABLE IF EXISTS `mydb`.`sarja` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`sarja` (
   `sarja_id` INT NOT NULL AUTO_INCREMENT,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(1024) NULL DEFAULT NULL,
   PRIMARY KEY (`sarja_id`),
   UNIQUE INDEX `sarja_id_UNIQUE` (`sarja_id` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -182,7 +182,7 @@ DROP TABLE IF EXISTS `mydb`.`oma_sarja` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`oma_sarja` (
   `oma_sarja_id` INT NOT NULL AUTO_INCREMENT,
   `nimi` VARCHAR(45) NULL DEFAULT NULL,
-  `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
+  `kuvaus` VARCHAR(1024) NULL DEFAULT NULL,
   `sarja_sarja_id` INT NOT NULL,
   `kayttaja_kayttaja_id` INT NOT NULL,
   PRIMARY KEY (`oma_sarja_id`),
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oma_sarja` (
     FOREIGN KEY (`sarja_sarja_id`)
     REFERENCES `mydb`.`sarja` (`sarja_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -209,18 +209,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`valokuva` (
   `valokuva_id` INT NOT NULL AUTO_INCREMENT,
   `valokuva` VARCHAR(1024) NULL DEFAULT NULL,
   `sivunumero` INT NULL DEFAULT NULL,
-  `nimi` VARCHAR(45) NULL DEFAULT NULL,
+  `nimi` VARCHAR(1024) NULL DEFAULT NULL,
   `kayttaja_kayttaja_id` INT NOT NULL,
   PRIMARY KEY (`valokuva_id`),
   UNIQUE INDEX `valokuva_id_UNIQUE` (`valokuva_id` ASC) VISIBLE,
   INDEX `fk_valokuva_kayttaja1_idx` (`kayttaja_kayttaja_id` ASC) VISIBLE,
   CONSTRAINT `fk_valokuva_kayttaja1`
     FOREIGN KEY (`kayttaja_kayttaja_id`)
-    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 14
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -245,9 +243,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oman_kirjan_valokuvat` (
     REFERENCES `mydb`.`valokuva` (`valokuva_id`),
   CONSTRAINT `fk_oman_kirjan_valokuvat_kayttaja1`
     FOREIGN KEY (`kayttaja_kayttaja_id`)
-    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
@@ -273,9 +269,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`oman_sarjan_kirjat` (
     REFERENCES `mydb`.`oma_sarja` (`oma_sarja_id`),
   CONSTRAINT `fk_oman_sarjan_kirjat_kayttaja1`
     FOREIGN KEY (`kayttaja_kayttaja_id`)
-    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `mydb`.`kayttaja` (`kayttaja_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
