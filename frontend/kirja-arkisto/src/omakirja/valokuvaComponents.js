@@ -1,67 +1,8 @@
-import { useState } from "react"
-import { Button, Image, Stack, Row, Col } from "react-bootstrap"
+import { useState, useEffect } from "react"
+import { Button, Image, Stack, Row, Col , Card } from "react-bootstrap"
 import theme from './theme.json'
 import { RequiredComponent } from "./utlilityComponents"
 
-const ValokuvaViewerComponent = (props) => {
-
-    // Tietoa esikatselulle ja pikkukuvien kelaukselle
-    const [clickedPic, setClickedPic] = useState(props.valokuvat[0]);
-    const [rollIndex, setRollIndex] = useState(0);
-
-    const width = 5
-
-    // Jos oamlla kirjalla ei ole valokuvia, palautetaan tyhjä komponentti
-    if (!props.valokuvat || props.valokuvat.length == 0) return (<></>)
-
-    let kuvaSrc = "http://localhost:5000/valokuvatiedosto?valokuva=";
-    let valokuvat = props.valokuvat
-
-    // kelaavat pikkukuvia nappeja painettaessa
-    const handleIncrease = () => {
-        if (rollIndex < valokuvat.length - width) setRollIndex(rollIndex + 1);
-    }
-    const handleDecrease = () => {
-        if (rollIndex > 0) setRollIndex(rollIndex - 1);
-    }
-
-    // Järjestetään valokuvat sivunumeron mukaan (kasvava)
-    let valokuvatSorted = sortBySivunumero(valokuvat)
-
-    // Rajataan näkyviin tulevat pikkukuvat indeksin ja leveyden perusteella
-    let croppedlist = valokuvatSorted.slice(rollIndex, rollIndex + width)
-
-    // Mapataan rajattu lista pikkukuviksi
-    let previewList = mapValokuvaToPreviews(croppedlist, kuvaSrc, clickedPic, setClickedPic)
-
-    let remainingImages = valokuvat.length - rollIndex - width
-    if (remainingImages < 0) remainingImages = 0
-
-    let sivunumero = clickedPic.sivunumero;
-    if (sivunumero == -200) sivunumero = "etukansi"
-    if (sivunumero == -100) sivunumero = "takakansi"
-
-    let BtnStyle = {backgroundColor:  theme.button};
-    
-    return(
-        <div style={{width: "100%"}}>
-            <Stack direction="horizontal" gap={1}>
-                <Button onClick={(e) => handleDecrease()} className='btn btn-dark' style={BtnStyle}> {"< " + rollIndex} </Button>
-                {previewList}
-                <Button onClick={(e) => handleIncrease()} className='btn btn-dark' style={BtnStyle}> {"> " + (remainingImages)} </Button>
-            </Stack>
-            <div className="mx-auto" style={{width:"100%", height: "auto", marginTop: "1em"}}>
-                <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
-                <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{width:"100%"}}/>
-                </a>
-            </div>
-            <div style={{textAlign: "left"}}>
-                Sivunumero: {sivunumero}<br/>
-                Nimi/Kuvaus: {clickedPic.nimi} <br/>
-            </div>
-        </div>
-    )
-}
 
 const sortBySivunumero = (valokuvat) => {
     return valokuvat.sort((a, b) => {
@@ -69,27 +10,6 @@ const sortBySivunumero = (valokuvat) => {
         if (a.sivunumero > b.sivunumero) return 1
         return 0
     });
-}
-
-const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
-    let previewList = list.map((n, index) => {
-        let style = {width: "20%"};
-        let clickedStyle = {width: "20%", border: "2px solid black", borderRadius: "5px"}
-        
-        if (clickedPic.valokuva_id == n.valokuva_id){
-            return (
-                <div key={index} onClick={(e) => setClickedPic(n)} style={clickedStyle}>
-                    <Image src={kuvaSrc + n.valokuva} thumbnail fluid/>
-                </div>
-            )
-        }
-        return (
-            <div key={index} onClick={(e) => setClickedPic(n)} style={style}>
-                <Image src={kuvaSrc + n.valokuva} thumbnail fluid/>
-            </div>
-        )
-    });
-    return previewList
 }
 
 const AddValokuvaFormComponent = (props) => {
@@ -139,4 +59,93 @@ const AddValokuvaFormComponent = (props) => {
     )
 }
 
-export { ValokuvaViewerComponent, AddValokuvaFormComponent }
+const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
+    let previewList = list.map((n, index) => {
+        n.index = index
+        let sivunro = n.sivunumero
+
+        if (sivunro == -200) sivunro = "etukansi"
+        if (sivunro == -100) sivunro = "takakansi"
+
+        if (clickedPic.valokuva_id == n.valokuva_id){
+            return (
+                <div className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em", borderRadius: "0.3em"}}>
+                    <Image src={kuvaSrc + n.valokuva} height={"100%"}/>
+                </div>
+            )
+        }
+        return (
+            <div id={"previewPic" + index} className="mx-1" key={index} onClick={(e) => setClickedPic(n)} style={{position: "relative", display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em" , borderRadius: "0.3em"}}>
+                <div style={{display: "inline-block", overflow: "auto", whiteSpace: "nowrap", height: "94%", filter: "brightness(0.4)", margin: 0, padding: 0}}><Image src={kuvaSrc + n.valokuva} height={"100%"}/></div>
+                <div className="px-2" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0.5em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em"}}>
+                    {sivunro}
+                </div>
+            </div>
+        )
+    });
+    return previewList
+}
+
+const ValokuvaViewerComponent = (props) => {
+
+    // Tietoa esikatselulle ja pikkukuvien kelaukselle
+    const [clickedPic, setClickedPic] = useState(props.valokuvat[0]);
+    const [valokuvaList, setValokuvaList] = useState(sortBySivunumero(props.valokuvat))
+
+    // Jos oamlla kirjalla ei ole valokuvia, palautetaan tyhjä komponentti
+    if (!props.valokuvat || props.valokuvat.length == 0) return (<></>)
+
+    let kuvaSrc = "http://localhost:5000/valokuvatiedosto?valokuva=";
+
+    // Mapataan rajattu lista pikkukuviksi
+    let previewList = mapValokuvaToPreviews(valokuvaList, kuvaSrc, clickedPic, setClickedPic)
+
+    // kelaavat pikkukuvia nappeja painettaessa
+    const handleIncrease = () => {
+        if (clickedPic.index < valokuvaList.length - 1) setClickedPic(valokuvaList[clickedPic.index + 1])
+    }
+    const handleDecrease = () => {
+        if (clickedPic.index > 0) setClickedPic(valokuvaList[clickedPic.index - 1])
+    }
+
+    let sivunumero = clickedPic.sivunumero;
+    if (sivunumero == -200) sivunumero = "etukansi"
+    if (sivunumero == -100) sivunumero = "takakansi"
+
+    let BtnStyle = {backgroundColor: "rgba(40,40,40,0.8)", width:"4em", height: "4em", borderRadius: "10em", padding: "1em", cursor: "pointer", userSelect: "none", fontWeight: "bold"};
+    
+    return(
+
+        <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+            <Card.Title className="mt-3">
+                Valokuvat
+            </Card.Title>
+            <Card.Body>
+                <div style={{height: "30em"}}>
+                <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
+                    <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{flexShrink: 0, objectFit: "contain", height:"100%", minWidth: "100%", backgroundColor: "black", borderRadius: "0.3em"}}/>
+                </a>
+                    <Stack className="mx-4" direction="horizontal" style={{position: "absolute", top: "50%",left: 0, right: 0}}>
+                        <div style={BtnStyle} onClick={(e) => handleDecrease()}>{"<"}</div>
+                        <div style={BtnStyle} className="ms-auto" onClick={(e) => handleIncrease()}>{">"}</div>
+                    </Stack>
+                </div>
+                <div id="previewScroll" className="py-2" style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", width: "100%", height: "auto"}} >
+                    {previewList}
+                </div>
+                <hr/>
+                <Stack direction="horizontal" gap={0} className="me-3 mt-3" style={{position: "relative", top :0}}>
+                    <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => console.log("muokataan")}>✏</Button> <span className="mx-1"/>
+                    <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => console.log("poistetaan")}>🗑</Button>
+                </Stack>
+                Sivunumero: {sivunumero} <br/>
+                Nimi/kuvaus: {clickedPic.nimi}
+                <div>
+                </div>
+            </Card.Body>
+        </Card>
+
+    )
+}
+
+export { ValokuvaViewerComponent , AddValokuvaFormComponent }
