@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react"
-import { Button, Col, Row, Stack } from "react-bootstrap"
-import { WarningComponent, ListBookCard, GridBookCard } from "./utlilityComponents"
-import { AddComponent } from "./addOmaSarja"
-import { ViewComponent } from "./viewOmaSarja"
-import theme from './theme.json'
+import { useState, useEffect } from "react";
+import { Button, Col, Row, Stack } from "react-bootstrap";
+import {WarningComponent, ListBookCard, GridBookCard,}
+ from "./utlilityComponents";
+import { AddComponent } from "./addOmaSarja";
+import { ViewComponent } from "./viewOmaSarja";
+import theme from "./theme.json";
 
 const OmaSarjaSivu = () => {
 
@@ -95,10 +96,26 @@ const SearchComponent = (props) => {
 
     const [gridView, setGridView] = useState(true)
     const [viewModeIcon, setViewModeIcon] = useState("🔳")
+    const [ownSeriesGrid, setOwnSeriesGrid] = useState([]);
 
     const serieClicked = props.serieClicked
 
-    let serieData = serieList.data
+    
+
+  const fetchOwnSeries = async () => {
+    const response = await fetch("http://localhost:5000/oma_sarja", {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await response.json();
+    setSerieList(data);
+  };
+
+  useEffect(() => {
+    fetchOwnSeries();
+  }, [searchCounter]);
+
+  let serieData = serieList;
     let BookCardList = []
     let width = 6
     
@@ -183,6 +200,7 @@ const SearchComponent = (props) => {
         fetchOwnSerie();
     }, [searchCounter]);
 
+  
    
 
 
