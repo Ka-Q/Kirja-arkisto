@@ -9,41 +9,51 @@ import theme from "./theme.json"
 const ViewComponent = (props) => {
     const [deleteClicked, setDeleteClicked] = useState(false)
     const [editClicked, setEditClicked] = useState(false)
-    const [omakirja, setOmakirja] = useState(null)
+    const [omasarja, setOmasarja] = useState(null);
     const id = useLocation()
 
-    // Haetaan osoitekentän id:n avulla oma kirja serveriltä
+
+   
     useEffect(() => {
-        const fetchBook = async (id) => {
-            let idFormatted = "" + id.pathname.split('/')[2];
-            const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${idFormatted}`, {
-                method: "GET",
-                credentials: "include"
-            });
-            const data = await f.json()
-            console.log(data)
-            setOmakirja(data.data[0])
-        }
-        fetchBook(id) 
-    }, [])
+        const fetchSeries = async (id) => {
+          let idFormatted = "" + id.pathname.split("/")[2];
+          console.log(idFormatted);
+          const f = await fetch(
+            `http://localhost:5000/sarja_kaikella?&sarja_id=${idFormatted}`, 
+            {}
+          );
+          const data = await f.json();
+          console.log(data);
+          setOmasarja(data.data[0]); 
+        };
+        fetchSeries(id);
+      }, []);
 
-    // Virhesivu jos id:llä ei löydy käyttäjän omistamaa kirjaa
-    if (!omakirja) {
-        return(
-            <div className="text-center" style={{color: "white", height: "100%", width: '100%', paddingBottom: '100%', paddingTop: "10em", backgroundColor: theme.bg}}>
-                Odotetaan omaa kirjaa... <br/><br/> Mikäli tämä sivu ei muutu, jotain on mennyt pieleen. Voi olla, ettei sinulla ole oikeuksia tämän kirjan tarkasteluun
-            </div>
-        )
-    }
+   
+      if (!omasarja) {
+        return (
+          <div
+            className="text-center"
+            style={{
+              color: "white",
+              height: "100%",
+              width: "100%",
+              paddingBottom: "100%",
+              paddingTop: "10em",
+              backgroundColor: theme.bg,
+            }}
+          >
+            Odotetaan sarjaa...
+            <br />
+            <br />
+            Mikäli tämä sivu ei muutu, jotain on mennyt pieleen. Voi olla, ettei
+            sinulla ole oikeuksia tämän sarjan tarkasteluun
+          </div>
+        );
+      }
 
-    let kirja = omakirja.kirja
-    let kuvat = kirja.kuvat
-    let valokuvat = omakirja.valokuvat
-
-    let kuntoluokkaStars = "";
-    for (let i = 0; i < omakirja.kuntoluokka; i++) {
-        kuntoluokkaStars += "⭐"
-    }
+      let kuvat = omasarja.kuvat;
+    
 
     return(
         <div className="text-center px-3 py-1" style={{height: "100%",width: "auto", backgroundColor: theme.bg}}>
@@ -66,19 +76,13 @@ const ViewComponent = (props) => {
             
             <Col >
                 <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <h1 className="mt-3">{kirja.nimi}</h1>
+                        <h1 className="mt-3">{omasarja.nimi}</h1>
                         <hr/>
-                        <Card.Title className="mt-3">Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 ) <br/></Card.Title>
                         <Card.Body>
-                            Kirjailijat: {kirja.kirjailijat} <br/>
-                            Painettu: {omakirja.painosvuosi} <br/>
-                            Hankittu: {omakirja.hankinta_aika} <br/>
-                            Hankintahinta: {omakirja.hankintahinta.toFixed(2)} € <br/>
-                            Esittely: {omakirja.esittelyteksti} <br/>
-                            <br/>
+                            <br/><br/>
                             Kirjan kuvaus: <br/>
-                            {kirja.kuvaus} <br/>
-                            <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
+                            {omasarja.kuvaus} <br/>
+                            <Button href={"http://localhost:3000/oma_sarja/" + omasarja.sarja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
                         </Card.Body>
                     
                 </Card>
@@ -94,134 +98,21 @@ const ViewComponent = (props) => {
                 </Card>
             </Col>
 
-            {
-            valokuvat.length > 0?
-                <Col sm={12} lg={3}>
-                    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <Card.Title className="mt-3">
-                            Valokuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <ValokuvaViewerComponent valokuvat={valokuvat}/>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            :
-                <></>
-            }
+
         </Row>
             {deleteClicked?
                 <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
+                    
                 </div>
             :
             <></>}
             {editClicked?
                 <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
+                    
                 </div>
             :
             <></>}
         </div>
     )
 }
-
-const DeleteOwnBookComponent = (props) => {
-    let omakirja = props.omakirja
-    const [clickCounter, setClickCounter] = useState(0);
-    const [isDone, setIsDone] = useState(false);
-
-    useEffect(() => {
-        const deletePictures = async () => {
-            const f = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({oma_kirja_id: omakirja.oma_kirja_id})
-            })
-            const data = await f.json();
-            console.log(data)
-        };
-        const deleteFromSeries = async () => {
-            const f = await fetch("http://localhost:5000/oman_sarjan_kirjat", {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({oma_kirja_id: omakirja.oma_kirja_id})
-            })
-            const data = await f.json();
-            console.log(data)
-            for (let i in omakirja.valokuvat) {
-                let valokuva = omakirja.valokuvat[i];
-                    const f = await fetch("http://localhost:5000/valokuva", {
-                    method: "DELETE",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({valokuva_id: valokuva.valokuva_id})
-                })
-                const data = await f.json();
-                console.log(data)
-            }
-        };
-        const deleteOwnBook = async () => {
-            const f = await fetch("http://localhost:5000/oma_kirja", {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({oma_kirja_id: omakirja.oma_kirja_id})
-            })
-            const data = await f.json();
-            console.log(data)
-        };
-        if (clickCounter > 0){
-            //Todo
-            deletePictures();
-            deleteFromSeries();
-            deleteOwnBook();
-            setIsDone(true)
-        } 
-    }, [clickCounter])
-
-    return (
-        <>
-        {isDone?
-            <Card bg="dark" className="px-2 py-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
-                <SuccessComponent text="Poisto onnistui"></SuccessComponent>
-                <Link to="/omakirja"><Button variant="success">Jatka</Button></Link>
-            </Card>
-        :
-        <Card bg="dark" className="px-2 pb-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
-            <Card.Title className="mt-5">Haluatko varmasti poistaa kirjan "{omakirja.kirja.nimi}" omista kirjoistasi</Card.Title>
-            <Card.Header>
-                Poiston yhteydessä poistetaan myös omaan kirjaan liitetyt valokuvat. Oma Kirja poistetaan myös niistä omista sarjoistasi, joihin se kuuluu. 
-                <br/>
-                <br/>
-                <b style={{color:"rgb(250,200, 0)"}}>⚠ Tätä toimintoa ei voi peruuttaa! ⚠</b>
-            </Card.Header>
-            <Button variant="warning" className="my-5" onClick={(e) => props.setDeleteClicked(false)}>Peruuta</Button> 
-            <Button variant="danger" onClick={(e) => setClickCounter(clickCounter + 1)}>Poista</Button>
-
-        </Card>
-        }
-        </>
-    )
-}
-
-const EditOwnBookComponent = (props) => {
-    return (
-        <div style={{paddingTop: "20em", color: "white"}}>
-            Muokataan kirjaa "{props.omakirja.kirja.nimi}" <br/><br/> 
-            <Button onClick={(e) => props.setEditClicked(false)}>Peruuta</Button>
-            </div>
-    )
-}
-
 export {ViewComponent}
