@@ -97,14 +97,7 @@ const ViewComponent = (props) => {
             <Col sm={12} lg={3}>
                 {
                 valokuvat.length > 0?
-                    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <Card.Title className="mt-3">
-                            Valokuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <ValokuvaViewerComponent valokuvat={valokuvat}/>
-                        </Card.Body>
-                    </Card>
+                    <ValokuvaViewerComponent valokuvat={valokuvat}/>
                 :
                     <></>
                 }
