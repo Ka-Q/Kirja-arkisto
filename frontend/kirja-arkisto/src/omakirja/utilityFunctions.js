@@ -42,4 +42,47 @@ const getCoverArt = (omakirja) => {
     return {tyyppi: tyyppi, imgsrc: imgsrc};
 }
 
-export {getCoverArt}
+const sendValokuvaForm = async (form, bookId) => {
+    let formdata = new FormData(form)
+
+    let type = formdata.get("type");
+
+    // Etukannelle sivunro -200 ja takakannelle sivunro -100
+    if (type == "etukansi") {
+        formdata.set("sivunumero", -200)
+    } else if (type == "takakansi") {
+        formdata.set("sivunumero", -100)
+    }
+
+    // jos sivunumeroa ei ole, laitetaan -1
+    if (!formdata.get("sivunumero")) { 
+        formdata.set("sivunumero", -1)
+    }
+
+    formdata.delete("type")
+
+    const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+    credentials: "include",
+    method: 'POST',
+    body: formdata})
+    const data = await f.json()
+
+    console.log("Insert id: " + data.data.insertId);
+
+    let obj = {oma_kirja_id: bookId, valokuva_id: data.data.insertId}
+
+    const f2 = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
+        credentials: "include",
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)})
+
+    const data2 = await f2.json()
+
+    console.log("Insert id2: " + data2.data.insertId);
+    return true;
+}
+
+export {getCoverArt, sendValokuvaForm}

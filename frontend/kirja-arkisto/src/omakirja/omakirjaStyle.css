@@ -1,3 +1,8 @@
+body {
+  background-color: #202020;
+  height: 100%;
+}
+
 #item{
     transition: all 0.2s ease-out;
 
@@ -31,22 +36,24 @@ input[type=number] {
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
-    height: 10px
+    height: 20px;
+    background-color: #202020;
+    border-radius: 1em;
   }
   
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #2c2c2c; 
+    background: #202020; 
     border-radius: 1em;
   }
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #3a3a3a; 
     border-radius: 1em;
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #888; 
   }
