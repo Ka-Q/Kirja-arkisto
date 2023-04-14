@@ -3,6 +3,7 @@ import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utlilityComponents"
 import theme from "./theme.json"
 import { AddValokuvaFormComponent } from "./valokuvaComponents"
+import { sendValokuvaForm } from "./utilityFunctions"
 
 const AddComponent = (props) => {
 
@@ -112,7 +113,7 @@ const AddComponent = (props) => {
         const handlePics = async () => {
             for (let i = 0; i < addPicKeys; i++) {
                 let form = document.getElementById("picForm" + i);
-                const sent = await sendForm(form, insertedBookId)
+                const sent = await sendValokuvaForm(form, insertedBookId);
             }
             setSaveSuccessful(true)
         };
@@ -142,52 +143,7 @@ const AddComponent = (props) => {
             addPicToBook();
         }
     }, [insertedPicId]);
-
-
-    const sendForm = async (form, bookId) => {
-
-        let formdata = new FormData(form)
-
-        let type = formdata.get("type");
-
-        // Etukannelle sivunro -200 ja takakannelle sivunro -100
-        if (type == "etukansi") {
-            formdata.set("sivunumero", -200)
-        } else if (type == "takakansi") {
-            formdata.set("sivunumero", -100)
-        }
-
-        // jos sivunumeroa ei ole, laitetaan -1
-        if (!formdata.get("sivunumero")) { 
-            formdata.set("sivunumero", -1)
-        }
-
-        formdata.delete("type")
-
-        const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
-        credentials: "include",
-        method: 'POST',
-        body: formdata})
-        const data = await f.json()
-
-        console.log("Insert id: " + data.data.insertId);
-
-        let obj = {oma_kirja_id: bookId, valokuva_id: data.data.insertId}
-
-        const f2 = await fetch("http://localhost:5000/oman_kirjan_valokuvat", {
-            credentials: "include",
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)})
-
-        const data2 = await f2.json()
-
-        console.log("Insert id2: " + data2.data.insertId);
-        return true;
-    }
-
+    
     // Poistaa viimeisimmän valokuvanuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
     const handleDeletePicClicked = () => {
         let list = addPicComponents.slice(0, addPicComponents.length-1)
