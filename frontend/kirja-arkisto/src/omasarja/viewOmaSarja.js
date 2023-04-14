@@ -19,7 +19,7 @@ const ViewComponent = (props) => {
           let idFormatted = "" + id.pathname.split("/")[2];
           console.log(idFormatted);
           const f = await fetch(
-            `http://localhost:5000/sarja_kaikella?&sarja_id=${idFormatted}`, 
+            `http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${idFormatted}`, 
             {}
           );
           const data = await f.json();
@@ -82,7 +82,7 @@ const ViewComponent = (props) => {
                             <br/><br/>
                             Kirjan kuvaus: <br/>
                             {omasarja.kuvaus} <br/>
-                            <Button href={"http://localhost:3000/oma_sarja/" + omasarja.sarja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
+                            <Button href={"http://localhost:3000/oma_kirja/" + omasarja.sarja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
                         </Card.Body>
                     
                 </Card>

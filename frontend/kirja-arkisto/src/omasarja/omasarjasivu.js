@@ -1,234 +1,236 @@
-import { useState, useEffect } from "react";
-import { Button, Col, Row, Stack } from "react-bootstrap";
-import {WarningComponent, ListBookCard, GridBookCard,}
- from "./utlilityComponents";
-import { AddComponent } from "./addOmaSarja";
+import { useState, useEffect } from "react"
+import { Button, Card, Col, Row, Stack } from "react-bootstrap"
+import { AddComponent } from "./addOmaSarja"
 import { ViewComponent } from "./viewOmaSarja";
-import theme from "./theme.json";
+import theme from './theme.json'
 
 const OmaSarjaSivu = () => {
 
-    const [isBackButton, setIsBackButton] = useState(false)
-    const [btnText, setBtnText] = useState("Lisää oma sarja")
-    const [searchCounter, setSearchCounter] = useState(0);
-
-    const [serieClicked, setSerieClicked] = useState(false)
-    const [selectedSerie, setSelectedSerie] = useState(null)
-
-
-    const handleButtonClicked = () => {
-        if (!isBackButton) {
-            setIsBackButton(true)
-            setBtnText("Palaa omien sarjojen hakuun")
-    
-        } else {
-            setIsBackButton(false)
-            setBtnText("Lisää oma sarja")
-            if (serieClicked) setSerieClicked(false)
-        }
+    const [selectedOwnSeries, setSelectedOwnSeries] = useState(null);
+    const [lisaaClicked, setLisaaClicked] = useState(false)
+    const [lisaaBtnText, setLisaaBtnText] = useState("Lisää sarja")
+    const [editClicked, setEditClicked] = useState(false)
+  
+ 
+    const handleLisaaClicked = () => {
+      if (!lisaaClicked) {
+        setLisaaBtnText("Palaa sarjojen hakuun")
+        setEditClicked(false)
+        setLisaaClicked(true)
+  
+      } else {
+        setLisaaClicked(false)
+        setLisaaBtnText("Lisää sarja")
+        setEditClicked(false)
+      }
     }
-
-    const handleSerieClicked = (serie) => {
-        if (!serieClicked && serie) {
-            setIsBackButton(true)
-            setSerieClicked(true)
-            setSelectedSerie(serie)
-            setBtnText("Palaa omien sarjojen hakuun")
-        } else {
-            setSerieClicked(false)
-        }
-    }
-
+  
+    const [omasarjaId, setOmaSarjaId] = useState(null);
+  
+    const handleEditClicked = (sarja_id) => {
+      if (!editClicked) {
+        setEditClicked(true);
+        setLisaaBtnText("Lisää sarja");
+        setLisaaClicked(false);
+        setOmaSarjaId(sarja_id); 
+      } else {
+        setEditClicked(false);
+        setLisaaBtnText("Lisää sarja");
+      }
+    };
+  
     return (
-        <div  style={{backgroundColor: theme.bg, paddingBottom: "20%"}}>
-        <div className="mx-3 pt-5">
-            <Row>
-                <Col>
-                    <Stack direction="horizontal" gap={3}>
-                        <div className="ms-auto"><Button className='btn btn-dark' style={{backgroundColor: theme.button}} onClick={(e) => handleButtonClicked(e.target)}>{btnText}</Button></div>
-                    </Stack>
-                </Col>
-            </Row>
-            {
-            !isBackButton && !serieClicked ?
-                <Row className="mt-3" >
-                    <Col className="px-2 d-md-none">
-                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                            <SearchComponent serieClicked={handleSerieClicked}/>
-                        </div>
-                    </Col>
-                    <Col className="px-5 d-none d-md-block">
-                        <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                            <SearchComponent serieClicked={handleSerieClicked}/>
-                        </div>
-                    </Col>
-                </Row>
-            :
-            isBackButton && !serieClicked?
-                <Row className="mt-3" >
-                    <Col>
-                    <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                        <AddComponent handleLisaaClicked={handleButtonClicked} handleSarjanLisays={() => setSearchCounter(searchCounter + 1)} />
-
-                    </div>
-                    </Col>
-                </Row>
-            :
-            <Row className="mt-3" >
-                <Col>
-                <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                    <ViewComponent omakirja={selectedSerie}/>
-                </div>
-                </Col>
-            </Row>
-            }
+      <div  style={{backgroundColor: theme.bg, paddingBottom: "20%"}}>
+        <div className="text-center" >
+          <h1 style={{ color: "white" }}>Omat sarjat</h1>
         </div>
-        </div>
-    )
-}
-const SearchComponent = (props) => {
-
+        <Row>
+          <Col>
+            <Stack direction='horizontal' gap={3}>
+              <div className=" ms-auto"><Button className='btn btn-dark' style={{backgroundColor: theme.button}}  onClick={(e) => handleLisaaClicked(e.target)}>{lisaaBtnText}</Button></div>
+            </Stack>
+          </Col>
+        </Row>
+  
+  
+        {!lisaaClicked ? (
+          <Row className="mt-3">
+            <Col>
+              <div
+                className="text-center"
+                style={{ verticalAlign: "center", lineHeight: "2.3em" }}
+              >
+                {!editClicked ? (
+                  <SearchBar
+                    setSelectedOwnSeries={setSelectedOwnSeries}
+                    handleEditClicked={handleEditClicked}
+                  />
+                ) : (
+                  <ViewComponent
+                    handleEditClicked={handleEditClicked}
+                    sarja_id={omasarjaId} 
+                  />
+                )}
+              </div>
+            </Col>
+          </Row>
+        ) : (
+          <Row className="mt-3">
+            <Col>
+              <div
+                className="text-center"
+                style={{ verticalAlign: "center", lineHeight: "2.3em" }}
+              >
+                <AddComponent handleLisaaClicked={handleLisaaClicked} />
+              </div>
+            </Col>
+          </Row>
+        )}
+      </div>
+    );
+  };
+  
+  
+  
+  
+  
+  
+  
+  const SearchBar = (props) => {
+  
     const [searchCounter, setSearchCounter] = useState(0);
-    const [serieList, setSerieList] = useState([]);
+    const [serieslist, SetSerieslist] = useState([]);
     const [query, setQuery] = useState("");
     const [nimi, setNimi] = useState("");
-    const [kuvaus, setKuvaus] = useState("");
-
-    const [gridView, setGridView] = useState(true)
-    const [viewModeIcon, setViewModeIcon] = useState("🔳")
-    const [ownSeriesGrid, setOwnSeriesGrid] = useState([]);
-
-    const serieClicked = props.serieClicked
-
-    
-
-  const fetchOwnSeries = async () => {
-    const response = await fetch("http://localhost:5000/oma_sarja", {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
-    setSerieList(data);
-  };
-
-  useEffect(() => {
-    fetchOwnSeries();
-  }, [searchCounter]);
-
-  let serieData = serieList;
-    let BookCardList = []
-    let width = 6
-    
-    if (serieData) {
- 
-        if (serieData.length == 0 ) {
-            BookCardList = [<WarningComponent text="Haulla ei löytynyt tuloksia" key={0}/>]
-        }
-        else {
-            
-            if (gridView) {
+    console.log(nimi)
+    console.log(searchCounter)
   
-                let serieData2D = []
-                for (let i = 0; i < serieData.length; i++) {
-                    let row = []
-                    if (i == 0 || i % width == 0) {
-                        for (let j = 0; j < width; j++) {
-                            row.push(serieData[i+j])
-                        }
-                        serieData2D.push(row)
-                    }
-                }
   
-                if (serieData2D.length > 0){
-                    BookCardList = serieData2D.map((n, index) => {
-              
-                        let row = n.map((n2, index2) => {
-                            return(
-                                <Col xs={12} sm={6} md={6} lg={4} xl={3} xxl={2} key={index2} onClick={(e) => serieClicked(n2)}>
-                                    <GridBookCard
-                                        omakirja={n2} >
-                                    </GridBookCard>
-                                </Col>
-                            )
-                        });
+    let seriesData = serieslist.data
+    let SeriesCardList = [];
 
-                        return (
-                            <Row key={index}>
-                                {row}
-                            </Row>
-                        )
-                    });
-                } 
-            }
-            else {
 
-                if (serieData.length > 0){
-                    BookCardList = serieData.map((n, index) => {
-                        return (
-                            <div onClick={(e) => serieClicked(n)} style={{cursor:"pointer"}} key={index}>
-                                <ListBookCard  
-                                    omakirja={n} >
-                                </ListBookCard>
-                            </div>
-                        )
-                    });
-                }
-            }
-        }
+    if (seriesData) {
+      if (seriesData.length > 0) {
+
+        SeriesCardList = seriesData.map((n, index) => {
+          return (
+            <SeriesCard
+            key={index}
+            omasarja={n}
+            setSelectedOwnSeries={props.setSelectedOwnSeries}
+            handleEditClicked={props.handleEditClicked} 
+          />
+          
+          
+  
+          );
+        });
+      } else if (searchCounter != 0) {
+        SeriesCardList = [<ErrorCard />];
+      }
     }
-
+  
+  
     const updateQuery = () => {
-        setSearchCounter(searchCounter + 1)
-        let q = "";
-        if (nimi.length > 0) {
-            q = ("&sarjan_nimi=%" + nimi.trim() + "%");
+      setSearchCounter(searchCounter + 1)
+      let q = "";
+      if (nimi.length > 0) {
+        let splitName = nimi.split(' ');
+        if (splitName.length > 1) {
+          q += "&nimi="
+          for (let wrd in splitName) {
+            q += wrd + "%20"
+          }
+          q = q.substring(0, q.length - 3)
+        } else {
+          q += ("&nimi=%" + nimi + "%");
         }
-        setQuery(q)
+      }
+      console.log(q)
+      setQuery(q)
     }
-
-    useEffect(() => {
-        const fetchOwnSerie = async () => {
-            console.log(query);
-            const f = await fetch("http://localhost:5000/oma_sarja" + "?" + query, {
-                method: "GET",
-                credentials: "include"
-            })
-            const data = await f.json();
-            console.log(data)
-            setSerieList(data)
-        };
-        fetchOwnSerie();
-    }, [searchCounter]);
-
   
-   
-
-
+    useEffect(() => {
+      const fetchSeries = async () => {
+        const f = await fetch("http://localhost:5000/oma_sarja" + "?" + query);
+        const data = await f.json();
+        SetSerieslist(data);
+      };
+      fetchSeries(); 
+    }, [searchCounter]);
+    
+  
     const handleSearchClick = (props) => {
-        updateQuery()
-        setSearchCounter(searchCounter + 1)
+      updateQuery()
+      setSearchCounter(searchCounter + 1)
     }
-
-    const handleViewModeClick = (props) => {
-        gridView?setGridView(false):setGridView(true)
-        viewModeIcon=="🔳"?setViewModeIcon("📃"):setViewModeIcon("🔳")
-    }
-
+  
     return (
-        <div>
-            <div className="text-center">
-                <h1 style={{color: "white"}}>Omat sarjasi</h1>
-            </div>
-            <div className="text-center" style={{verticalAlign: "center", lineHeight: "2.3em"}}>
-                <input type={"search"} onChange={(e) => setNimi(e.target.value)} style={{width: "65%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '100px', color: "white" }} placeholder="Hae omista sarjoista"></input>
-                <Button onClick={handleSearchClick} className='btn btn-dark' style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>🔎</Button>
-                <Button onClick={handleViewModeClick} className='btn btn-dark'  style={{width: "3.5em", height: "3.5em", marginLeft: "1em", backgroundColor: theme.button}}>{viewModeIcon}</Button>
-                <div style={{marginTop: "3em", marginBottom: "25em"}}>
-                    {BookCardList}
-                </div>
-            </div>
+      <div className="text-center" style={{ verticalAlign: "center", lineHeight: "2.3em" }}>
+        <input onChange={(e) => setNimi(e.target.value)} style={{backgroundColor:theme.input, width: "65%" }} placeholder="Hae sarjoista"></input>
+        <Button onClick={handleSearchClick} className='btn btn-dark' style={{ backgroundColor:theme.button, width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
+        <div style={{ marginTop: "3em" }}>
+          {SeriesCardList}
         </div>
+      </div>
     )
-}
+  }
+  
+  const SeriesCard = (props) => {
+    let omasarja = props.omasarja;
+    const handleEditClicked = (omasarja_id) => {
+      props.setSelectedSeries(omasarja);
+      props.handleEditClicked(omasarja_id); 
+    };
+  
+  
+  
+    return (
+        <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
+          <Card.Body>
+            <Card.Title>{omasarja.nimi}</Card.Title>
+          <Row>
+            <Col md={2}>
+              Tähän kuva
+            </Col>
+            <Col>
+              <Card.Text>
+                Kuvaus: {omasarja.kuvaus} <p> </p>
+              </Card.Text>
+            </Col>
+            <Col md={2}>
+              <Card.Text style={{ fontSize: "3em" }}>
+                <a
+                  href={"#id:" + omasarja.sarja_id}
+                  onClick={() => handleEditClicked(omasarja.sarja_id)} 
+                  style={{ textDecoration: "none" }}
+                >
+                  ➡
+                </a>
+  
+  
+              </Card.Text>
+            </Col>
+  
+          </Row>
+        </Card.Body>
+      </Card>
+    )
+  
+  }
+  
+  const ErrorCard = () => {
+    return (
+      <Card border="dark" className="mb-1">
+        <Card.Body>
+          <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
+        </Card.Body>
+      </Card>
+    )
+  }
+  
 
-export {OmaSarjaSivu}
+
+
+export { OmaSarjaSivu }

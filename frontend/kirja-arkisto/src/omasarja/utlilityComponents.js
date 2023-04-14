@@ -31,15 +31,17 @@ const SuccessComponent = (props) => {
 }
 
 const ListBookCard = (props) => {
-    let omasarja = props.omasarja;
-    let coverartData = getCoverArt(omasarja);
-    let imgsrc = coverartData.imgsrc;
+
+    let omasarja = props.omasarja
+    let sarja = omasarja.sarja
+    let coverartData = getCoverArt(omasarja)
+    let imgsrc = coverartData.imgsrc
 
     return (
         <Link to={"./" + omasarja.oma_sarja_id} style={{textDecoration: "none", color: "black"}}>
         <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
             <Card.Body>
-            <Card.Title>{omasarja.nimi}</Card.Title>
+            <Card.Title>{sarja.nimi}</Card.Title>
                 <Row className="mb-2">
                     <Col md={2}>
                         <img src={imgsrc} style={{height: "10em"}}></img>
@@ -64,6 +66,7 @@ const GridBookCard = (props) => {
     }
 
     let omasarja = props.omasarja;
+    let sarja = omasarja.sarja
     let coverartData = getCoverArt(omasarja);
     let imgsrc = coverartData.imgsrc;
 
@@ -72,7 +75,15 @@ const GridBookCard = (props) => {
         <Link to={"./" + omasarja.oma_sarja_id} style={{textDecoration: "none"}}>
         <Card className="mb-4" style={{height: "30em", cursor: "pointer", borderRadius: "0.5em",  overflow: "hidden", backgroundColor: theme.bg}}>
             <div style={{color: "white", background: "rgba(30,30,30,0.9)",position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%"}}>
-            <h3>{omasarja.nimi}</h3>
+            <h3>{sarja.nimi}</h3>
+            </div>
+            <div id="item">
+                <h3>^</h3>
+                <b id="info" style={{marginTop: "16em", display:"block"}}>
+                    {sarja.nimi} <br/> 
+                    Nimi:<br/> 
+                    ( {omasarja.nimi} / 5 ) <br/>
+                     Kuvaus: {omasarja.kuvaus} </b>
             </div>
            
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
