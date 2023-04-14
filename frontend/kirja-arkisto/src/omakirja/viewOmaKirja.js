@@ -6,7 +6,10 @@ import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
 import { SuccessComponent } from "./utlilityComponents"
 import theme from "./theme.json"
+import { sendValokuvaForm } from "./utilityFunctions"
 
+// Juurikomponentti yksittäisen oman kirjan tarkasteluun. 
+// Hakee näytettävän oman kirjan selaimen osoitekentästä luetun id:n avulla
 const ViewComponent = (props) => {
     const [deleteClicked, setDeleteClicked] = useState(false)
     const [editClicked, setEditClicked] = useState(false)
@@ -49,12 +52,12 @@ const ViewComponent = (props) => {
     const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
 
     return(
-        <div className="text-center px-3 py-1" style={{height: "100%",width: "auto", backgroundColor: theme.bg}}>
+        <div className="text-center px-3 py-1" style={{height: "100%", width: "auto", backgroundColor: theme.bg}}>
         <Row className="mt-5">
             {
             kuvat.length > 0?
-                <Col sm={12} lg={3}>
-                    <Card className="mb-4" border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+                <Col className="mb-4" sm={12} lg={3}>
+                    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <Card.Title className="mt-3">
                             Kuvat
                         </Card.Title>
@@ -66,8 +69,7 @@ const ViewComponent = (props) => {
             :
                 <></>
             }
-            
-            <Col >
+            <Col className="mb-4">
                 <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                     <div className="mt-5" style={{}}>
                         <h1>{kirja.nimi}</h1>
@@ -91,29 +93,32 @@ const ViewComponent = (props) => {
                         {kirja.kuvaus} <br/>
                         <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
                     </Card.Body>
-                    
                 </Card>
             </Col>
-            <Col sm={12} lg={3}>
+            <Col className="mb-4" sm={12} lg={3}>
                 {
                 valokuvat.length > 0?
-                    <ValokuvaViewerComponent valokuvat={valokuvat}/>
+                    <div className="mb-4"><ValokuvaViewerComponent valokuvat={valokuvat}/></div>
                 :
                     <></>
                 }
-                <AddPicToOwnBookComponent inputStyle={inputStyle}/>
+                <AddPicToOwnBookComponent inputStyle={inputStyle} omakirjaId={omakirja.oma_kirja_id}/>
 
             </Col>
         </Row>
             {deleteClicked?
-                <div style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
+                <div style={{position: "absolute", width: "100%", height: "350%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
+                    <div className="mx-3" style={{position: "fixed", left: "0", right: "0", top: "0"}}>
+                        <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
+                    </div>
                 </div>
             :
             <></>}
             {editClicked?
-                <div style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
+                <div style={{position: "absolute", backgroundColor: "rgba(0,0,0,0.9)", left: "0", right: "0", top: "0", height: "350%"}}>
+                    <div className="mx-3" style={{position: "fixed", left: "0", right: "0", top: "0"}}>
+                        <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
+                    </div>
                 </div>
             :
             <></>}
@@ -121,6 +126,7 @@ const ViewComponent = (props) => {
     )
 }
 
+// Komponentti oman kirjan poiston varmistukseen ja poistoon
 const DeleteOwnBookComponent = (props) => {
     let omakirja = props.omakirja
     const [clickCounter, setClickCounter] = useState(0);
@@ -177,10 +183,9 @@ const DeleteOwnBookComponent = (props) => {
             console.log(data)
         };
         if (clickCounter > 0){
-            //Todo
-            deletePictures();
-            deleteFromSeries();
-            deleteOwnBook();
+            deletePictures();       // Poistaa valokuvien kytkökset omaan kirjaan
+            deleteFromSeries();     // Poistaa oman kirjan kaikista omista sarjoista, joihin se kuuluu
+            deleteOwnBook();        // Poistaa lopuksi oman kirjan
             setIsDone(true)
         } 
     }, [clickCounter])
@@ -193,7 +198,7 @@ const DeleteOwnBookComponent = (props) => {
                 <Link to="/omakirja"><Button variant="success">Jatka</Button></Link>
             </Card>
         :
-        <Card bg="dark" className="px-2 pb-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
+        <Card bg="dark" className="px-2 pb-5 mt-3" style={{color: "white", height: "auto", width:"auto"}}>
             <Card.Title className="mt-5">Haluatko varmasti poistaa kirjan "{omakirja.kirja.nimi}" omista kirjoistasi</Card.Title>
             <Card.Header>
                 Poiston yhteydessä poistetaan myös omaan kirjaan liitetyt valokuvat. Oma Kirja poistetaan myös niistä omista sarjoistasi, joihin se kuuluu. 
@@ -201,8 +206,8 @@ const DeleteOwnBookComponent = (props) => {
                 <br/>
                 <b style={{color:"rgb(250,200, 0)"}}>⚠ Tätä toimintoa ei voi peruuttaa! ⚠</b>
             </Card.Header>
-            <Button variant="warning" className="my-5" onClick={(e) => props.setDeleteClicked(false)}>Peruuta</Button> 
-            <Button variant="danger" onClick={(e) => setClickCounter(clickCounter + 1)}>Poista</Button>
+            <Button variant="warning" className="my-5 mx-auto" onClick={(e) => props.setDeleteClicked(false)} style={{width: "40%"}}>Peruuta</Button> 
+            <Button variant="danger" className="mx-auto" onClick={(e) => setClickCounter(clickCounter + 1)} style={{width: "40%"}}>Poista</Button>
 
         </Card>
         }
@@ -210,9 +215,11 @@ const DeleteOwnBookComponent = (props) => {
     )
 }
 
+// Komponentti oman kirjan tietojen muokkaamista varten. Ei sisällä valokuvien hallinnointia
 const EditOwnBookComponent = (props) => {
     const omakirja = props.omakirja;
 
+    // Talletetaan kenttien alkuperäiset arvot, jotta ne voidaan palauttaa halutessa ennalleen
     const kuntoluokkaOriginal = omakirja.kuntoluokka
     const hankittuOriginal = omakirja.hankinta_aika
     const hankintaHintaOriginal = omakirja.hankintahinta
@@ -225,12 +232,14 @@ const EditOwnBookComponent = (props) => {
     const [esittely, setEsittely] = useState(omakirja.esittelyteksti)
     const [painosvuosi, setPainosvuosi] = useState(omakirja.painosvuosi)
 
+    // Pidetään yllä, mitä kenttiä on muutettu
     let kuntoluokkaChanged = kuntoluokkaOriginal != kuntoluokka
     let hankittuChanged = hankittuOriginal != hankittu
     let hankintahintaChanged = hankintaHintaOriginal != hankintaHinta
     let esittelyChanged = esittelyOriginal != esittely
     let painosvuosiChanged = painosvuosiOriginal != painosvuosi
 
+    // Onko mitään muutettu?
     let isChanged = kuntoluokkaChanged || hankittuChanged || hankintahintaChanged || esittelyChanged || painosvuosiChanged
 
     const [clickCounter, setClickCounter] = useState(0)
@@ -248,7 +257,7 @@ const EditOwnBookComponent = (props) => {
                 }
             })
             const data = await f.json()
-            window.location.reload()
+            window.location.reload()    // Päivitetään sivu, jotta tehdyt muutokset tulevat näkyviin
         }
         if (clickCounter > 0) updateOwnBook();
     }, [clickCounter])
@@ -271,10 +280,11 @@ const EditOwnBookComponent = (props) => {
             )
             setClickCounter(clickCounter + 1)
         } else {
-            props.setEditClicked(false)
+            props.setEditClicked(false) // Jos ei muutoksia, niin ei tallenneta
         }
     }
 
+    // Palautetaan kaikkien kenttien alkuperäiset arvot
     const handleRevert  = (e) => {
         if (kuntoluokkaChanged) setKuntoluokka(kuntoluokkaOriginal)
         if (hankittuChanged) setHankittu(hankittuOriginal)
@@ -283,6 +293,7 @@ const EditOwnBookComponent = (props) => {
         if (painosvuosiChanged) setPainosvuosi(painosvuosiOriginal)
     }
 
+    // Rajoittavat käyttäjän syötteitä: kuntoluokka 0-5, hankintahinta > 0 ja painosvuosi > 0
     const handleKuntoluokka = (val) => {
         if (val > 5) {setKuntoluokka(5); return};
         if (val < 0) {setKuntoluokka(0); return};
@@ -300,12 +311,12 @@ const EditOwnBookComponent = (props) => {
     }
 
 
-    const labelW = "8em"
-    const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
+    const labelW = "7em"
+    const inputStyle = {width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
 
     return (
         <div style={{lineHeight: "2.3em"}}>
-            <Card bg="dark" className="px-2 pt-5" style={{color: "white", height: "auto", width:"auto", margin: "10%"}}>
+            <Card bg="dark" className="px-2 pt-5 mt-3" style={{color: "white", height: "40em", width:"auto"}}>
                 <Card.Title>Muokataan omaa kirjaa "{props.omakirja.kirja.nimi}"</Card.Title>
                     <div>
                         <label for="kuntoluokka" style={{width:labelW}}>Kuntoluokka: </label>
@@ -333,12 +344,11 @@ const EditOwnBookComponent = (props) => {
                         {painosvuosiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
-                    <div>
-                        <label for="esittely" style={{width:labelW}}>Esittelyteksti: </label>
-                        <textarea id="esittely" value={esittely} style={{ width: "60%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}} onChange={(e) => setEsittely(e.target.value)}/>
+                    <div><label for="esittely" style={{width:labelW}}>Esittelyteksti: </label></div>
+                    <div className="mb-2" style={{display: "inline-block", whiteSpace: "nowrap", overflow: "auto", width: "100%", height: "30em"}}>
+                        <textarea id="esittely" value={esittely} style={{ width: "80%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}} onChange={(e) => setEsittely(e.target.value)}/>
                         {esittelyChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
-
                     <Stack direction="horizontal" gap={2} className="mx-auto mb-3">
                         <Button variant="dark" onClick={(e) => props.setEditClicked(false)} style={{backgroundColor: theme.button}}>Peruuta</Button>
                         <Button variant="warning" onClick={(e) => handleRevert(e)} style={{backgroundColor: theme.button, color: "white"}}>Palauta</Button>
@@ -349,6 +359,7 @@ const EditOwnBookComponent = (props) => {
     )
 }
 
+// Komponentti kuvan lisämiseen kirjalle. Toiminnallisuus siirtyy todnäk. ValokuvaViewerComponent:lle
 const AddPicToOwnBookComponent = (props) => {
     const [addPicClicked, setAddPicClicked] = useState(false)
     const [addPicBtnText, setAddPicBtnText] = useState("Lisää uusi")
@@ -356,6 +367,11 @@ const AddPicToOwnBookComponent = (props) => {
     const handleAddPicClicked = () => {
         if (addPicClicked) {setAddPicClicked(false); setAddPicBtnText("Lisää uusi")}
         else {setAddPicClicked(true); setAddPicBtnText("Peruuta")}
+    }
+
+    const handleSave = async () => {
+        let success = await sendValokuvaForm(document.getElementById("picForm0"), props.omakirjaId)
+        if (success) window.location.reload()
     }
 
     return(
@@ -366,11 +382,15 @@ const AddPicToOwnBookComponent = (props) => {
             <Card.Body>
                 <Button variant="dark" style={{width: "100%", height: "3em"}} onClick={(e) => handleAddPicClicked()}>{addPicBtnText}</Button>
                 {addPicClicked?
+                <>
                     <AddValokuvaFormComponent 
                         inputStyle={props.inputStyle}
                         formId={"picForm0"}
                     /> 
+                    <Button onClick={(e) => handleSave()}>Tallenna</Button>
+                </>
                 : <></>}
+
             </Card.Body>
         </Card>
     )
