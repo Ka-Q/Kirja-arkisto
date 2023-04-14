@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import { Button, Image, Stack, Row, Col , Card } from "react-bootstrap"
 import theme from './theme.json'
 import { RequiredComponent } from "./utlilityComponents"
 
-
+// Järjestää annetun listan valokuvia niiden sivunumeron mukaan kasvavasti
 const sortBySivunumero = (valokuvat) => {
     return valokuvat.sort((a, b) => {
         if (a.sivunumero < b.sivunumero) return -1
@@ -12,6 +12,7 @@ const sortBySivunumero = (valokuvat) => {
     });
 }
 
+// Komponentti lomakkeelle, jolla annetaan lisättävän valokuvan tiedosto ja tiedot.
 const AddValokuvaFormComponent = (props) => {
     const inputStyle = props.inputStyle
     const formId = props.formId
@@ -37,15 +38,15 @@ const AddValokuvaFormComponent = (props) => {
                     <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
                     <div className="mx-auto" style={{display:"flex"}}>
                         <div onClick={(e) => setShowSivu(false)}>
-                            <label for="etukansiRadio" className="pe-3">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
+                            <label for="etukansiRadio" className="pe-1">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
                         </div>
                         <div className="mx-5" onClick={(e) => setShowSivu(false)}>
-                            <label for="takakansiRadio" className="pe-3">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
+                            <label for="takakansiRadio" className="pe-1">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
                         </div>
                         <div onClick={(e) => setShowSivu(true)}>
-                            <label for="sivuRadio" className="pe-3">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
+                            <label for="sivuRadio" className="pe-1">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
                         </div>
-                        <RequiredComponent yes/>
+                        <RequiredComponent/>
                     </div>
                     {showSivu? 
                         <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle}/><RequiredComponent/></div>
@@ -59,6 +60,7 @@ const AddValokuvaFormComponent = (props) => {
     )
 }
 
+// Mappaa listan valokuvia pieniksi esikatselukuviksi ValokuvaViewerComponenttia varten
 const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     let previewList = list.map((n, index) => {
         n.index = index
@@ -69,7 +71,7 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
 
         if (clickedPic.valokuva_id == n.valokuva_id){
             return (
-                <div className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em", borderRadius: "0.3em"}}>
+                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em", borderRadius: "0.3em"}}>
                     <Image src={kuvaSrc + n.valokuva} height={"100%"}/>
                 </div>
             )
@@ -86,6 +88,7 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     return previewList
 }
 
+// Komponentti valokuvan tarkasteluun. Napit valokuvien välillä navigointiin ja alla scroll, josta voi valita kuvan
 const ValokuvaViewerComponent = (props) => {
 
     // Tietoa esikatselulle ja pikkukuvien kelaukselle
@@ -100,22 +103,43 @@ const ValokuvaViewerComponent = (props) => {
     // Mapataan rajattu lista pikkukuviksi
     let previewList = mapValokuvaToPreviews(valokuvaList, kuvaSrc, clickedPic, setClickedPic)
 
-    // kelaavat pikkukuvia nappeja painettaessa
+    // Vierittää esikatseluja niin, että valittu kuva tulee näkyviin. "dir" kertoo vierityssuunnan
+    const scrollToPreview = (dir) => {
+        let preview = document.getElementById("previewPic" + clickedPic.index)
+        if (dir > 0) {
+            preview.scrollIntoView({
+                behavior: "smooth",
+                inline: "start",
+                block: "nearest"
+            })
+        } else {
+            preview.scrollIntoView({
+                behavior: "smooth",
+                inline: "end",
+                block: "nearest"
+            })
+        }
+    }
+
+    // Asettavat valitun kuvan ja kelaavat pikkukuvia nappeja painettaessa eteen tai taakse
     const handleIncrease = () => {
         if (clickedPic.index < valokuvaList.length - 1) setClickedPic(valokuvaList[clickedPic.index + 1])
+        scrollToPreview(1)
     }
     const handleDecrease = () => {
         if (clickedPic.index > 0) setClickedPic(valokuvaList[clickedPic.index - 1])
+        scrollToPreview(-1)
     }
 
     let sivunumero = clickedPic.sivunumero;
     if (sivunumero == -200) sivunumero = "etukansi"
     if (sivunumero == -100) sivunumero = "takakansi"
 
-    let BtnStyle = {backgroundColor: "rgba(40,40,40,0.8)", width:"4em", height: "4em", borderRadius: "10em", padding: "1em", cursor: "pointer", userSelect: "none", fontWeight: "bold"};
-    
-    return(
+    let btnStyle = {backgroundColor: "rgba(40,40,40,0.8)", width:"4em", height: "4em", borderRadius: "1em", padding: "1em", cursor: "pointer", userSelect: "none", fontWeight: "bold", position: "absolute", top: "40%"}
+    let BtnStyleLeft = JSON.parse(JSON.stringify(btnStyle)); BtnStyleLeft.left = 0
+    let BtnStyleRight = JSON.parse(JSON.stringify(btnStyle)); BtnStyleRight.right = 0
 
+    return(
         <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
             <Card.Title className="mt-3">
                 Valokuvat
@@ -125,26 +149,23 @@ const ValokuvaViewerComponent = (props) => {
                 <a onClick={(e) => window.open(kuvaSrc + clickedPic.valokuva, '_blank').focus()} style={{cursor:"pointer"}}>
                     <Image src={kuvaSrc + clickedPic.valokuva} fluid style={{flexShrink: 0, objectFit: "contain", height:"100%", minWidth: "100%", backgroundColor: "black", borderRadius: "0.3em"}}/>
                 </a>
-                    <Stack className="mx-4" direction="horizontal" style={{position: "absolute", top: "50%",left: 0, right: 0}}>
-                        <div style={BtnStyle} onClick={(e) => handleDecrease()}>{"<"}</div>
-                        <div style={BtnStyle} className="ms-auto" onClick={(e) => handleIncrease()}>{">"}</div>
-                    </Stack>
+                    <div className="ms-4" style={BtnStyleLeft} onClick={(e) => handleDecrease()}>{"<"}</div>
+                    <div className="me-4" style={BtnStyleRight} onClick={(e) => handleIncrease()}>{">"}</div>
                 </div>
-                <div id="previewScroll" className="py-2" style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", width: "100%", height: "auto"}} >
+                <div id="previewScroll" className="py-2" style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", width: "100%", height: "auto", userSelect: "none"}} >
                     {previewList}
                 </div>
                 <hr/>
-                <Stack direction="horizontal" gap={0} className="me-2 mt-2" style={{position: "relative", top :0}}>
+                <Stack direction="horizontal" gap={0} className="me-2 my-2" style={{position: "relative", top :0}}>
                     <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => console.log("muokataan")}>✏</Button> <span className="mx-1"/>
                     <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => console.log("poistetaan")}>🗑</Button>
+                    <span className="mx-3" style={{lineHeight: "2.3em", width: "0.2em", backgroundColor: theme.input, color: theme.input, borderRadius: "1em"}}>|</span>
+                    <Button variant="primary" style={{backgroundColor: theme.accent}} onClick={(e) => console.log("lisätään")}>➕</Button>
                 </Stack>
                 Sivunumero: {sivunumero} <br/>
                 Nimi/kuvaus: {clickedPic.nimi}
-                <div>
-                </div>
             </Card.Body>
         </Card>
-
     )
 }
 
