@@ -47,6 +47,16 @@ const sendValokuvaForm = async (form, bookId) => {
 
     let type = formdata.get("type");
 
+    // jos sivunumeroa ei ole, laitetaan -1
+    if (!formdata.get("sivunumero")) { 
+        formdata.set("sivunumero", -1)
+    }
+
+    // jos sivunumero on alle -1, laitetaan -1
+    if (formdata.get("sivunumero") < -1) { 
+        formdata.set("sivunumero", -1)
+    }
+
     // Etukannelle sivunro -200 ja takakannelle sivunro -100
     if (type == "etukansi") {
         formdata.set("sivunumero", -200)
@@ -54,9 +64,9 @@ const sendValokuvaForm = async (form, bookId) => {
         formdata.set("sivunumero", -100)
     }
 
-    // jos sivunumeroa ei ole, laitetaan -1
-    if (!formdata.get("sivunumero")) { 
-        formdata.set("sivunumero", -1)
+    // jos tiedostoa ei ole, palautetaan false
+    if (formdata.get("files").name == "") { 
+        return 1
     }
 
     formdata.delete("type")
@@ -82,7 +92,7 @@ const sendValokuvaForm = async (form, bookId) => {
     const data2 = await f2.json()
 
     console.log("Insert id2: " + data2.data.insertId);
-    return true;
+    return 0;
 }
 
 export {getCoverArt, sendValokuvaForm}
