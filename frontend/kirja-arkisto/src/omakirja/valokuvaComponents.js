@@ -90,7 +90,7 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     return previewList
 }
 
-// Komponentti valokuvan tarkasteluun. Napit valokuvien välillä navigointiin ja alla scroll, josta voi valita kuvan
+// Komponentti valokuva-listan tarkasteluun. Napit valokuvien välillä navigointiin ja alla scroll, josta voi valita kuvan
 const ValokuvaViewerComponent = (props) => {
 
     // Tietoa esikatselulle ja pikkukuvien kelaukselle
@@ -199,7 +199,9 @@ const ValokuvaViewerComponent = (props) => {
                 </Collapse>
                 <Collapse in={editClicked}>
                     <div id="editValokuva">
-                        <EditValokuvaComponent setEditClicked={setEditClicked} clickedPic={clickedPic}/>
+                        {editClicked?
+                            <EditValokuvaComponent setEditClicked={setEditClicked} clickedPic={clickedPic}/>
+                        :   <div className="my-5 py-5"></div>}
                     </div>
                 </Collapse>
                 <Collapse in={addClicked}>
@@ -219,16 +221,19 @@ const ValokuvaViewerComponent = (props) => {
     )
 }
 
+// Komponentti valitun valokuvan tietojen muuttamiseen
 const EditValokuvaComponent = (props) => {
 
-    const [sivunumeroOriginal, setSivunumeroOriginal] = useState(props.clickedPic.sivunumero)
-    const [nimiOriginal, setNimiOriginal] = useState(props.clickedPic.nimi)
+    // Talletetaan kenttien alkuperäiset arvot, jotta ne voidaan palauttaa halutessa ennalleen
+    const sivunumeroOriginal= props.clickedPic.sivunumero
+    const nimiOriginal = props.clickedPic.nimi
 
     const [sivunumero, setSivunumero] = useState(sivunumeroOriginal)
     const [nimi, setNimi] = useState(nimiOriginal)
 
     const [showSivu, setShowSivu] = useState(sivunumeroOriginal >= 0)
 
+    // Pidetään yllä, mitä kenttiä on muutettu
     let sivunumeroChanged = sivunumeroOriginal != sivunumero
     let nimiChanged = nimiOriginal != nimi
 
@@ -281,6 +286,11 @@ const EditValokuvaComponent = (props) => {
         setSivunumero(0)
     }
 
+    const limitSivunumero = (val) => {
+        if (val < 0) {setSivunumero(0); return}
+        setSivunumero(val)
+    }
+
     return(
         <div>
             <h5>Muokataan valokuvan tietoja</h5> 
@@ -291,16 +301,17 @@ const EditValokuvaComponent = (props) => {
             <div className="mx-5">
                 <label for="takakansiRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleTakakansi()}>Takakansi</label> 
                 <input id="takakansiRadio" type="radio" name="type" value="takakansi" defaultChecked={sivunumeroOriginal == -100} onClick={(e) => handleTakakansi()}/>
-                {sivunumeroChanged? <span style={{position:"absolute", right: "5em", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
+                {sivunumeroChanged? <span style={{position:"absolute", right: "2em", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
             </div>
             <div>
                 <label for="sivuRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleSivu()}>Sivu</label> 
                 <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked={sivunumeroOriginal >= 0} onClick={(e) => handleSivu()}/>
             </div>
             {showSivu?
-                <input className="mt-3" onChange={(e) => setSivunumero(e.target.value)} value={sivunumero} type="number" placeholder="sivunumero" style={inputStyle}/>
+                <input className="mt-3" onChange={(e) => limitSivunumero(e.target.value)} value={sivunumero} type="number" placeholder="sivunumero" style={inputStyle}/>
             : <></>}
             <input onChange={(e) => setNimi(e.target.value)} value={nimi} className="my-3" type="text" placeholder="nimi/kuvaus" style={inputStyle}/>
+            {nimiChanged? <span style={{position:"absolute", right: "2em", bottom: "4.8em", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
             <div>
                 <Button variant="warning" onClick={(e) => props.setEditClicked(false)}>Peruuta</Button>
                 <span className="mx-2"/>
