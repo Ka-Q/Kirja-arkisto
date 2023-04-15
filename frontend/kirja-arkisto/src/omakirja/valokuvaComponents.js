@@ -69,19 +69,20 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
 
         if (sivunro == -200) sivunro = "Etu📘"
         if (sivunro == -100) sivunro = "Taka📘"
+        if (sivunro == -1) sivunro = "📖?"
         if (sivunro >= 0) sivunro = "📖" + sivunro
 
         if (clickedPic.valokuva_id == n.valokuva_id){
             return (
-                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em", borderRadius: "0.3em"}}>
+                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em", borderRadius: "0.3em", minWidth:"5em", backgroundColor: "black"}}>
                     <Image src={kuvaSrc + n.valokuva} height={"100%"}/>
                 </div>
             )
         }
         return (
-            <div id={"previewPic" + index} className="mx-1" key={index} onClick={(e) => setClickedPic(n)} style={{position: "relative", display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "7em" , borderRadius: "0.3em"}}>
-                <div style={{display: "inline-block", overflow: "auto", whiteSpace: "nowrap", height: "94%", filter: "brightness(0.4)", margin: 0, padding: 0}}><Image src={kuvaSrc + n.valokuva} height={"100%"}/></div>
-                <div className="px-1" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0.2em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em", fontSize: "1em"}}>
+            <div id={"previewPic" + index} className="mx-1" key={index} onClick={(e) => setClickedPic(n)} style={{position: "relative", display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em" , borderRadius: "0.3em"}}>
+                <div style={{display: "block", overflow: "auto", whiteSpace: "nowrap", height: "100%", filter: "brightness(0.4)", margin: 0, padding: 0, minWidth:"5em", backgroundColor: "black"}}><Image src={kuvaSrc + n.valokuva} height={"100%"}/></div>
+                <div className="px-1" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0 0 0 0.5em", fontSize: "1em"}}>
                     {sivunro}
                 </div>
             </div>
@@ -145,6 +146,7 @@ const ValokuvaViewerComponent = (props) => {
     let sivunumero = clickedPic.sivunumero;
     if (sivunumero == -200) sivunumero = "etukansi"
     if (sivunumero == -100) sivunumero = "takakansi"
+    if (sivunumero == -1) sivunumero = "tuntematon"
 
     let btnStyle = {backgroundColor: "rgba(40,40,40,0.8)", width:"4em", height: "4em", borderRadius: "1em", padding: "1em", cursor: "pointer", userSelect: "none", fontWeight: "bold", position: "absolute", top: "20em"}
     let BtnStyleLeft = JSON.parse(JSON.stringify(btnStyle)); BtnStyleLeft.left = 0
@@ -361,24 +363,33 @@ const DeleteValokuvaComponent = (props) => {
 
 const AddValokuvaComponent = (props) => {
 
+    const [error, setError] = useState(false)
+
     const handleSave = async () => {
-        let success = await sendValokuvaForm(document.getElementById("picForm0"), props.omakirjaId)
-        if (success) window.location.reload()
+        let errorCode = await sendValokuvaForm(document.getElementById("picForm0"), props.omakirjaId)
+        if (errorCode == 0) {setError(false); window.location.reload()}
+        if (errorCode == 1) setError(true)
     }
 
     const inputStyle = {width: "100%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
 
-    return(<div>
-                <h5>Lisää valokuva</h5> 
-                <AddValokuvaFormComponent 
-                    inputStyle={inputStyle}
-                    formId={"picForm0"}
-                /> 
-                <Button variant="warning" onClick={(e) => props.setAddClicked(false)}>Peruuta</Button>
-                <span className="mx-2"/>
-                <Button variant="primary" onClick={(e) => handleSave()}>Tallenna</Button>
+    return(
+        <div>
+            <h5>Lisää valokuva</h5> 
+            <AddValokuvaFormComponent 
+                inputStyle={inputStyle}
+                formId={"picForm0"}
+            /> 
+            <Button variant="warning" onClick={(e) => props.setAddClicked(false)}>Peruuta</Button>
+            <span className="mx-2"/>
+            <Button variant="primary" onClick={(e) => handleSave()}>Tallenna</Button>
+            {error? 
+                <div className="mt-2">
+                    <WarningComponent text="Valokuvatiedosto puuttuu"/>
+                </div>
+            :<></>}
 
-            </div>
+        </div>
     )
 }
 
