@@ -98,12 +98,10 @@ const ViewComponent = (props) => {
             <Col className="mb-4" sm={12} lg={3}>
                 {
                 valokuvat.length > 0?
-                    <div className="mb-4"><ValokuvaViewerComponent valokuvat={valokuvat}/></div>
+                    <div className="mb-4"><ValokuvaViewerComponent omakirja={omakirja}/></div>
                 :
                     <></>
                 }
-                <AddPicToOwnBookComponent inputStyle={inputStyle} omakirjaId={omakirja.oma_kirja_id}/>
-
             </Col>
         </Row>
             {deleteClicked?
@@ -356,43 +354,6 @@ const EditOwnBookComponent = (props) => {
                     </Stack>
             </Card>
         </div>
-    )
-}
-
-// Komponentti kuvan lisämiseen kirjalle. Toiminnallisuus siirtyy todnäk. ValokuvaViewerComponent:lle
-const AddPicToOwnBookComponent = (props) => {
-    const [addPicClicked, setAddPicClicked] = useState(false)
-    const [addPicBtnText, setAddPicBtnText] = useState("Lisää uusi")
-
-    const handleAddPicClicked = () => {
-        if (addPicClicked) {setAddPicClicked(false); setAddPicBtnText("Lisää uusi")}
-        else {setAddPicClicked(true); setAddPicBtnText("Peruuta")}
-    }
-
-    const handleSave = async () => {
-        let success = await sendValokuvaForm(document.getElementById("picForm0"), props.omakirjaId)
-        if (success) window.location.reload()
-    }
-
-    return(
-        <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-            <Card.Title className="mt-3">
-                Lisää valokuva
-            </Card.Title>
-            <Card.Body>
-                <Button variant="dark" style={{width: "100%", height: "3em"}} onClick={(e) => handleAddPicClicked()}>{addPicBtnText}</Button>
-                {addPicClicked?
-                <>
-                    <AddValokuvaFormComponent 
-                        inputStyle={props.inputStyle}
-                        formId={"picForm0"}
-                    /> 
-                    <Button onClick={(e) => handleSave()}>Tallenna</Button>
-                </>
-                : <></>}
-
-            </Card.Body>
-        </Card>
     )
 }
 
