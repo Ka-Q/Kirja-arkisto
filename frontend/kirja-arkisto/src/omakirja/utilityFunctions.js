@@ -42,6 +42,58 @@ const getCoverArt = (omakirja) => {
     return {tyyppi: tyyppi, imgsrc: imgsrc};
 }
 
+const getFrontCover = (omakirja) => {
+    
+    let kirja = omakirja.kirja
+    let kirjankuvat = []
+    kirjankuvat = kirja.kuvat
+
+    let imgsrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/300px-No_image_available.svg.png?20221208232400";
+    let etukansikuva = "";
+
+    //etsitään kirjan kuvista etukansi
+    for (let row in kirjankuvat) {
+        let kuva = kirjankuvat[row]
+        if (kuva.kuva_tyyppi_id == 1) {
+            etukansikuva = kuva
+            break;
+        }
+    }
+
+    // Jos jokin kuva, niin asetetaan
+    if (etukansikuva.kuva) {
+        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + etukansikuva.kuva
+    }
+    console.log("Etukansi: " + imgsrc)
+    return imgsrc;
+}
+
+const getBackCover = (omakirja) => {
+
+    let kirja = omakirja.kirja
+    let kirjankuvat = []
+    kirjankuvat = kirja.kuvat
+
+    let imgsrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/300px-No_image_available.svg.png?20221208232400";
+    let takakansikuva = "";
+
+    //etsitään kirjan kuvista etukansi
+    for (let row in kirjankuvat) {
+        let kuva = kirjankuvat[row]
+        if (kuva.kuva_tyyppi_id == 2) {
+            takakansikuva = kuva
+            break;
+        }
+    }
+
+    // Jos jokin kuva, niin asetetaan
+    if (takakansikuva.kuva) {
+        imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + takakansikuva.kuva
+    }
+    console.log("Takakansi: " + imgsrc)
+    return imgsrc;
+}
+
 const sendValokuvaForm = async (form, bookId) => {
     let formdata = new FormData(form)
 
@@ -95,4 +147,4 @@ const sendValokuvaForm = async (form, bookId) => {
     return 0;
 }
 
-export {getCoverArt, sendValokuvaForm}
+export {getCoverArt, getFrontCover, getBackCover, sendValokuvaForm}

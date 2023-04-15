@@ -108,7 +108,13 @@ const ValokuvaViewerComponent = (props) => {
     }, [clickedPic])
 
     // Jos oamlla kirjalla ei ole valokuvia, palautetaan tyhjä komponentti
-    if (!props.omakirja.valokuvat || props.omakirja.valokuvat.length == 0) return (<></>)
+    if (!props.omakirja.valokuvat || props.omakirja.valokuvat.length == 0) return (
+
+    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+        <Card.Body>
+            <AddValokuvaComponent setAddClicked={setAddClicked} omakirjaId={props.omakirja.oma_kirja_id}/>
+        </Card.Body>
+    </Card>)
 
     let kuvaSrc = "http://localhost:5000/valokuvatiedosto?valokuva=";
 
