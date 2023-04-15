@@ -13,21 +13,24 @@ const ViewComponent = (props) => {
     const id = useLocation()
 
 
-   
     useEffect(() => {
         const fetchSeries = async (id) => {
           let idFormatted = "" + id.pathname.split("/")[2];
           console.log(idFormatted);
           const f = await fetch(
-            `http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${idFormatted}`, 
-            {}
+            `http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${idFormatted}`,
+            {
+              credentials: "include",
+            }
           );
           const data = await f.json();
           console.log(data);
-          setOmasarja(data.data[0]); 
+          setOmasarja(data.data[0]);
         };
         fetchSeries(id);
       }, []);
+      
+    
 
    
       if (!omasarja) {
