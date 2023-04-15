@@ -130,6 +130,18 @@ const OmaSarjaSivu = () => {
         SeriesCardList = [<ErrorCard />];
       }
     }
+
+    useEffect(() => {
+      const fetchSeries = async () => {
+        const f = await fetch("http://localhost:5000/oma_sarja" + "?" + query, {
+          credentials: "include"
+        });
+        const data = await f.json();
+        SetSerieslist(data);
+      };
+      fetchSeries();
+    }, [searchCounter]);
+    
   
   
     const updateQuery = () => {
@@ -151,14 +163,7 @@ const OmaSarjaSivu = () => {
       setQuery(q)
     }
   
-    useEffect(() => {
-      const fetchSeries = async () => {
-        const f = await fetch("http://localhost:5000/oma_sarja" + "?" + query);
-        const data = await f.json();
-        SetSerieslist(data);
-      };
-      fetchSeries(); 
-    }, [searchCounter]);
+ 
     
   
     const handleSearchClick = (props) => {
