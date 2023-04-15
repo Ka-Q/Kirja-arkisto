@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { Button, Image, Stack} from "react-bootstrap"
+import { Button, Collapse, Image, Stack} from "react-bootstrap"
 import theme from './theme.json'
+import { getBackCover, getCoverArt, getFrontCover } from "./utilityFunctions";
 
 const KuvaViewerComponent = (props) => {
 
@@ -89,4 +90,45 @@ const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     return previewList
 }
 
-export {KuvaViewerComponent}
+const CoverViewerComponent = (props) => {
+
+    let omakirja = props.omakirja
+    
+    const [etukansi, setEtukansi] = useState("" + getFrontCover(omakirja)) //props.etukansi
+    const [takakansi, setTakakansi] = useState(getBackCover(omakirja))  //props.takakansi
+
+    console.log("CVC: ")
+    console.log(etukansi);
+
+    const [showEtukansi, setShowEtukansi] = useState(true)
+    
+    const handleClick = (element) => {
+        setShowEtukansi(!showEtukansi)
+        element.className = "flip flip-r" 
+        setTimeout(() => {
+            if (showEtukansi) element.src = takakansi
+            if (!showEtukansi) element.src = etukansi
+          }, 500);
+        setTimeout(() => {
+            element.className = ""
+          }, 1000);
+    }
+    return(
+        <div>
+            <div className="mb-3" style={{userSelect: "none", cursor: "pointer"}}>
+                <Image className="" fluid src={etukansi} onClick={(e) => handleClick(e.target)} style={{width:"100%"}}/>
+            </div>
+            {showEtukansi?
+            <>
+            <h5>Etukansi</h5> <br/>
+            Klikkaa kuvaa nähdäksesi takakannen
+            </>:
+            <>
+            <h5>Takakansi</h5> <br/>
+            Klikkaa kuvaa nähdäksesi etukannen
+            </>}
+        </div>
+    )
+}
+
+export {CoverViewerComponent}

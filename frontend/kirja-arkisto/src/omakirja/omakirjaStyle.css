@@ -22,6 +22,27 @@ body {
     background: linear-gradient(0deg, rgba(30,30,30,0.9) 20%, rgba(0, 0, 0, 0) 100%); 
 }
 
+.flip {
+  animation-timing-function: ease-in-out;
+  animation-duration: 1s;
+  animation-direction: normal;
+  animation-iteration-count: 1;
+}
+
+.flip-r {
+  animation-name: flip-with-rotate;
+}
+
+@keyframes flip-with-rotate {
+  0% {
+      transform: perspective(350px) rotateY(0);
+  }
+
+  100% {
+    transform: perspective(350px) rotateY(180deg) scaleX(-1);
+}
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */

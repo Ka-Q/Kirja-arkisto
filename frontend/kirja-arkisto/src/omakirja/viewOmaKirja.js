@@ -1,6 +1,6 @@
 
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
-import { KuvaViewerComponent } from "./kuvaComponents"
+import { CoverViewerComponent } from "./kuvaComponents"
 import { ValokuvaViewerComponent } from "./valokuvaComponents"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
@@ -79,10 +79,10 @@ const ViewComponent = (props) => {
                 <Col className="mb-4" sm={12} lg={3}>
                     <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <Card.Title className="mt-3">
-                            Kuvat
+                            Kansikuvat
                         </Card.Title>
                         <Card.Body>
-                            <KuvaViewerComponent kuvat={kuvat}/>
+                            <CoverViewerComponent omakirja={omakirja}/>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -121,13 +121,10 @@ const ViewComponent = (props) => {
                     <Card.Body>
                         {OmasarjaList}
                     </Card.Body>
-                    
                 </Card>
             </Col>
             <Col className="mb-4" sm={12} lg={3}>
-                {valokuvat.length > 0?
-                    <div className="mb-4"><ValokuvaViewerComponent omakirja={omakirja}/></div>
-                :<></>}
+                <div className="mb-4"><ValokuvaViewerComponent omakirja={omakirja}/></div>
             </Col>
         </Row>
             {deleteClicked?
