@@ -74,14 +74,14 @@ const mapValokuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
 
         if (clickedPic.valokuva_id == n.valokuva_id){
             return (
-                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em", borderRadius: "0.3em", minWidth:"5em", backgroundColor: "black"}}>
+                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em", borderRadius: "0.3em", minWidth:"4em", backgroundColor: "black"}}>
                     <Image src={kuvaSrc + n.valokuva} height={"100%"}/>
                 </div>
             )
         }
         return (
             <div id={"previewPic" + index} className="mx-1" key={index} onClick={(e) => setClickedPic(n)} style={{position: "relative", display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em" , borderRadius: "0.3em"}}>
-                <div style={{display: "block", overflow: "auto", whiteSpace: "nowrap", height: "100%", filter: "brightness(0.4)", margin: 0, padding: 0, minWidth:"5em", backgroundColor: "black"}}><Image src={kuvaSrc + n.valokuva} height={"100%"}/></div>
+                <div style={{display: "block", overflow: "auto", whiteSpace: "nowrap", height: "100%", filter: "brightness(0.4)", margin: 0, padding: 0, minWidth:"4em", backgroundColor: "black"}}><Image src={kuvaSrc + n.valokuva} height={"100%"}/></div>
                 <div className="px-1" style={{position: "absolute", width: "auto", height: "auto", top: "-0.5em", right: "0em", paddingTop: "0.4em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0 0 0 0.5em", fontSize: "1em"}}>
                     {sivunro}
                 </div>
