@@ -1,12 +1,11 @@
 
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { KuvaViewerComponent } from "./kuvaComponents"
-import { AddValokuvaFormComponent, ValokuvaViewerComponent } from "./valokuvaComponents"
+import { ValokuvaViewerComponent } from "./valokuvaComponents"
 import { useEffect, useState } from "react"
 import { Link, useLocation } from 'react-router-dom'
 import { SuccessComponent } from "./utlilityComponents"
 import theme from "./theme.json"
-import { sendValokuvaForm } from "./utilityFunctions"
 
 // Juurikomponentti yksittäisen oman kirjan tarkasteluun. 
 // Hakee näytettävän oman kirjan selaimen osoitekentästä luetun id:n avulla
@@ -14,6 +13,7 @@ const ViewComponent = (props) => {
     const [deleteClicked, setDeleteClicked] = useState(false)
     const [editClicked, setEditClicked] = useState(false)
     const [omakirja, setOmakirja] = useState(null)
+    const [sarjaIds, setSarjaIds] = useState([])
     const id = useLocation()
 
     // Haetaan osoitekentän id:n avulla oma kirja serveriltä
@@ -31,6 +31,20 @@ const ViewComponent = (props) => {
         fetchBook(id) 
     }, [])
 
+    // Haetaan oman kirjan id:n avulla sarja idt serveriltä
+    useEffect(() => {
+        const fetchSarjaIds = async (id) => {
+            const f = await fetch(`http://localhost:5000/oman_sarjan_kirjat?&oma_kirja_id=${id}`, {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await f.json()
+            console.log(data)
+            setSarjaIds(data.data)
+        }
+        if (omakirja) fetchSarjaIds(omakirja.oma_kirja_id) 
+    }, [omakirja])
+
     // Virhesivu jos id:llä ei löydy käyttäjän omistamaa kirjaa
     if (!omakirja) {
         return(
@@ -39,6 +53,14 @@ const ViewComponent = (props) => {
             </div>
         )
     }
+    // Mapataan omien sarjojen id:t listan komponenteille
+    let OmasarjaList = sarjaIds.map((n, index)=> {
+        return (
+            <div key={index}>
+                <OmasarjaListComponent id={n.oma_sarja_id}/>
+            </div>
+        )
+    })
 
     let kirja = omakirja.kirja
     let kuvat = kirja.kuvat
@@ -48,9 +70,7 @@ const ViewComponent = (props) => {
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
         kuntoluokkaStars += "⭐"
     }
-
-    const inputStyle = {width: "60%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
-
+    
     return(
         <div className="text-center px-3 py-1" style={{height: "100%", width: "auto", backgroundColor: theme.bg}}>
         <Row className="mt-5">
@@ -94,14 +114,20 @@ const ViewComponent = (props) => {
                         <Button href={"http://localhost:3000/kirja/" + kirja.kirja_id} className='btn btn-dark' style={{backgroundColor: theme.button, marginTop:"15em"}}>Lisää kirjasta {"->"}</Button>
                     </Card.Body>
                 </Card>
+                <Card className="mt-4" border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+                    <Card.Title className="mt-3">
+                        Tämä oma kirja on osana seuraavia omia sarjojasi: 
+                    </Card.Title>
+                    <Card.Body>
+                        {OmasarjaList}
+                    </Card.Body>
+                    
+                </Card>
             </Col>
             <Col className="mb-4" sm={12} lg={3}>
-                {
-                valokuvat.length > 0?
+                {valokuvat.length > 0?
                     <div className="mb-4"><ValokuvaViewerComponent omakirja={omakirja}/></div>
-                :
-                    <></>
-                }
+                :<></>}
             </Col>
         </Row>
             {deleteClicked?
@@ -110,17 +136,48 @@ const ViewComponent = (props) => {
                         <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
                     </div>
                 </div>
-            :
-            <></>}
+            :<></>}
             {editClicked?
                 <div style={{position: "absolute", backgroundColor: "rgba(0,0,0,0.9)", left: "0", right: "0", top: "0", height: "350%"}}>
                     <div className="mx-3" style={{position: "fixed", left: "0", right: "0", top: "0"}}>
                         <EditOwnBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
                     </div>
                 </div>
-            :
-            <></>}
+            :<></>}
         </div>
+    )
+}
+
+// Komponentti oman sarjan näyttäiseen oman kirjan sivulla
+const OmasarjaListComponent = (props) => {
+    const id = props.id
+    const [omasarja, setOmasarja] = useState(null)
+
+    useEffect(() => {
+        const fetchOmasarja = async () => {
+            const f = await fetch(`http://localhost:5000/oma_sarja?&oma_sarja_id=${id}`, {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await f.json()
+            setOmasarja(data.data[0])
+        }
+        fetchOmasarja();
+    }, [])
+
+    if (omasarja){
+        return (
+            <div className="mb-3">
+                <Link to={"./omasarja/"+id} style={{textDecoration: "none", color: "white"}}>
+                    <Button variant="dark" style={{backgroundColor: theme.button, width: "100%"}}>
+                    {omasarja.nimi}<span style={{position: "absolute", right: "3em"}}>➡</span>
+                    </Button>
+                </Link>
+            </div>
+        )
+    }
+    return (
+        <div>odotetaan omaa sarjaa...</div>
     )
 }
 
@@ -206,7 +263,6 @@ const DeleteOwnBookComponent = (props) => {
             </Card.Header>
             <Button variant="warning" className="my-5 mx-auto" onClick={(e) => props.setDeleteClicked(false)} style={{width: "40%"}}>Peruuta</Button> 
             <Button variant="danger" className="mx-auto" onClick={(e) => setClickCounter(clickCounter + 1)} style={{width: "40%"}}>Poista</Button>
-
         </Card>
         }
         </>
