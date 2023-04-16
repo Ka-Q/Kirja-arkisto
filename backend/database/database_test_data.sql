@@ -37,7 +37,7 @@
 	insert into kuva values(2, "sormuksen_ritarit_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva Sormuksen ritareiden takakanesta");
 	insert into kuva values(3, "kaksi_tornia_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
 	insert into kuva values(4, "kaksi_tornia_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia takakannesta");
-	insert into kuva values(5, "kuninkaan_paluu_etukansi.gif", 3, 1999, "Kalle", "Maalaus", "Kuva Kuninkaan paluun etukannesta");
+	insert into kuva values(5, "kuninkaan_paluu_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva Kuninkaan paluun etukannesta");
 
 	-- Taru Sormusten Herrasta kuvat kirjoille
 	insert into kirjan_kuvat values(1, 1);
@@ -151,44 +151,88 @@
 
 
 -- Omat kirjat
-	-- Taru Sormusten Herrasta:
-		insert into oma_kirja values(10, 4, 12.90, "Kirpputorilöytö", 2002, "2019-10-12", 1, 2);
-		insert into oma_kirja values(20, 3, 7.50, "Kirpputorilöytö", 2004, "2021-11-11", 2, 2);
-		insert into oma_kirja values(30, 4, 6.50, "Kirpputorilöytö", 2004, "2021-11-11", 1, 2);
-
-	-- Narnia:
-		insert into oma_kirja values(40, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 4, 1);
-		insert into oma_kirja values(50, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 5, 1);
-		insert into oma_kirja values(60, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 6, 1);
-		insert into oma_kirja values(70, 3, 5.00, "Antikvariaatista", 2007, "2022-06-08", 10, 1);
-
-
-
-
-
-insert into valokuva values(1, "paras_valokuva.png", 1234, "testivalokuva", 2);
-insert into valokuva values(2, "paras_valokuva.png", 1235, "testivalokuva2", 2);
-insert into valokuva values(3, "paras_valokuva.png", 1236, "testivalokuva3", 2);
-insert into valokuva values(4, "paras_valokuva.png", 1237, "testivalokuva4", 2);
-
-insert into oman_kirjan_valokuvat values(10, 1, 2);
-insert into oman_kirjan_valokuvat values(10, 2, 2);
-insert into oman_kirjan_valokuvat values(20, 3, 2);
-insert into oman_kirjan_valokuvat values(30, 4, 2);
+	-- Käyttäjä
+		-- Taru Sormusten Herrasta:
+			insert into oma_kirja values(10, 2, 12.90, "Kirpputorilöytö", 2002, "2019-10-12", 1, 2); 
+			insert into oma_kirja values(20, 5, 7.50, "Antikvariaatista", 2004, "2021-11-11", 2, 2);
+			insert into oma_kirja values(30, 4, 6.50, "Kirpputorilöytö", 2004, "2021-11-11", 1, 2);
+            insert into oma_kirja values(80, 5, 12.90, "Antikvariaatista", 2002, "2019-10-12", 3, 2); 
+			insert into oma_kirja values(90, 1, 7.50, "Kirpputorilöytö", 2004, "2021-11-11", 2, 2);
+			insert into oma_kirja values(100, 4, 6.50, "Kirpputorilöytö", 2004, "2021-11-11", 1, 2);
+            
+	-- Admin
+		-- Narnia:
+			insert into oma_kirja values(40, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 4, 1);
+			insert into oma_kirja values(50, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 5, 1);
+			insert into oma_kirja values(60, 5, 9.25, "Poistomyynnistä", 2010, "2021-11-12", 6, 1);
+			insert into oma_kirja values(70, 3, 5.00, "Antikvariaatista", 2007, "2022-06-08", 10, 1);
 
 -- Omat sarjat
-insert into oma_sarja values(1, "Taru sormusten Herrasta (oma)", "Kokoelmani Taru Sormusten Herrasta - kirjoja", 1, 2);
-insert into oma_sarja values(2, "Narnian tarinoita (oma)", "Kokoelmani Narnia -kirjoja", 2, 1);
+	-- Käyttäjä
+		-- Taru sormusten herrasta (kaikki)
+			insert into oma_sarja values(1, "Taru sormusten Herrasta (kaikki)", "Kokoelmani Taru Sormusten Herrasta - kirjoja", 1, 2);
+			
+            -- Omaan sarjaan kirjat
+			insert into oman_sarjan_kirjat values(1, 10, 2);
+			insert into oman_sarjan_kirjat values(1, 20, 2);
+			insert into oman_sarjan_kirjat values(1, 30, 2);
+            insert into oman_sarjan_kirjat values(1, 80, 2);
+			insert into oman_sarjan_kirjat values(1, 90, 2);
+			insert into oman_sarjan_kirjat values(1, 100, 2);
+            
+		-- Taru Sormuseten herrasta (hyväkuntoinen)
+            insert into oma_sarja values(3, "Taru sormusten Herrasta (hyväkuntoinen)", "Omistamani hyväkuntoiset Taru Sormusten Herrasta - kirjoja", 1, 2);
+            
+            -- Omaan sarjaan kirjat
+            insert into oman_sarjan_kirjat values(3, 100, 2);
+			insert into oman_sarjan_kirjat values(3, 80, 2);
+            insert into oman_sarjan_kirjat values(3, 20, 2);
+			insert into oman_sarjan_kirjat values(3, 30, 2);
+            
+   -- Admin
+		-- Narnian tarinoita (oma)
+			insert into oma_sarja values(2, "Narnian tarinoita (oma)", "Kokoelmani Narnia -kirjoja", 2, 1);
+			
+			-- Omaan sarjaan kirjat
+			insert into oman_sarjan_kirjat values(2, 40, 1);
+			insert into oman_sarjan_kirjat values(2, 50, 1);
+			insert into oman_sarjan_kirjat values(2, 60, 1);
+			insert into oman_sarjan_kirjat values(2, 70, 1);
+       
+       
+-- Valokuvat
+	-- Sormuksen ritarit
+	insert into valokuva values(1, "sormuksenritarit_etukansi_vkuva.jpg", -200, "valokuva etukannesta", 2);
+	insert into valokuva values(2, "sormuksenritarit_takakansi_vkuva.jpg", -100, "valokuva takakannesta", 2);
+    insert into valokuva values(7, "sormuksenritarit_s0_vkuva.jpg", 0, "valokuva ensimmäiseltä aukeamalta", 2);
+    
+    -- omalle kirjalle
+    insert into oman_kirjan_valokuvat values(10, 1, 2);
+	insert into oman_kirjan_valokuvat values(10, 2, 2);
+	insert into oman_kirjan_valokuvat values(10, 7, 2);
 
--- Omien sarjojen kirjat
-	-- Taru Sormusten Herrasta:
-insert into oman_sarjan_kirjat values(1, 10, 2);
-insert into oman_sarjan_kirjat values(1, 20, 2);
-insert into oman_sarjan_kirjat values(1, 30, 2);
+	-- Kaksi tornia
+	insert into valokuva values(3, "kaksitornia_etukansi_vkuva.jpg", -200, "valokuva etukannesta", 2);
+	insert into valokuva values(4, "kaksitornia_takakansi_vkuva.jpg", -100, "valokuva takakannesta", 2);
+    
+    insert into valokuva values(8, "kaksitornia_etukansi_vkuva2.jpg", -200, "valokuva etukannesta", 2);
+    
+    -- omalle kirjalle
+    insert into oman_kirjan_valokuvat values(20, 3, 2);
+	insert into oman_kirjan_valokuvat values(20, 4, 2);
+    
+    insert into oman_kirjan_valokuvat values(90, 8, 2);
+    
+    -- Kuninkaan paluu
+	insert into valokuva values(5, "kuninkaanpaluu_etukansi_vkuva.jpg", -200, "valokuva etukannesta", 2);
+	insert into valokuva values(6, "kuninkaanpaluu_takakansi_vkuva.jpg", -100, "valokuva takakannesta", 2);
+    
+    
+    -- omalle kirjalle
+    insert into oman_kirjan_valokuvat values(80, 5, 2);
+	insert into oman_kirjan_valokuvat values(80, 6, 2);
+	
+    -- vkuva 8 omakirja 100 
 
-	-- Narnia:
-insert into oman_sarjan_kirjat values(2, 40, 1);
-insert into oman_sarjan_kirjat values(2, 50, 1);
-insert into oman_sarjan_kirjat values(2, 60, 1);
-insert into oman_sarjan_kirjat values(2, 70, 1);
+
 
