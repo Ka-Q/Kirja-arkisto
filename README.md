@@ -10,14 +10,13 @@ Clientin koodi frontend-hakemistossa.
 Tietokannan ja rajapinnan koodi backend-hakemistossa
 
 
+# Sovelluksen ajaminen omalla koneella
 
-
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+1. Luo lokaali MySQL tietokantayhteys porttiin 3306 (käyttäjätiedoilla root, root)
+2. Aja tietokannan luonti-skripti ja data-skripti. (löytyvät backend/database)
+3. Käynnistä Express-serveri komennolla ```npm run dev``` hakemistossa backend/kirja-arkisto-api
+4. Käynnistä selaimen client komennolla ```npm run start``` hakemistossa frontend/kirja-arkisto
+5. Navigoi selaimessasi osoitteeseen localhost:3000
 
 # Build and Test
 TODO: Describe and show how to build your code and run the tests. 
