@@ -116,7 +116,7 @@ const CoverViewerComponent = (props) => {
     return(
         <div>
             <div className="mb-3" style={{userSelect: "none", cursor: "pointer"}}>
-                <Image className="" fluid src={etukansi} onClick={(e) => handleClick(e.target)} style={{width:"100%"}}/>
+                <Image className="" fluid src={etukansi} onClick={(e) => handleClick(e.target)} style={{width:"100%", borderRadius: "0.3em"}}/>
             </div>
             {showEtukansi?
             <>

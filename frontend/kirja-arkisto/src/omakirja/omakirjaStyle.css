@@ -35,11 +35,11 @@ body {
 
 @keyframes flip-with-rotate {
   0% {
-      transform: perspective(350px) rotateY(0);
+      transform: perspective(600px) rotateY(0);
   }
 
   100% {
-    transform: perspective(350px) rotateY(180deg) scaleX(-1);
+    transform: perspective(600px) rotateY(180deg) scaleX(-1);
 }
 }
 
