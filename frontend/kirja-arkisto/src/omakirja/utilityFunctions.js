@@ -64,7 +64,6 @@ const getFrontCover = (omakirja) => {
     if (etukansikuva.kuva) {
         imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + etukansikuva.kuva
     }
-    console.log("Etukansi: " + imgsrc)
     return imgsrc;
 }
 
@@ -90,7 +89,6 @@ const getBackCover = (omakirja) => {
     if (takakansikuva.kuva) {
         imgsrc = "http://localhost:5000/kuvatiedosto?kuva=" + takakansikuva.kuva
     }
-    console.log("Takakansi: " + imgsrc)
     return imgsrc;
 }
 

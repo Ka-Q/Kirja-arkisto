@@ -39,13 +39,13 @@ const AddValokuvaFormComponent = (props) => {
                     <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle}/><RequiredComponent/></div>
                     <div className="mx-auto" style={{display:"flex"}}>
                         <div onClick={(e) => setShowSivu(false)}>
-                            <label for="etukansiRadio" className="pe-1">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
+                            <label htmlFor="etukansiRadio" className="pe-1">Etukansi</label> <input id="etukansiRadio" type="radio" name="type" value="etukansi"/>
                         </div>
                         <div className="mx-5" onClick={(e) => setShowSivu(false)}>
-                            <label for="takakansiRadio" className="pe-1">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
+                            <label htmlFor="takakansiRadio" className="pe-1">Takakansi</label> <input id="takakansiRadio" type="radio" name="type" value="takakansi"/>
                         </div>
                         <div onClick={(e) => setShowSivu(true)}>
-                            <label for="sivuRadio" className="pe-1">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
+                            <label htmlFor="sivuRadio" className="pe-1">Sivu</label> <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked/>
                         </div>
                         <RequiredComponent/>
                     </div>
@@ -303,16 +303,16 @@ const EditValokuvaComponent = (props) => {
         <div>
             <h5>Muokataan valokuvan tietoja</h5> 
             <div>
-                <label for="etukansiRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleEtukansi()}>Etukansi</label> 
+                <label htmlFor="etukansiRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleEtukansi()}>Etukansi</label> 
                 <input id="etukansiRadio" type="radio" name="type" value="etukansi" defaultChecked={sivunumeroOriginal == -200} onClick={(e) => handleEtukansi()}/>
             </div>
             <div className="mx-5">
-                <label for="takakansiRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleTakakansi()}>Takakansi</label> 
+                <label htmlFor="takakansiRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleTakakansi()}>Takakansi</label> 
                 <input id="takakansiRadio" type="radio" name="type" value="takakansi" defaultChecked={sivunumeroOriginal == -100} onClick={(e) => handleTakakansi()}/>
                 {sivunumeroChanged? <span style={{position:"absolute", right: "2em", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
             </div>
             <div>
-                <label for="sivuRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleSivu()}>Sivu</label> 
+                <label htmlFor="sivuRadio" className="pe-1" style={{width: "6em"}} onClick={(e) => handleSivu()}>Sivu</label> 
                 <input id="sivuRadio" type="radio" name="type" value="sivu" defaultChecked={sivunumeroOriginal >= 0} onClick={(e) => handleSivu()}/>
             </div>
             {showSivu?
