@@ -1,7 +1,12 @@
 #Backend
-Tänne hakemistoon backendin koodit ml. tietokanta ja api.
 
-##Tietokanta:
+[[_TOC_]]
+
+##Tietokanta
+
+Alla kuva tietokannan tauluista (11.4.2022): 
+
+![db.png](/.attachments/db-d4ae9641-df90-41e4-9ce8-db9c732ec674.png)
 
 -Portti oletuksena 3006 
 -Nimi mydb 
@@ -10,21 +15,23 @@ Tänne hakemistoon backendin koodit ml. tietokanta ja api.
 Koodi jolla muuttaa salasanan MySQL WorkBenchiin
 alter user 'root'@'localhost' identified with mysql_native_password by 'root';
 
-
-##Rest Api:
+##Rest Api
 Express-apin portti oletuksena 5000
 
 Rajapinta käynnistetään syöttämällä komento ```npm run dev``` **kirja-arkisto-api** -hakemistossa.
 ___
 ##Rajapinnan toiminnallisuudesta
 
-GET, POST, PUT ja DELETE (Haku, lisäys, muokkaus ja poisto) useimpiin tietokannan tauluihin. Parametrien nimet annetaan tällä hetkellä suoraan tietokannan taulujen sarakkeina.
+GET, POST, PUT ja DELETE (Haku, lisäys, muokkaus ja poisto) useimpiin tietokannan tauluihin. Parametrien nimet annetaan tällä hetkellä suoraan tietokannan taulujen sarakkeiden niminä. **Sarakkeiden nimet löytyvät ylempää**.
 
- **Pitää muistaa laittaa ```credentials: "include"``` requestin mukana!!**
+⚠ **Pitää muistaa laittaa ```credentials: "include"``` fetch:n mukana!!** Muuten serveri ei voi varmistaa käyttäjän aktiivista sessiota!
 
 ###Get
-Gettien tulosten rajaus onnistuu millä vain taulun sarakkeella ja haun voi tehdä "sumeasti" käyttämällä %-merkkejä parametrin halutu(i)lla puolilla. 
+Gettien tulosten rajaus onnistuu millä vain taulun sarakkeella ja haun voi tehdä "sumeasti" käyttämällä %-merkkejä parametrin ~~halutu(i)lla~~ **molemmilla** puolilla.* 
 Getit palauttavat tietoa aina JSON-objekstissa, jolla on kentät "status", "message" ja "data". "Data"-kentässä sijaitsevat tietokannasta haetut rivit.
+
+
+*_Totesin, että haulle riittää, että on joko kokonaan sumea tai ei ollenkaan. Näin tarvittavan koodin määräkin väheni_
 
 Esimerkiksi GET tällaiseen: ```http://localhost:5000/kirja?ensipainosvuosi=1956&nimi=%taiste%``` voisi palauttaa näin:
 
@@ -221,7 +228,7 @@ sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisest
 }
 ```
 ___
-## Kuvatiedostot
+## Kuvat ja valokuvat
 
 ###Kuva ja valokuva
 
@@ -232,13 +239,16 @@ Varsinaisen **kuvatiedoston saadakseen**, tulee käyttäjän kutsua GET-metodill
 Valokuva toimii täysin samalla periaattella, mutta osoite on ```http://localhost:5000/valokuva``` ja valokuvatiedoston nimi on kentässä```"valokuva"```. 
 **Valokuvatiedoston saadakseen** GET esim:  "```http://localhost:5000/valokuva?valokuvakuva=tiedosto_nimi.jpg```"
 
+### Valokuvat etu- ja takakannesta
+Kannassa kun ei ole valokuvilla tyyppiä, niin päätetään, että valokuva, jonka sivunumero on -200 tarkoittaa valokuvaa etukannesta. Vastaavasti, valokuva, jonka sivunumero on -100, tarkoittaa valokuvaa takakannesta.
+
 ___
 ## Käyttäjän tunnistautuminen
 
 Käyttäjän tunnistautumiseen käytetään Express Session -pakettia. Session aikakatkaisu tapahtuu selaimessa serverin antaman evästeen avulla. Serveri rajaa käyttäjän pääsyä dataan käyttäjän id:n ja roolin mukaan. Kukin käyttäjä näkee ainoastaan henkilökohtaiset omat sarjansa ja omat kirjansa. Vain admin-roolin (1) omaavat käyttäjät voivat lisätä, muokata ja poistaa sarjoja ja kirjoja.
 
 ###Kirjautuminen sisään
-POST osoitteeseen ```http://localhost:5000/login```. Body-lohkossa sposti (tai vaan tunnus esim admin) ja salasana esim: ```{sposti: "admin", salasana: "admin"}```
+POST osoitteeseen ```http://localhost:5000/login```. Body-lohkossa sposti (tai vaan tunnus esim admin) ja salasana esim: ```{sposti: "admin", salasana: "admin"}```. Tietokanta ei välitä siitä, onko spostin paikalla oikeasti sähköposti, vaan sitä voi käyttää ns. pelkkänä käyttäjätunnuksena, kunhan tieto vain vastaa kannan tietoja.
 
 ###Kirjautuminen ulos
 POST osoitteeseen ```http://localhost:5000/logout```. Tuhoaa käyttäjän session.
@@ -246,22 +256,37 @@ POST osoitteeseen ```http://localhost:5000/logout```. Tuhoaa käyttäjän sessio
 ###Kirjautumisen tarkistaminen
 Jos haluaa tarkistaa, onko käyttäjällä aktiivinen sessio, niin GET osoitteeseen ```http://localhost:5000/check_login```. Jos on kirjautuneena sisään, niin palautuu JSON, jossa on käyttäjän sposti ja rooli-id.
 
+___
+##Käyttöoikeuksien rajaukset clientille
 
+⚠ **Pitää muistaa laittaa ```credentials: "include"``` fetch:n mukana!!** Muuten serveri ei voi varmistaa käyttäjän aktiivista sessiota!⚠
 
+###Rajoittamaton
+Sarjan ja Kirjan:
+- Haku
 
+###Rajoitettu käyttäjän id:llä
+Oman sarjan, Oman sarjan kirjan, Oman kirjan, Valokuvan ja Oman kirjan valokuvan:
+- Haku 
+- Lähetys
+- Muokkaus
+- Poisto
 
+Henkilökohtaisen spostin ja roolin
+- Haku
 
+###Rajoitettu käyttäjän roolilla
+Sarjan ja Kirjan:
+- Lähetys
+- Muokkaus
+- Poisto
 
+### Rajoitettu täysin
+Käyttäjän ja roolin
+- Lähetys
+- Muokkaus
+- Poisto
 
+Käytäjän tiedoista näkyy clientille siis vain sposti ja rooli. Käyttäjä-id, jota käytetään datan liittämiseen ja hakuun pitäisi näkyä vain serverille* 
 
-
-
-
-
-
-
-
-
-
-
-
+*_Tämä ei itseasiassa toimi tällä hetkellä, vaan käyttäjä-id palautuu esim. omia sarjoja haettaessa oman sarjan mukana. Korjataan kun ehditään..._
