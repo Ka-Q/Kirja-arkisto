@@ -50,24 +50,23 @@ const ListBookCard = (props) => {
         <Link to={"./" + omakirja.oma_kirja_id} style={{textDecoration: "none", color: "black"}}>
         <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
             <Card.Body>
-                <Card.Title>{kirja.nimi}</Card.Title>
-                <Row className="mb-2">
-                    <Col md={2}>
-                        <img src={imgsrc} style={{height: "10em"}}></img>
+                <Row>
+                    <Col className="pt-auto">
+                        <img src={imgsrc} style={{height: "7em"}}></img>
+                        {coverartData.tyyppi == "kuva"? 
+                            <div className="px-2" style={{position: "absolute", width: "auto", height: "auto", top: "1em", left: "1em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em"}}>
+                                🏛️
+                            </div> 
+                        : 
+                            <div className="px-2" style={{position: "absolute", width: "auto", height: "auto", top: "1em", left: "1em", color: "white", backgroundColor: "rgba(75, 75, 75 , 0.77)", borderRadius: "0.5em"}}>
+                                📷
+                            </div>
+                        }
                     </Col>
-                    <Col>
-                        <Card.Text>
-                            {kirja.kirjailijat} <br/>
-                            Kuntoluokka: {kuntoluokkaStars} ( {omakirja.kuntoluokka} / 5 )
-                            <span className="mx-5"/>
-                            Hankittu: {omakirja.hankinta_aika}
-                        </Card.Text>
-                    </Col>
-                    <Col md={2}>
-                        <Card.Text style={{fontSize:"3em"}}>
-                            ➡
-                        </Card.Text>
-                    </Col>
+                    <Col xs={12} md={3} className="mt-4"><h3>{kirja.nimi}</h3></Col>
+                    <Col className="mt-4">{kirja.kirjailijat} <br/></Col>
+                    <Col className="mt-4">{kuntoluokkaStars} <br/> ( {omakirja.kuntoluokka} / 5 )</Col>
+                    <Col xs={12} sm={3} className="mt-4">Hankittu: {omakirja.hankinta_aika}</Col>
                 </Row>
             </Card.Body>
         </Card>
