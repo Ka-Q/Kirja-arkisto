@@ -79,7 +79,7 @@ const ViewComponent = (props) => {
                 <Col className="mb-4" sm={12} lg={3}>
                     <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                         <Card.Title className="mt-3">
-                            Kansikuvat
+                            Alkuperäiset kansikuvat
                         </Card.Title>
                         <Card.Body>
                             <CoverViewerComponent omakirja={omakirja}/>
@@ -116,7 +116,7 @@ const ViewComponent = (props) => {
                 </Card>
                 <Card className="mt-4" border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
                     <Card.Title className="mt-3">
-                        Tämä oma kirja on osana seuraavia omia sarjojasi: 
+                        {OmasarjaList.length > 0? <>Tämä oma kirja on osana seuraavia omia sarjojasi: </>:<>Tämä oma kirja ei ole osa yhtäkään omaa sarjaasi</>}
                     </Card.Title>
                     <Card.Body>
                         {OmasarjaList}
@@ -165,7 +165,7 @@ const OmasarjaListComponent = (props) => {
     if (omasarja){
         return (
             <div className="mb-3">
-                <Link to={"./omasarja/"+id} style={{textDecoration: "none", color: "white"}}>
+                <Link to={"/omasarja/"+id} style={{textDecoration: "none", color: "white"}}>
                     <Button variant="dark" style={{backgroundColor: theme.button, width: "100%"}}>
                     {omasarja.nimi}<span style={{position: "absolute", right: "3em"}}>➡</span>
                     </Button>

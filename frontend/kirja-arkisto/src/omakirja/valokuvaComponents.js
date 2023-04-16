@@ -377,6 +377,18 @@ const AddValokuvaComponent = (props) => {
         if (errorCode == 1) setError(true)
     }
 
+    const handleCancel = () => {
+        let file = document.getElementsByName("files")[0]
+        if (file) file.value = null 
+        let nimi = document.getElementsByName("nimi")[0]
+        if (nimi) nimi.value = null 
+        let sivunumero = document.getElementsByName("sivunumero")[0]
+        if (sivunumero) sivunumero.value = null 
+        
+        props.setAddClicked(false)
+        
+    }
+
     const inputStyle = {width: "100%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
 
     return(
@@ -386,7 +398,7 @@ const AddValokuvaComponent = (props) => {
                 inputStyle={inputStyle}
                 formId={"picForm0"}
             /> 
-            <Button variant="warning" onClick={(e) => props.setAddClicked(false)}>Peruuta</Button>
+            <Button variant="warning" onClick={(e) => handleCancel()}>Peruuta</Button>
             <span className="mx-2"/>
             <Button variant="primary" onClick={(e) => handleSave()}>Tallenna</Button>
             {error? 
