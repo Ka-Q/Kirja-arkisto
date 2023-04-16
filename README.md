@@ -16,7 +16,7 @@ Tietokannan ja rajapinnan koodi backend-hakemistossa
 2. Aja tietokannan luonti-skripti ja data-skripti. (löytyvät backend/database)
 3. Käynnistä Express-serveri komennolla ```npm run dev``` hakemistossa backend/kirja-arkisto-api
 4. Käynnistä selaimen client komennolla ```npm run start``` hakemistossa frontend/kirja-arkisto
-5. Navigoi selaimessai osoitteeseen localhost:3000
+5. Navigoi selaimessasi osoitteeseen localhost:3000
 
 # Build and Test
 TODO: Describe and show how to build your code and run the tests. 
