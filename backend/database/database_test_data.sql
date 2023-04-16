@@ -70,8 +70,8 @@
 	insert into sarjan_kirjat values(2,10);
 
 	-- Narnia -kuvat
-	insert into kuva values(6, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Velhon ja leijonan etukannesta");
-	insert into kuva values(7, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Narnian viimeinen taistelu etukannesta");
+	insert into kuva values(6, "velho_ja_leijona_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Velhon ja leijonan etukannesta");
+	insert into kuva values(7, "narnian_viimeinen_taistelu_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Narnian viimeinen taistelu etukannesta");
 	insert into kuva values(8, "prinssi_kaspian_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva prinssi kaspian etukannesta");
 	insert into kuva values(9, "kaspianin_matka_maailman_aariin_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva kaspianin matka maailman ääriin etukannesta");
 	insert into kuva values(10, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Hopeinen tuoli etukannesta");
@@ -153,12 +153,12 @@
 -- Omat kirjat
 	-- Käyttäjä
 		-- Taru Sormusten Herrasta:
-			insert into oma_kirja values(10, 2, 12.90, "Kirpputorilöytö", 2002, "2019-10-12", 1, 2); 
-			insert into oma_kirja values(20, 5, 7.50, "Antikvariaatista", 2004, "2021-11-11", 2, 2);
-			insert into oma_kirja values(30, 4, 6.50, "Kirpputorilöytö", 2004, "2021-11-11", 1, 2);
-            insert into oma_kirja values(80, 5, 12.90, "Antikvariaatista", 2002, "2019-10-12", 3, 2); 
-			insert into oma_kirja values(90, 1, 7.50, "Kirpputorilöytö", 2004, "2021-11-11", 2, 2);
-			insert into oma_kirja values(100, 4, 6.50, "Kirpputorilöytö", 2004, "2021-11-11", 1, 2);
+			insert into oma_kirja values(10, 2, 12.90, "Kirpputorilöytö. Aika huonossa kunnossa ja muutama sivu irtonaisina välissä.", 2002, "2019-10-12", 1, 2); 
+			insert into oma_kirja values(20, 5, 7.50, "Antikvariaatista. Hyvä hinta ja kirja on priimakunnossa.", 2004, "2021-11-11", 2, 2);
+			insert into oma_kirja values(30, 4, 6.50, "Kirpputorilöytö. Suurehko repeämä kolmannen sivun alalaidassa, mutta korjattu huolella.", 2004, "2021-11-11", 1, 2);
+            insert into oma_kirja values(80, 5, 12.90, "Antikvariaatista. Varjeltu kappale toiselta keräilijältä. Kuin uusi", 2002, "2019-10-12", 3, 2); 
+			insert into oma_kirja values(90, 1, 7.50, "Kirpputorilöytö. Hirveässä kunnossa ja maksoin tästä ryöstöhinnan. En ollut huomannut, että keskelä olevat sivut olivat liimattuna yhteen... ;_;", 2004, "2021-11-11", 2, 2);
+			insert into oma_kirja values(100, 4, 6.50, "Kirpputorilöytö.", 2004, "2021-11-11", 1, 2);
             
 	-- Admin
 		-- Narnia:
@@ -181,7 +181,7 @@
 			insert into oman_sarjan_kirjat values(1, 100, 2);
             
 		-- Taru Sormuseten herrasta (hyväkuntoinen)
-            insert into oma_sarja values(3, "Taru sormusten Herrasta (hyväkuntoinen)", "Omistamani hyväkuntoiset Taru Sormusten Herrasta - kirjoja", 1, 2);
+            insert into oma_sarja values(3, "Taru sormusten Herrasta (hyväkuntoinen)", "Omistamani hyväkuntoiset Taru Sormusten Herrasta - kirjat. Ehkäpä näitä kehtaisi jopa myydä jollekin...", 1, 2);
             
             -- Omaan sarjaan kirjat
             insert into oman_sarjan_kirjat values(3, 100, 2);
