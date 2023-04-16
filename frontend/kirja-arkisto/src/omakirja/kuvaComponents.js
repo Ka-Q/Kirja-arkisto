@@ -94,11 +94,8 @@ const CoverViewerComponent = (props) => {
 
     let omakirja = props.omakirja
     
-    const [etukansi, setEtukansi] = useState("" + getFrontCover(omakirja)) //props.etukansi
-    const [takakansi, setTakakansi] = useState(getBackCover(omakirja))  //props.takakansi
-
-    console.log("CVC: ")
-    console.log(etukansi);
+    const [etukansi, setEtukansi] = useState(getFrontCover(omakirja))
+    const [takakansi, setTakakansi] = useState(getBackCover(omakirja))
 
     const [showEtukansi, setShowEtukansi] = useState(true)
     

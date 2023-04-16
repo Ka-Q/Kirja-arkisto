@@ -370,32 +370,32 @@ const EditOwnBookComponent = (props) => {
             <Card bg="dark" className="px-2 pt-5 mt-3" style={{color: "white", height: "40em", width:"auto"}}>
                 <Card.Title>Muokataan omaa kirjaa "{props.omakirja.kirja.nimi}"</Card.Title>
                     <div>
-                        <label for="kuntoluokka" style={{width:labelW}}>Kuntoluokka: </label>
+                        <label htmlFor="kuntoluokka" style={{width:labelW}}>Kuntoluokka: </label>
                         <input type="number" id="kuntoluokka" value={kuntoluokka} style={inputStyle} onChange={(e) => handleKuntoluokka(e.target.value)}/>
                         <span style={{position:"absolute", marginLeft:"0.5em"}}>/5</span>
                         {kuntoluokkaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
                     <div>
-                        <label for="hankittu" style={{width:labelW}}>Hankittu: </label>
+                        <label htmlFor="hankittu" style={{width:labelW}}>Hankittu: </label>
                         <input type="date" id="hankittu" style={inputStyle} onChange={(e) => setHankittu(e.target.value)}/>
                         {hankittuChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
                     <div>
-                        <label for="hankintahinta" style={{width:labelW}}>Hankintahinta: </label>
+                        <label htmlFor="hankintahinta" style={{width:labelW}}>Hankintahinta: </label>
                         <input type="number" id="hankintahinta" value={hankintaHinta} style={inputStyle} onChange={(e) => handleHankintahinta(e.target.value)}/>
                         <span style={{position:"absolute", marginLeft:"0.5em"}}>€</span>
                         {hankintahintaChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
                     <div>
-                        <label for="painosvuosi" style={{width:labelW}}>Painosvuosi: </label>
+                        <label htmlFor="painosvuosi" style={{width:labelW}}>Painosvuosi: </label>
                         <input type="number" id="painosvuosi" value={painosvuosi} style={inputStyle} onChange={(e) => handlePainosvuosi(e.target.value)}/>
                         {painosvuosiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
                     </div>
 
-                    <div><label for="esittely" style={{width:labelW}}>Esittelyteksti: </label></div>
+                    <div><label htmlFor="esittely" style={{width:labelW}}>Esittelyteksti: </label></div>
                     <div className="mb-2" style={{display: "inline-block", whiteSpace: "nowrap", overflow: "auto", width: "100%", height: "30em"}}>
                         <textarea id="esittely" value={esittely} style={{ width: "80%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}} onChange={(e) => setEsittely(e.target.value)}/>
                         {esittelyChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
