@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Col, Row, Stack } from "react-bootstrap";
-import { RequiredComponent, WarningComponent, SuccessComponent } from "./utilityComponents";
+import { Button, Card, Col, Row, Stack, Form } from "react-bootstrap";
+import { RequiredComponent, WarningComponent, SuccessComponent } from "./utlilityComponents";
 import { useNavigate } from "react-router-dom";
 import theme from './theme.json'
+
 
 
 const EditSeries = (props) => {
@@ -12,53 +13,45 @@ const EditSeries = (props) => {
   const [selectedSeries, setSelectedSeries] = useState({});
   const [nimi, setNimi] = useState("");
   const [kuvaus, setKuvaus] = useState("");
-  const [relatedKirja, setRelatedKirja] = useState([]);
 
-  const [allBooks, setAllBooks] = useState([]);
-  const [selectedBook, setSelectedBook] = useState("");
-
+  const [allSeries, setAllSeries] = useState([]);
+  
 
   useEffect(() => {
     const fetchSeries = async () => {
-      const f = await fetch(`http://localhost:5000/sarja?sarja_id=${sarja_id}`, {
+      const f = await fetch(`http://localhost:5000/omasarja?sarja_id=${sarja_id}`, {
         credentials: "include",
       });
       const data = await f.json();
       const selectedSeries = data.data[0];
-      const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${selectedSeries.sarja_id}`, {
-        credentials: "include",
-      });
-      const kirjaData = await k.json();
-  
       setSelectedSeries(selectedSeries);
       setNimi(selectedSeries.nimi);
       setKuvaus(selectedSeries.kuvaus);
-      setRelatedKirja(kirjaData.data);
     };
     fetchSeries();
   }, [sarja_id]);
   
   useEffect(() => {
-    const fetchBooks = async () => {
-      const b = await fetch("http://localhost:5000/kirja", {
+    const fetchSeries = async () => {
+      const b = await fetch("http://localhost:5000/oma_sarja", {
         credentials: "include",
       });
-      const allBooksData = await b.json();
-      setAllBooks(allBooksData.data);
+      const allSeriesData = await b.json();
+      setAllSeries(allSeriesData.data);
     };
-    fetchBooks();
+    fetchSeries();
   }, []);
   
 
 
   const handleCancelClicked = () => {
-    navigate('/sarjasivu'); 
+    navigate('/omasarjasivu'); 
   };
 
 
 
   const handleDeleteClicked = async () => {
-    const response = await fetch(`http://localhost:5000/sarja?sarja_id=${selectedSeries.sarja_id}`, {
+    const response = await fetch(`http://localhost:5000/omasarja?sarja_id=${selectedSeries.sarja_id}`, {
       credentials: "include",
       method: 'DELETE',
 
@@ -75,17 +68,16 @@ const EditSeries = (props) => {
 
 
   const [sarjaFilled, setSarjaFilled] = useState(true)
-  const [filesFilled, setFilesFilled] = useState(true)
   const [saveSuccessful, setSaveSuccessful] = useState(false)
 
-  async function updateSeries(updatedSeries) {
-    const response = await fetch(`http://localhost:5000/sarja`, {
+  async function updateOwnSeries(updatedOwnSeries) {
+    const response = await fetch(`http://localhost:5000/oma_sarja`, {
       credentials: "include",
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedSeries),
+      body: JSON.stringify(updatedOwnSeries),
     });
 
     if (response.ok) {
@@ -96,46 +88,23 @@ const EditSeries = (props) => {
   }
 
 
-  const handleAddBookToSeries = async () => {
-    if (selectedBook) {
-      const response = await fetch("http://localhost:5000/sarjan_kirjat", {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sarja_id: sarja_id,
-          kirja_id: selectedBook,
-        }),
-      });
-  
-      if (response.ok) {
-   
-        const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${sarja_id}`);
-        const kirjaData = await k.json();
-        setRelatedKirja(kirjaData.data);
-  
-        setSelectedBook("");
-      } else {
-        console.error("Failed to add the book to the series");
-      }
-    }
-  };
-  
   
   const handleSaveClicked = () => {
+    console.log("Save button clicked");
     if (checkInputs()) {
-      const updatedSeries = {
+      console.log("Inputs are valid");
+      const updatedOwnSeries = {
         set: {
           nimi: nimi,
           kuvaus: kuvaus,
         },
         where: {
-          sarja_id: selectedSeries.sarja_id,
+          oma_sarja_id: selectedSeries.oma_sarja_id,
         },
       };
-      updateSeries(updatedSeries);
+      updateOwnSeries(updatedOwnSeries);
+    } else {
+      console.log("Inputs are invalid");
     }
   };
 
@@ -143,14 +112,10 @@ const EditSeries = (props) => {
 
   const checkInputs = () => {
     const omaSarjaOK = nimi.length > 0 && kuvaus.length > 0;
-    const fileInputsOK = Array.from(
-      document.getElementsByName("files")
-    ).every((fi) => fi.files.length > 0);
 
     setSarjaFilled(omaSarjaOK);
-    setFilesFilled(fileInputsOK);
 
-    return omaSarjaOK && fileInputsOK;
+    return omaSarjaOK;
   };
 
 
@@ -159,10 +124,12 @@ const EditSeries = (props) => {
       <Card.Body>
         {!saveSuccessful ? (
           <>
-            <Card.Title>Muokkaa sarjaa</Card.Title>
+            <Card.Title>Muokkaa omaa sarjaa</Card.Title>
             <Row className="mb-2">
               <Col>
                 <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
+
+                  
 
                   <div>
                     <input
@@ -186,31 +153,6 @@ const EditSeries = (props) => {
               </Col>
             </Row>
             <Row className="mb-2">
-              <Col>
-                <h3>Sarjan kirjat:</h3>
-                <ul>
-                  {relatedKirja.map((kirja) => (
-                    <li key={kirja.kirja_id}>{kirja.nimi}</li>
-                  ))}
-                </ul>
-              </Col>
-              <Col> <>
-                <h3>Lisää kirja sarjaan:</h3>
-                <select
-                  value={selectedBook}
-                  onChange={(e) => setSelectedBook(e.target.value)}
-                >
-                  <option value="">Valitse kirja</option>
-                  {allBooks.map((book) => (
-                    <option key={book.kirja_id} value={book.kirja_id}>
-                      {book.nimi}
-                    </option>
-                  ))}
-                </select>
-                <Button onClick={handleAddBookToSeries}>Lisää kirja</Button>
-              </>
-              </Col>
-
             </Row>
             <Row>
               <Col>
@@ -244,4 +186,4 @@ const EditSeries = (props) => {
   );
 };
 
-export { EditSeries };
+export { EditSeries }
