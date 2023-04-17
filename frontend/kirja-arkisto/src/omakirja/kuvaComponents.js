@@ -100,6 +100,8 @@ const CoverViewerComponent = (props) => {
     const [showEtukansi, setShowEtukansi] = useState(true)
     
     const handleClick = (element) => {
+
+        if (element.className == "flip flip-r")  return;
         setShowEtukansi(!showEtukansi)
         element.className = "flip flip-r" 
         setTimeout(() => {
