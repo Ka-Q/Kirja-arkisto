@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
 import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utilityComponents";
-import { useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useParams,useNavigate } from "react-router-dom";
+import { useLocation} from "react-router-dom";
+
+
 import theme from './theme.json'
 
 
 const EditSeries = (props) => {
-  const { sarja_id } = props;
-  const navigate = useNavigate();
-  // Haetaan sivun auetessa sarjat ja asetetaan listaan
-  const [selectedSeries, setSelectedSeries] = useState({});
+ 
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [selectedSeries, setSelectedSeries] = useState(null);
+
   const [nimi, setNimi] = useState("");
   const [kuvaus, setKuvaus] = useState("");
   const [relatedKirja, setRelatedKirja] = useState([]);
@@ -21,11 +26,11 @@ const EditSeries = (props) => {
 
   useEffect(() => {
     const fetchSeries = async () => {
-      const f = await fetch(`http://localhost:5000/sarja?sarja_id=${sarja_id}`);
+      const f = await fetch(`http://localhost:5000/sarja?sarja_id=${id}`);
       const data = await f.json();
       const selectedSeries = data.data[0]; // Directly get the first series from the response data
       // Fetch the related kirja for the selected series
-      const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${selectedSeries.sarja_id}`);
+      const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${selectedSeries.id}`);
       const kirjaData = await k.json();
 
       // Set the selectedSeries, nimi, and kuvaus states
@@ -35,7 +40,7 @@ const EditSeries = (props) => {
       setRelatedKirja(kirjaData.data);
     };
     fetchSeries();
-  }, [sarja_id]);
+  }, [id]);
   useEffect(() => {
     const fetchBooks = async () => {
       const b = await fetch("http://localhost:5000/kirja");
@@ -47,29 +52,32 @@ const EditSeries = (props) => {
 
 
   const handleCancelClicked = () => {
-    navigate('/sarjasivu'); // Update this with the correct path for SarjaSivu
+    navigate('/sarjasivu', { replace: true });
+
+
   };
 
 
 
   const handleDeleteClicked = async () => {
-    const response = await fetch(`http://localhost:5000/sarja?sarja_id=${selectedSeries.sarja_id}`, {
+    const response = await fetch(`http://localhost:5000/sarja?sarja_id=${selectedSeries.id}`, {
       credentials: "include",
       method: 'DELETE',
 
     });
 
     if (response.ok) {
-      navigate('/sarjasivu');
+      navigate('/sarjasivu', { replace: true });
+
     } else {
       console.error('Failed to delete the series');
     }
   };
 
-  // tyyliä
+  
   const inputStyle = { width: "60%", paddingLeft: "1em" }
 
-  // Ilmoituksia käyttäjälle
+ 
   const [sarjaFilled, setSarjaFilled] = useState(true)
   const [filesFilled, setFilesFilled] = useState(true)
   const [saveSuccessful, setSaveSuccessful] = useState(false)
@@ -103,14 +111,14 @@ const EditSeries = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sarja_id: sarja_id,
+          sarja_id: id,
           kirja_id: selectedBook,
         }),
       });
   
       if (response.ok) {
         // Fetch the updated related books
-        const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${sarja_id}`);
+        const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${id}`);
         const kirjaData = await k.json();
         setRelatedKirja(kirjaData.data);
   
@@ -122,9 +130,6 @@ const EditSeries = (props) => {
     }
   };
   
-  
-
-  // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
   const handleSaveClicked = () => {
     if (checkInputs()) {
       const updatedSeries = {
@@ -237,7 +242,8 @@ const EditSeries = (props) => {
         ) : (
           <>
             <SuccessComponent text="Tallennus onnistui" />
-            <Button onClick={(e) => props.handleLisaaClicked({ selectedSeries })}>Sulje</Button>
+            <Button onClick={(e) => props.handleLisaaClicked(selectedSeries)}>Sulje</Button>
+
           </>
         )}
       </Card.Body>
