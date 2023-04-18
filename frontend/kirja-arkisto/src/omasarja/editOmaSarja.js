@@ -7,7 +7,7 @@ import theme from './theme.json'
 
 
 const EditSeries = (props) => {
-  const { sarja_id } = props;
+  const { sarja_id, onUpdate } = props;
   const navigate = useNavigate();
  
   const [selectedSeries, setSelectedSeries] = useState({});
@@ -19,7 +19,7 @@ const EditSeries = (props) => {
 
   useEffect(() => {
     const fetchSeries = async () => {
-      const f = await fetch(`http://localhost:5000/omasarja?sarja_id=${sarja_id}`, {
+      const f = await fetch("http://localhost:5000/oma_sarja", {
         credentials: "include",
       });
       const data = await f.json();
@@ -51,18 +51,19 @@ const EditSeries = (props) => {
 
 
   const handleDeleteClicked = async () => {
-    const response = await fetch(`http://localhost:5000/omasarja?sarja_id=${selectedSeries.sarja_id}`, {
+    const response = await fetch("http://localhost:5000/oma_sarja", {
       credentials: "include",
       method: 'DELETE',
-
+      mode: "cors",
     });
-
+  
     if (response.ok) {
       navigate('/omasarjasivu');
     } else {
       console.error('Failed to delete the series');
     }
   };
+  
 
   const inputStyle = { width: "60%", paddingLeft: "1em" }
 
@@ -89,7 +90,7 @@ const EditSeries = (props) => {
 
 
   
-  const handleSaveClicked = () => {
+  const handleSaveClicked =  async () => {
     console.log("Save button clicked");
     if (checkInputs()) {
       console.log("Inputs are valid");
@@ -102,7 +103,8 @@ const EditSeries = (props) => {
           oma_sarja_id: selectedSeries.oma_sarja_id,
         },
       };
-      updateOwnSeries(updatedOwnSeries);
+      await updateOwnSeries(updatedOwnSeries);
+      onUpdate(); // Lisää tämä rivi ilmoittamaan vanhemmalle komponentille, että sarja on päivitetty
     } else {
       console.log("Inputs are invalid");
     }
