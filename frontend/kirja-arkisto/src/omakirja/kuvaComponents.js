@@ -90,34 +90,104 @@ const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     return previewList
 }
 
-const CoverViewerComponent = (props) => {
+/**
+ * A Component for flipping between two images
+ * @param {object} props
+ * @param {string} props.src1 string source of the first image to be displayed
+ * @param {string} props.src2 string source of the second image to be displayed
+ * @param {boolean} props.reversed boolean for controling animation direction
+ * @param {int} props.duration integer for controlling animation duration in milliseconds.
+ * @param {string} props.perspective string source for controlling animation perspective
+ * @returns A component with an image-element that flips around when clicked.
+ */
+const ImageFlipperComponent = (props) => {
 
-    let omakirja = props.omakirja
-    
-    const [etukansi, setEtukansi] = useState(getFrontCover(omakirja))
-    const [takakansi, setTakakansi] = useState(getBackCover(omakirja))
+    const perspective = props.perspective || '600px';
 
-    const [showEtukansi, setShowEtukansi] = useState(true)
+    const duration = props.duration || 1;
+    const durationMs = duration * 1000;
+
+    const direction = props.reversed? 'reverse' : 'normal';
+
+    let showSrc1 = true;
+
+    const defaultStyle = {display:'flex', width:'100%', cursor:'pointer', userSelect:'none'};
+    const style = {...defaultStyle, ...props.style};
+
+    const flipStyle = `.img-flipper {
+        animation-timing-function: ease-in-out;
+        animation-duration: ${duration}s;
+        animation-direction: ${direction};
+        animation-iteration-count: 1;
+    }`;
+
+    const flipRStyle = `.img-flipper-r {
+        animation-name: flip-with-rotate;
+    }`;
+
+    let flipWithRotate = `
+    @-webkit-keyframes flip-with-rotate {
+        0% {-webkit-transform:perspective(${perspective}), rotateY(0))} 
+        100% {-webkit-transform: perspective(${perspective}) rotateY(180deg) scaleX(-1)}
+    }`;
+
+    let styleEl = document.createElement("style");
+    document.head.appendChild(styleEl);
+    let styleSheet = styleEl.sheet;
+
+    styleSheet.insertRule(flipStyle, 0);
+    styleSheet.insertRule(flipRStyle, 0);
+    styleSheet.insertRule(flipWithRotate, 0);
     
     const handleClick = (element) => {
 
-        if (element.className == "flip flip-r")  return;
-        setShowEtukansi(!showEtukansi)
-        element.className = "flip flip-r" 
+        if (element.className == 'img-flipper img-flipper-r') return;
+        showSrc1 = !showSrc1;
+        element.className = 'img-flipper img-flipper-r';
         setTimeout(() => {
-            if (showEtukansi) element.src = takakansi
-            if (!showEtukansi) element.src = etukansi
-          }, 500);
+            element.src = showSrc1? props.src1 : props.src2;
+          }, durationMs / 2);
         setTimeout(() => {
-            element.className = ""
-          }, 1000);
+            element.className = '';
+          }, durationMs);
     }
     return(
         <div>
-            <div className="mb-3" style={{userSelect: "none", cursor: "pointer"}}>
-                <Image className="" fluid src={etukansi} onClick={(e) => handleClick(e.target)} style={{width:"100%", borderRadius: "0.3em"}}/>
+            <img id='img-flipper-img' src={props.src1} onClick={(e) => handleClick(e.target)} style={style}/>
+        </div>
+    )
+}
+
+const CoverViewerComponent = (props) => {
+
+    const frontCover = getFrontCover(props.omakirja)
+    const backCover = getBackCover(props.omakirja)
+    const [showFrontCover, setShowFrontCover] = useState(true)
+    const [animationPlaying, setAnimationPlaying] = useState(false)
+    const duration = 1;
+
+    
+
+    const handleClick = () => {
+        if (animationPlaying) return;
+        setShowFrontCover(!showFrontCover)
+        setAnimationPlaying(true);
+
+        setTimeout(() => {
+            setAnimationPlaying(false)
+          }, duration * 1000);
+        
+    }
+    return(
+        <div>
+            <div className="mb-3" onClick={() => handleClick()}>
+                <ImageFlipperComponent 
+                    src1={frontCover}
+                    src2={backCover}
+                    duration={duration}
+                    perspective="300px"/>
             </div>
-            {showEtukansi?
+            {showFrontCover?
             <>
             <h5>Etukansi</h5> <br/>
             Klikkaa kuvaa nähdäksesi takakannen
@@ -130,4 +200,4 @@ const CoverViewerComponent = (props) => {
     )
 }
 
-export {CoverViewerComponent}
+export {ImageFlipperComponent, CoverViewerComponent}
