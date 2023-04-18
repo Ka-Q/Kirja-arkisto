@@ -166,11 +166,27 @@ const SearchBar = (props) => {
         credentials: "include"
       });
       const data = await f.json();
-      SetSerieslist(data);
+  
+      const fetchBooks = async (sarja_id) => {
+        const b = await fetch(`http://localhost:5000/kirja?series_id=${sarja_id}`, {
+          credentials: "include"
+        });
+        const booksData = await b.json();
+        return booksData.data;
+      };
+  
+      const seriesWithBooks = await Promise.all(
+        data.data.map(async (series) => {
+          const books = await fetchBooks(series.sarja_id);
+          return { ...series, books };
+        })
+      );
+  
+      SetSerieslist({ ...data, data: seriesWithBooks });
     };
     fetchSeries();
   }, [searchCounter]);
-
+  
 
 
 
@@ -196,18 +212,28 @@ const SeriesCard = (props) => {
     props.handleEditClicked(omasarja_id);
   };
 
+  const renderBooks = () => {
+    return (
+      <ul>
+        {omasarja.books.map((book, index) => (
+          <li key={index}>{book.nimi}</li>
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <Card border="secondary" className="mb-1" style={{ backgroundColor: theme.input, color: "white" }}>
       <Card.Body>
         <Card.Title>{omasarja.nimi}</Card.Title>
         <Row>
           <Col md={2}>
-            Tähän kuva
           </Col>
           <Col>
             <Card.Text>
               Kuvaus: {omasarja.kuvaus}
               <p> </p>
+              Kirjat jotka kuuluvat sarjaan: {renderBooks()}
             </Card.Text>
           </Col>
           <Col md={2}>
