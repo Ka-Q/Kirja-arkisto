@@ -82,7 +82,9 @@ const ViewComponent = (props) => {
                             Alkuperäiset kansikuvat
                         </Card.Title>
                         <Card.Body>
-                            <CoverViewerComponent omakirja={omakirja}/>
+                            <div>
+                                <CoverViewerComponent omakirja={omakirja}/>
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
