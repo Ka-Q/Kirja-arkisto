@@ -109,7 +109,7 @@ const ImageFlipperComponent = (props) => {
 
     const direction = props.reversed? 'reverse' : 'normal';
 
-    let showSrc1 = true;
+    const [showSrc1, setShowSrc1] = useState(false);
 
     const defaultStyle = {display:'flex', width:'100%', cursor:'pointer', userSelect:'none'};
     const style = {...defaultStyle, ...props.style};
@@ -142,7 +142,7 @@ const ImageFlipperComponent = (props) => {
     const handleClick = (element) => {
 
         if (element.className == 'img-flipper img-flipper-r') return;
-        showSrc1 = !showSrc1;
+        setShowSrc1(!showSrc1);
         element.className = 'img-flipper img-flipper-r';
         setTimeout(() => {
             element.src = showSrc1? props.src1 : props.src2;
@@ -166,8 +166,6 @@ const CoverViewerComponent = (props) => {
     const [animationPlaying, setAnimationPlaying] = useState(false)
     const duration = 1;
 
-    
-
     const handleClick = () => {
         if (animationPlaying) return;
         setShowFrontCover(!showFrontCover)
@@ -185,7 +183,8 @@ const CoverViewerComponent = (props) => {
                     src1={frontCover}
                     src2={backCover}
                     duration={duration}
-                    perspective="300px"/>
+                    perspective="300px"
+                    style={{borderRadius: "0.3em"}}/>
             </div>
             {showFrontCover?
             <>
