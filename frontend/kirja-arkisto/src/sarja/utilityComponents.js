@@ -1,5 +1,5 @@
 import { Alert, Card, Row, Col } from "react-bootstrap"
-import { getCoverArt } from "./utilityFunctions"
+import { getCoverArt } from "./kuvaFunctions"
 import { Link } from 'react-router-dom'
 
 
