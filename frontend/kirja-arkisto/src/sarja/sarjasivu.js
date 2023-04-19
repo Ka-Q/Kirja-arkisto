@@ -6,18 +6,20 @@ import { Route, Routes, Link, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
+
 import theme from './theme.json'
 
 
 const SarjaSivu = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
+  
 
   return (
-    <div style={{ backgroundColor: theme.bg, paddingBottom: "20%" }}>
-      <div className="text-center">
-        <h1 style={{ color: "white" }}>Sarjat</h1>
-      </div>
-      <div className="container">
+    <div style={{ backgroundColor: "#202020" }}>
+      <div className='mx-3'>
+        <div className='text-center' style={{ paddingTop: '2em' }}>
+          <h1 style={{ color: "white" }}>Sarjat</h1>
+        </div>
         <Row>
           <Col>
             <SearchBar setSelectedSeries={setSelectedSeries} />
@@ -71,7 +73,7 @@ const SearchBar = ({ setSelectedSeries }) => {
     console.log(q);
     setQuery(q);
   };
-  
+
   useEffect(() => {
     const fetchSeries = async () => {
       const f = await fetch("http://localhost:5000/sarja" + "?" + query);
@@ -88,96 +90,92 @@ const SearchBar = ({ setSelectedSeries }) => {
   };
 
   return (
-    <div className="text-center" style={{ verticalAlign:"center", lineHeight: "2.3em" }}>
-    <input onChange={(e) => setNimi(e.target.value)} style={{ backgroundColor: theme.input, width: "65%" }} placeholder="Hae sarjoista"></input>
-    <Button onClick={handleSearchClick} className='btn btn-dark' style={{ backgroundColor: theme.button, width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
+    <div className="text-center" style={{ verticalAlign: "center", lineHeight: "2.3em" }}>
+      <input onChange={(e) => setNimi(e.target.value)} style={{ width: "65%", paddingLeft: "1em", backgroundColor: "#3a3a3a", borderRadius: '100px', color: "white" }} placeholder="Hae sarjoista"></input>
+      <Button onClick={handleSearchClick} className='btn btn-dark' style={{ backgroundColor: theme.button, width: "3.5em", height: "3.5em", marginLeft: "1em" }}>🔎</Button>
     </div>
-    )
-    }
-    
-    const SeriesCardList = ({ setSelectedSeries }) => {
-    
-    const [serieslist, SetSerieslist] = useState([]);
-    
-    useEffect(() => {
+  )
+}
+
+const SeriesCardList = ({ setSelectedSeries }) => {
+
+  const [serieslist, SetSerieslist] = useState([]);
+
+  useEffect(() => {
     const fetchSeries = async () => {
-    const f = await fetch("http://localhost:5000/sarja");
-    const data = await f.json();
-    SetSerieslist(data);
+      const f = await fetch("http://localhost:5000/sarja");
+      const data = await f.json();
+      SetSerieslist(data);
     };
     fetchSeries(); // Remove the condition to fetch data on the initial render
-    }, []);
-    
-    const handleCardClick = (sarja) => {
+  }, []);
+
+  const handleCardClick = (sarja) => {
     setSelectedSeries(sarja);
-    };
-    
-    let seriesData = serieslist.data
-    let SeriesCardList = [];
-    if (seriesData) {
+  };
+
+  let seriesData = serieslist.data
+  let SeriesCardList = [];
+  if (seriesData) {
     if (seriesData.length > 0) {
-    SeriesCardList = seriesData.map((n, index) => {
-    return (
-    <SeriesCard
-             key={index}
-             sarja={n}
-             handleCardClick={handleCardClick}
-           />
-    );
-    });
+      SeriesCardList = seriesData.map((n, index) => {
+        return (
+          <SeriesCard
+            key={index}
+            sarja={n}
+            handleCardClick={handleCardClick}
+          />
+        );
+      });
     } else {
-    SeriesCardList = [<ErrorCard />];
+      SeriesCardList = [<ErrorCard />];
     }
-    }
-    
-    return (
+  }
+
+  return (
     <div style={{ marginTop: "3em" }}>
-    {SeriesCardList}
+      {SeriesCardList}
     </div>
-    )
-    }
-    
-    const SeriesCard = (props) => {
-    let sarja = props.sarja;
-    
-    return (
-    <Card border="secondary" className="mb-1" style={{backgroundColor: theme.input, color:"white"}}>
-    <Card.Body onClick={() => props.handleCardClick(sarja)}>
-    <Card.Title>{sarja.nimi}</Card.Title>
-    <Row>
-    <Col>
-    <Card.Text>
-    Kuvaus: {sarja.kuvaus} <p> </p>
-    </Card.Text>
-    </Col>
-    <Col md={2}>
-    <Card.Text style={{ fontSize: "3em" }}>
+  )
+}
+
+const SeriesCard = (props) => {
+  let sarja = props.sarja;
+
+  return (
     <Link
-    to={{
-      pathname: `/sarjasivu/edit/${sarja.sarja_id}`,
-      state: { selectedSeries: sarja },
-    }}
-    
-    style={{ textDecoration: "none", color: "inherit" }}
+      to={{
+        pathname: `/sarjasivu/edit/${sarja.sarja_id}`,
+        state: { selectedSeries: sarja },
+      }}
+      style={{ textDecoration: "none", color: "inherit" }}
     >
-    ➡
+      <Card border="secondary" className="text-center mb-1"style={{ backgroundColor: theme.input, color: "white" }}>
+        <Card.Body onClick={() => props.handleCardClick(sarja)}>
+          <Card.Title className="text-center mt-3">{sarja.nimi}</Card.Title>
+          <Row>
+            <Col>
+              <Card.Text className="text-center mt-3">
+                Kuvaus: {sarja.kuvaus} <p> </p>
+              </Card.Text>
+            </Col>
+            <Col md={2}>
+              
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
     </Link>
-    </Card.Text>
-    </Col>
-    </Row>
-    </Card.Body>
-    </Card>
-    )
-    }
-    
-    const ErrorCard = () => {
-    return (
+  )
+}
+const ErrorCard = () => {
+  return (
     <Card border="dark" className="mb-1">
-    <Card.Body>
-    <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
-    </Card.Body>
+      <Card.Body>
+        <Card.Title>Haulla ei löytynyt tuloksia</Card.Title>
+      </Card.Body>
     </Card>
-    )
-    }
-    
-    export { SarjaSivu,SearchBar }
+  )
+}
+
+export { SarjaSivu, SearchBar }
