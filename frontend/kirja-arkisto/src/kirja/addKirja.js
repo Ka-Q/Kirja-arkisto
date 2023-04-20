@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utilityComponents"
+import { sendValokuvaForm } from "./utilityFunctions"
+import { AddValokuvaFormComponent } from "./utilityFunctions"
+
+
 
 const AddComponent = (props) => {
 
@@ -50,7 +54,7 @@ const AddComponent = (props) => {
     const [ensipainosvuosi, setEnsipainosvuosi] = useState(0);
     const [painokset, setPainokset] = useState(0);
 
-    // aputietoa valokuvien lisäykseen
+    // aputietoa kuvien lisäykseen
     const [addPicComponents, setAddPicComponents] = useState([]);
     const [addPicKeys, setAddPicKeys] = useState(0);
 
@@ -101,20 +105,23 @@ const AddComponent = (props) => {
         const handlePics = async () => {
             for (let i = 0; i < addPicKeys; i++) {
                 let form = document.getElementById("picForm" + i);
-                form.requestSubmit();
+                //form.requestSubmit();
+                const sent = await sendValokuvaForm(form, insertedBookId);
             }
+            setSaveSuccessful(true)
         };
         if (insertedBookId > -1) {
             handlePics();
         }
     }, [insertedBookId]);
 
-    // Kun valokuva_id saapuu/muuttuu => lisätään kirja_id ja uusi valokuva_id kirjan_kuviin
+    // Kun kuva_id saapuu/muuttuu => lisätään kirja_id ja uusi kuva_id kirjan_kuviin
     useEffect(() => {
         const addPicToBook = async () => {
             let obj = { kirja_kirja_id: insertedBookId, kuva_kuva_id: insertedPicId }
 
             const f = await fetch("http://localhost:5000/kirjan_kuvat", {
+                credentials: "include",
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -133,7 +140,7 @@ const AddComponent = (props) => {
 
     // Lähettää valokuvan tiedoston ja tiedot serverille. 
     // HUOM! Tiedot lähtevät FORMINA, EIVÄT JSON-muodossa. Tämä siksi, että serveri ei tykkää kuvien vastaanottamisesta jsonissa 
-    const handleSubmit = async (e) => {
+    /*const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(e.target);
 
@@ -145,8 +152,9 @@ const AddComponent = (props) => {
         }
 
         try {
-            const f = await fetch("http://localhost:5000/valokuva_tiedostolla", {
+            const f = await fetch("http://localhost:5000/kuva_tiedostolla", {
                 method: 'POST',
+                credentials: "include",
                 body: formdata
             })
             const data = await f.json()
@@ -157,7 +165,7 @@ const AddComponent = (props) => {
             console.log("jotain meni pieleen")
         }
 
-    }
+    }*/
 
     // Poistaa viimeisimmän valokuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
     const handleDeletePicClicked = () => {
@@ -169,11 +177,11 @@ const AddComponent = (props) => {
     // Lisää uusen valokuvanlisäyskomponentin listan loppuun. Päivittää formien avaimen/id:n
     const handleAddPictureClicked = (e) => {
         setAddPicKeys(addPicKeys + 1)
-        setAddPicComponents([...addPicComponents, <AddPictureComponent
+        setAddPicComponents([...addPicComponents, <AddValokuvaFormComponent
             key={addPicKeys}
             inputStyle={inputStyle}
-            formId={"picForm" + addPicKeys}
-            handleSubmit={handleSubmit} />])
+            formId={"picForm" + addPicKeys} 
+            />])
     }
 
     // Kerää input-kenttien tiedot yhteen objektiin ja aloittaa tallennusprosessin. Päivittää saveClicked-lipun, joka laukaiseen useEffenctin ylempänä
@@ -243,18 +251,18 @@ const AddComponent = (props) => {
                         </Row>
                         <Row>
                             <Col>
-                                <div style={{color: "white"}}>valokuvat:</div>
+                                <div style={{color: "white"}}>kuvat:</div>
                                 <div>
                                     {addPicComponents}
                                     {addPicComponents.length > 0 ?
                                         <Row className="mb-3">
                                             <Col>
-                                                <Button variant="danger" onClick={(e) => handleDeletePicClicked()}>Poista valokuva</Button>
+                                                <Button variant="danger" onClick={(e) => handleDeletePicClicked()}>Poista kuva</Button>
                                             </Col>
                                         </Row>
                                         : <></>}
                                     <hr style={{color: "white"}}/>
-                                    <Button onClick={(e) => handleAddPictureClicked(e)} className='btn btn-dark' style={{backgroundColor: "#424242"}}>+ Lisää uusi valokuva</Button>
+                                    <Button onClick={(e) => handleAddPictureClicked(e)} className='btn btn-dark' style={{backgroundColor: "#424242"}}>+ Lisää uusi kuva</Button>
                                 </div>
                                 <div className="my-5">
                                     {!kirjaFilled ? <WarningComponent text="Vaadittuja tietoja puuttuu" /> : <></>}
@@ -286,13 +294,13 @@ const AddPictureComponent = (props) => {
         <Row className="mt-2 mb-3">
             <hr />
             <Col>
-                <form id={formId} onSubmit={(e) => handleSub(e)}>
+                
                     <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
                         <div><input type={"file"} name="files" style={inputStyle} /><RequiredComponent yes /></div>
                         <div><input type={"text"} name="nimi" placeholder="nimi" style={inputStyle} /></div>
                         <div><input type={"number"} name="sivunumero" placeholder="sivunumero" style={inputStyle} /></div>
                     </Stack>
-                </form>
+                
             </Col>
         </Row>
     )

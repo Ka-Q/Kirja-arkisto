@@ -83,7 +83,7 @@ const KirjaSivu = (props) => {
                 </Col>
               </Row>
               :
-              <Row className="mt-3" >{console.log('tere')}
+              <Row className="mt-3" >
                 <Col>
                   <div className="text-center" style={{ verticalAlign: "center", lineHeight: LineHeight }}>
                     <ViewComponent omakirja={selectedBook} />
