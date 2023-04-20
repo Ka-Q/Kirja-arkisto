@@ -105,10 +105,12 @@ const checkSessionUser = (req, res, next) => {
             res.json({status: "OK", message: 'Cant edit field "kayttaja_kayttaja_id'});
           }
         }
-        if (where) {
-          req.body.where.kayttaja_kayttaja_id = req.session.user.uid
-        } else {
-          req.body.kayttaja_kayttaja_id = req.session.user.uid
+        if (req.session.user.rooli != 1) {
+          if (where) {
+            req.body.where.kayttaja_kayttaja_id = req.session.user.uid
+          } else {
+            req.body.kayttaja_kayttaja_id = req.session.user.uid
+          }
         }
       }
       //console.log(req);
