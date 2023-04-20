@@ -233,7 +233,7 @@ const SeriesCard = (props) => {
             <Card.Text>
               Kuvaus: {omasarja.kuvaus}
               <p> </p>
-              Kirjat jotka kuuluvat sarjaan: {renderBooks()}
+              
             </Card.Text>
           </Col>
           <Col md={2}>
