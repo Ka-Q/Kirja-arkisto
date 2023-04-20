@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Button from "react-bootstrap/esm/Button";
+import Button from "react-bootstrap/Button";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
@@ -206,4 +206,4 @@ const LogoutComponent = (props) => {
 }
 
 
-export { Etusivu };
+export { Etusivu,LoginComponent,BookPage,FrontPage,SeriesPage,OwnedBookPage,OwnedSeriePage };
