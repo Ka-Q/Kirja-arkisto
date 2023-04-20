@@ -14,7 +14,8 @@
 	insert into kuva_tyyppi values(2, "takakansi");
 	insert into kuva_tyyppi values(3, "sivu");
 
--- Oletuskirja:
+-- Oletus sarja ja kirja:
+	insert into sarja values(-1, "Poistettu sarja", "Tämä sarja on poistettu tietokannasta");
 	insert into kirja values(-1, "Poistettu kirja", 1, "Tämä kirja on poistettu tietokannasta", "-", "-", 0000, 0);
 
 -- Sarjat ja kirjat kuvineen:

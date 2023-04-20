@@ -105,13 +105,11 @@ const checkSessionUser = (req, res, next) => {
             res.json({status: "OK", message: 'Cant edit field "kayttaja_kayttaja_id'});
           }
         }
-        if (req.session.user.rooli != 1) {
           if (where) {
             req.body.where.kayttaja_kayttaja_id = req.session.user.uid
           } else {
             req.body.kayttaja_kayttaja_id = req.session.user.uid
           }
-        }
       }
       //console.log(req);
       next();
@@ -274,6 +272,12 @@ app.delete('/oma_kirja', checkSessionUser, (req, res) => {
   connect(res, queryJson.query, queryJson.queryList)
 });
 
+// Oma kirja admin-muokkaus
+app.put('/oma_kirja_admin', checkSessionRole, (req, res) => {
+  let queryJson = oma_kirja_functions.PutOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
 // Oma kirja Kaikella
 app.get('/oma_kirja_kaikella', checkSessionUser, (req, res) => {
   oma_kirja_kaikella_functions.GetOmaKirjaKaikella(req, res)
@@ -320,6 +324,13 @@ app.put('/oma_sarja', checkSessionUser, (req, res) => {
   let queryJson = oma_sarja_functions.PutOmaSarja(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
+
+// Oma sarja admin-muokkaus
+app.put('/oma_sarja_admin', checkSessionRole, (req, res) => {
+  let queryJson = oma_kirja_functions.PutOmaKirja(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
 
 // Kuva
 app.get('/kuva', (req, res) => {
