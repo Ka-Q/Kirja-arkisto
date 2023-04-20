@@ -2,8 +2,12 @@ import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { AddComponent } from "./addOmaSarja"
 import { ViewComponent } from "./viewOmaSarja";
+import { Route, Routes, Link, useParams } from "react-router-dom";
 import theme from './theme.json'
 import { EditSeries } from "./editOmaSarja";
+import { Outlet } from "react-router-dom";
+
+
 
 
 
@@ -28,14 +32,21 @@ const OmaSarjaSivu = () => {
     }
   }
 
+  const handleCancelClicked = () => {
+    setEditClicked(false);
+    setLisaaClicked(false);
+    setLisaaBtnText("Lisää sarja");
+  };
+
+
   const [omasarjaId, setOmaSarjaId] = useState(null);
 
-  const handleEditClicked = (sarja_id) => {
+  const handleEditClicked = (oma_sarja_id) => {
     if (!editClicked) {
       setEditClicked(true);
       setLisaaBtnText("Lisää sarja");
       setLisaaClicked(false);
-      setOmaSarjaId(sarja_id);
+      setOmaSarjaId(oma_sarja_id);
     } else {
       setEditClicked(false);
       setLisaaBtnText("Lisää sarja");
@@ -67,6 +78,11 @@ const OmaSarjaSivu = () => {
                 setSelectedOwnSeries={setSelectedOwnSeries}
                 handleEditClicked={handleEditClicked}
               />
+              <Outlet>
+                <Routes>
+                  <Route path="/omasarjasivu/edit/:id" element={<EditSeries />} />
+                </Routes>
+              </Outlet>
             </div>
           </Col>
         </Row>
@@ -80,7 +96,8 @@ const OmaSarjaSivu = () => {
             >
               <EditSeries
                 handleEditClicked={handleEditClicked}
-                sarja_id={omasarjaId}
+                oma_sarja_id={omasarjaId}
+                handleCancelClicked={handleCancelClicked}
               />
             </div>
           </Col>
@@ -101,7 +118,7 @@ const OmaSarjaSivu = () => {
     </div>
   );
 };
-             
+
 
 
 
@@ -166,7 +183,7 @@ const SearchBar = (props) => {
         credentials: "include"
       });
       const data = await f.json();
-  
+
       const fetchBooks = async (sarja_id) => {
         const b = await fetch(`http://localhost:5000/kirja?series_id=${sarja_id}`, {
           credentials: "include"
@@ -174,19 +191,19 @@ const SearchBar = (props) => {
         const booksData = await b.json();
         return booksData.data;
       };
-  
+
       const seriesWithBooks = await Promise.all(
         data.data.map(async (series) => {
           const books = await fetchBooks(series.sarja_id);
           return { ...series, books };
         })
       );
-  
+
       SetSerieslist({ ...data, data: seriesWithBooks });
     };
     fetchSeries();
   }, [searchCounter]);
-  
+
 
 
 
@@ -207,9 +224,9 @@ const SearchBar = (props) => {
 }
 const SeriesCard = (props) => {
   let omasarja = props.omasarja;
-  const handleEditClicked = (omasarja_id) => {
+  const handleEditClicked = (oma_sarja_id) => {
     props.setSelectedOwnSeries(omasarja);
-    props.handleEditClicked(omasarja_id);
+    props.handleEditClicked(oma_sarja_id);
   };
 
   const renderBooks = () => {
@@ -233,18 +250,18 @@ const SeriesCard = (props) => {
             <Card.Text>
               Kuvaus: {omasarja.kuvaus}
               <p> </p>
-              
+
             </Card.Text>
           </Col>
           <Col md={2}>
             <Card.Text style={{ fontSize: "3em" }}>
-              <a
-                href={"#id:" + omasarja.sarja_id}
+              <Link
+                to={`/omasarjasivu/edit/${omasarja.sarja_id}`}
                 onClick={() => handleEditClicked(omasarja.sarja_id)}
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
                 ➡
-              </a>
+              </Link>
             </Card.Text>
           </Col>
         </Row>
