@@ -3,6 +3,7 @@ import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utlilityComponents";
 import { BrowserRouter as Router, Route, Routes, Link, useParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { OmaSarjaSivu } from './omasarjasivu';
 import { KirjaViewerComponent, KuvaViewerComponent } from "./kuvaComponents";
 
 import theme from './theme.json'
@@ -17,7 +18,7 @@ const EditSeries = (props) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedSeries, setSelectedSeries] = useState(null);
+  const [selectedOwnSeries, setSelectedOwnSeries] = useState(null);
   const [allBooksData, setAllBooksData] = useState([]);
 
 
@@ -31,22 +32,26 @@ const EditSeries = (props) => {
   const [selectedBook, setSelectedBook] = useState("");
 
 
-  useEffect(() => {
-    const fetchSeries = async () => {
-      const f = await fetch(`http://localhost:5000/sarja?sarja_id=${id}`);
-      const data = await f.json();
-      const selectedSeries = data.data[0]; 
-      const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${id}`);
+  const fetchSeries = async () => {
+    const f = await fetch("http://localhost:5000/oma_sarja");
+    const data = await f.json();
+  
+    // Tarkista, että saatu data on odotetun muotoinen
+    if (data && data.data && data.data[0]) {
+      const selectedOwnSeries = data.data[0];
+      const k = await fetch(`http://localhost:5000/oman_sarjan_kirjat?sarja_id=${id}`);
       const kirjaData = await k.json();
-
-      setSelectedSeries(selectedSeries);
-      setNimi(selectedSeries.nimi);
-      setKuvaus(selectedSeries.kuvaus);
+  
+      setSelectedOwnSeries(selectedOwnSeries);
+      setNimi(selectedOwnSeries.nimi);
+      setKuvaus(selectedOwnSeries.kuvaus);
       setRelatedKirja(kirjaData.data);
       setRelatedKirjaID(kirjaData.data.map(kirja => kirja.kirja_id));
-    };
-    fetchSeries();
-  }, [id]);
+    } else {
+      // Jos data ei ole odotetun muotoinen, voit käsitellä virhetilanteen tässä
+      console.error('Unexpected data format:', data);
+    }
+  };
   
 
 
@@ -61,17 +66,20 @@ const EditSeries = (props) => {
 
 
   const handleDeleteClicked = async () => {
-    const response = await fetch("http://localhost:5000/oma_sarja", {
+    const response = await fetch(`http://localhost:5000/oma_sarja/${id}`, {
       credentials: "include",
       method: 'DELETE',
     });
-
+  
     if (response.ok) {
       setIsDone(true);
+      navigate('/omasarjasivu', { replace: true });
     } else {
       console.error('Failed to delete the series');
     }
   };
+  
+  
 
   const inputStyle = { width: "60%", paddingLeft: "1em" }
 
@@ -145,7 +153,7 @@ const EditSeries = (props) => {
           kuvaus: kuvaus,
         },
         where: {
-          sarja_id: selectedSeries.sarja_id,
+          sarja_id: selectedOwnSeries.sarja_id,
         },
       };
       updateSeries(updatedSeries);
@@ -177,7 +185,7 @@ const EditSeries = (props) => {
             <Col sm={10} lg={3}>
               <Card className="mb-4">
                 <div style={{ color: "white", background: "#131415", borderRadius: "inherit" }}>
-                  <Card.Title className="text-center mt-3">Sarjan kirjat</Card.Title>
+                  <Card.Title className="text-center mt-3">Oman sarjan kirjat</Card.Title>
                   <Card.Body >
                   
                   <KirjaViewerComponent kirjaId={relatedKirja.map(kirja => kirja.kirja_id).join(',')} />
@@ -195,12 +203,12 @@ const EditSeries = (props) => {
                 style={{ backgroundColor: theme.accent, color: "white" }}
               >
                 <Card.Body>
-                  <h1 className="text-center mt-3">{selectedSeries?.nimi}</h1>
+                  <h1 className="text-center mt-3">{selectedOwnSeries?.nimi}</h1>
                   <hr />
                   <Card.Text className="text-center mt-3">
-                    <strong>Kuvaus:</strong> {selectedSeries?.kuvaus}
+                    <strong>Kuvaus:</strong> {selectedOwnSeries?.kuvaus}
                   </Card.Text>
-                  <h3>Sarjan kirjat:</h3>
+                  <h3>Oman sarjan kirjat:</h3>
                   {relatedKirja.length > 0 ? (
                     <ul>
                       {relatedKirja.map((kirja) => (
