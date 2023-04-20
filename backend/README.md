@@ -6,7 +6,7 @@
 
 Alla kuva tietokannan tauluista (11.4.2022): 
 
-![db.png](https://dev.azure.com/OT2-K23-GroupE/4ca8f1f4-017d-4cd9-86ce-092d0a55a58e/_apis/git/repositories/44698482-1c2d-4b21-bb33-dff3fb05e473/Items?path=/.attachments/db-d4ae9641-df90-41e4-9ce8-db9c732ec674.png&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1&sanitize=true&versionDescriptor.version=wikiMaster)
+![db.png](/.attachments/db-d4ae9641-df90-41e4-9ce8-db9c732ec674.png)
 
 -Portti oletuksena 3006 
 -Nimi mydb 
@@ -227,6 +227,16 @@ sekä Kirja-objekti, joka on muotoiltu aiemman "kirja_kaikella"-kutsun mukaisest
     ]
 }
 ```
+
+___
+## Custom Putit
+
+### Admin-muokkaus Omalle kirjalle ja Omalle sarjalle
+Putit polkuihin ```http://localhost:5000/oma_kirja_admin``` ja ```http://localhost:5000/oma_kirja_admin```. Antavat käyttäjän, jolla on admin-rooli muokata kenen tahasa käyttäjän omia kirjoja ja omia sarjoja. 
+Palauttavat muidekin put-metodien tapaan dataa tehdyistä muutoksista, kuten muutosten lukumäärän.
+
+⚠**Tarkoitettu käytettäväksi, kun admin poistaa kirjaa tai sarjaa. Poiston yhteydessä, käydään merkkaamassa kaikki kirjan tai sarjan perivät omat objektit poistetuksi (kirja_id = -1 tai sarja_id = -1)**
+
 ___
 ## Kuvat ja valokuvat
 
