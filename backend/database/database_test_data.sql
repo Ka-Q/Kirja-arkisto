@@ -5,7 +5,7 @@
 	insert into rooli values (1, "Admin", "admin-rooli");
 	insert into rooli values (2, "Käyttäjä", "käyttäjä-rooli");
 
--- KÄyttäjät
+-- Käyttäjät
 	insert into kayttaja values(1, "admin", "admin", 1);
 	insert into kayttaja values(2, "käyttäjä", "käyttäjä", 2);
 
@@ -14,6 +14,8 @@
 	insert into kuva_tyyppi values(2, "takakansi");
 	insert into kuva_tyyppi values(3, "sivu");
 
+-- Oletuskirja:
+	insert into kirja values(-1, "Poistettu kirja", 1, "Tämä kirja on poistettu tietokannasta", "-", "-", 0000, 0);
 
 -- Sarjat ja kirjat kuvineen:
 
