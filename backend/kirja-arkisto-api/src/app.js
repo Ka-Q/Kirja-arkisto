@@ -327,7 +327,7 @@ app.put('/oma_sarja', checkSessionUser, (req, res) => {
 
 // Oma sarja admin-muokkaus
 app.put('/oma_sarja_admin', checkSessionRole, (req, res) => {
-  let queryJson = oma_kirja_functions.PutOmaKirja(req);
+  let queryJson = oma_sarja_functions.PutOmaSarja(req);
   connect(res, queryJson.query, queryJson.queryList)
 });
 
