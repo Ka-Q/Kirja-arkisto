@@ -11,6 +11,8 @@ import theme from './theme.json'
 const EditSeries = (props) => {
   const [kirjat, setKirjat] = useState([]);
   const [isDone, setIsDone] = useState(false);
+  const [error, setError] = useState(false);
+
 
 
   const { id } = useParams();
@@ -61,22 +63,88 @@ const EditSeries = (props) => {
 
 
   };
-  
+
+  /*
+   const deleteOwnBooks = async () => {
+              const f = await fetch("http://localhost:5000/oma_kirja", {
+                  method: "PUT",
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  credentials: "include",
+                  body: JSON.stringify({
+                      where: {
+                      kirja_id: kirja.kirja_id
+                      },
+                      set: {
+                          kirja_id: "-1"
+                      }
+                  })
+              })
+              const data = await f.json();
+              console.log(data)
+          };
+  */
+
+          const HandleDeleteClicked = async () => {
+            const updateOmaSarja = async () => {
+              const f = await fetch("http://localhost:5000/oma_sarja_admin", {
+                method: "PUT",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                  where: {
+                    sarja_sarja_id: id
+                  },
+                  set: {
+                    sarja_sarja_id: "-1" // or another appropriate value
+                  }
+                })
+              });
+              const data = await f.json();
+              console.log(data);
+            };
+          
+                
+            const deleteFromSarjanKirjat = async () => {
+              const f = await fetch("http://localhost:5000/sarjan_kirjat", {
+                method: "DELETE",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({ sarja_id: id })
+              });
+              const data = await f.json();
+              console.log(data);
+            };
+          
+            
+          
+            const deleteSarja = async () => {
+              const f = await fetch("http://localhost:5000/sarja", {
+                method: "DELETE",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                credentials: "include",
+                body: JSON.stringify({ sarja_id: id })
+              });
+              const data = await f.json();
+              console.log(data);
+            };
+            await updateOmaSarja();
+            await deleteFromSarjanKirjat();
+            await deleteSarja();
+            setIsDone(true);
+          }
+          
 
 
 
-  const handleDeleteClicked = async () => {
-    const response = await fetch(`http://localhost:5000/sarja?sarja_id=${selectedSeries.id}`, {
-      credentials: "include",
-      method: 'DELETE',
-    });
 
-    if (response.ok) {
-      setIsDone(true);
-    } else {
-      console.error('Failed to delete the series');
-    }
-  };
 
   const inputStyle = { width: "60%", paddingLeft: "1em" }
 
@@ -111,7 +179,7 @@ const EditSeries = (props) => {
     };
     fetchBooks();
   }, []);
-  
+
 
 
   const handleAddBookToSeries = async () => {
@@ -157,6 +225,29 @@ const EditSeries = (props) => {
     }
   };
 
+  const handleRemoveBookFromSeries = async (kirja_id) => {
+    const response = await fetch(`http://localhost:5000/sarjan_kirjat`, {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sarja_id: id,
+        kirja_id: kirja_id,
+      }),
+    });
+
+    if (response.ok) {
+      // Fetch the updated related books
+      const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${id}`);
+      const kirjaData = await k.json();
+      setRelatedKirja(kirjaData.data);
+    } else {
+      console.error("Failed to remove the book from the series");
+    }
+  };
+
 
   const checkInputs = () => {
     const omaSarjaOK = nimi.length > 0 && kuvaus.length > 0;
@@ -171,7 +262,7 @@ const EditSeries = (props) => {
   };
 
   const [editClicked, setEditClicked] = useState(false);
-  
+
 
   return (
     <>
@@ -184,8 +275,8 @@ const EditSeries = (props) => {
                 <div style={{ color: "white", background: "#131415", borderRadius: "inherit" }}>
                   <Card.Title className="text-center mt-3">Sarjan kirjat</Card.Title>
                   <Card.Body >
-                  
-                  <KirjaViewerComponent kirjaId={relatedKirja.map(kirja => kirja.kirja_id).join(',')} />
+
+                    <KirjaViewerComponent kirjaId={relatedKirja.map(kirja => kirja.kirja_id).join(',')} />
 
 
 
@@ -217,50 +308,59 @@ const EditSeries = (props) => {
                   )}
                 </Card.Body>
               </Card>
+
+
+
+              <Card
+                className="my-4"
+                border="secondary"
+                style={{ backgroundColor: theme.accent, color: "white" }}
+              >
+                <Card.Title className="text-center mt-3">Toiminnot</Card.Title>
+                <Card.Body className="text-center mt-3">
+                  <Button
+                    variant="dark"
+                    style={{ backgroundColor: theme.button }}
+                    onClick={() => setEditClicked(true)}
+                  >
+                    ✏ Muokkaa
+                  </Button>{" "}
+                  <span className="mx-3" />
+                  {isDone ? (
+                    <>
+                      <Card bg="dark" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                        <SuccessComponent text="Poisto onnistui"></SuccessComponent>
+                        <Link to="/sarjasivu"><Button variant="success">Jatka</Button></Link>
+                      </Card>
+                    </>
+                  ) : error ? (
+                    <>
+                      <Card bg="danger" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                        <WarningComponent text="Poisto epäonnistui"></WarningComponent>
+                        <Button variant="danger" onClick={() => setError(false)}>Sulje</Button>
+                      </Card>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="danger"
+                        style={{ backgroundColor: theme.accent, color: "red" }}
+                        onClick={() => HandleDeleteClicked()}
+                      >
+                        🗑 Poista
+                      </Button>
+                    </>
+                  )}
+
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
 
-
-          <Card
-            className="my-4"
-            border="secondary"
-            style={{ backgroundColor: theme.accent, color: "white" }}
-          >
-            <Card.Title className="text-center mt-3">Toiminnot</Card.Title>
-            <Card.Body className="text-center mt-3">
-              <Button
-                variant="dark"
-                style={{ backgroundColor: theme.button }}
-                onClick={() => setEditClicked(true)}
-              >
-                ✏ Muokkaa
-              </Button>{" "}
-              <span className="mx-3" />
-              {isDone ? (
-                <>
-                  <Card bg="dark" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
-                    <SuccessComponent text="Poisto onnistui"></SuccessComponent>
-                    <Link to="/sarjasivu"><Button variant="success">Jatka</Button></Link>
-                  </Card>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="danger"
-                    style={{ backgroundColor: theme.accent, color: "red" }}
-                    onClick={() => handleDeleteClicked()}
-                  >
-                    🗑 Poista
-                  </Button>
-                </>
-              )}
-            </Card.Body>
-          </Card>
-          
         </Col>
       ) : (
 
-        <Card border="secondary" className="mb-1" style={{ backgroundColor: theme.input, color: "white" }}>
+        <Card border="secondary" className="mb-1" style={{ backgroundColor: theme.accent, color: "white" }}>
           <Card.Body>
             {!saveSuccessful ? (
               <>
@@ -274,7 +374,7 @@ const EditSeries = (props) => {
                           value={nimi}
                           onChange={(e) => setNimi(e.target.value)}
                           placeholder="nimi"
-                          style={inputStyle}
+                          style={{ width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom: "1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input }}
                         />
                         <RequiredComponent yes />
                       </div>
@@ -283,7 +383,7 @@ const EditSeries = (props) => {
                           value={kuvaus}
                           onChange={(e) => setKuvaus(e.target.value)}
                           placeholder="kuvaus"
-                          style={inputStyle}
+                          style={{ width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom: "1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input }}
                         />
                         <RequiredComponent yes />
                       </div>
@@ -296,17 +396,29 @@ const EditSeries = (props) => {
                     {relatedKirja.length > 0 ? (
                       <ul>
                         {relatedKirja.map((kirja) => (
-                          <li key={kirja.kirja_id}>{kirja.nimi}</li>
+                          <li key={kirja.kirja_id}>
+                            {kirja.nimi}{" "}
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              style={{ backgroundColor: theme.accent, color: "red" }}
+                              onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
+                            >
+                              🗑 Poista
+                            </Button>
+                          </li>
                         ))}
                       </ul>
                     ) : (
                       <p>Loading related books...</p>
                     )}
-
                   </Col>
+
+
                   <Col>
                     <h3>Lisää kirja sarjaan:</h3>
                     <select
+                      style={{ width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom: "1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input }}
                       value={selectedBook}
                       onChange={(e) => setSelectedBook(e.target.value)}
                     >
@@ -317,7 +429,7 @@ const EditSeries = (props) => {
                         </option>
                       ))}
                     </select>
-                    <Button onClick={handleAddBookToSeries}>Lisää kirja</Button>
+                    <Button style={{ backgroundColor: theme.button }} onClick={handleAddBookToSeries}>Lisää kirja</Button>
                   </Col>
                 </Row>
                 <Row>
@@ -329,8 +441,8 @@ const EditSeries = (props) => {
                         <></>
                       )}
 
-                      <Button onClick={(e) => handleSaveClicked()}>Tallenna</Button>{" "}
-                      <Button onClick={(e) => handleCancelClicked()}>
+                      <Button style={{ backgroundColor: theme.button }} onClick={(e) => handleSaveClicked()}>Tallenna</Button>{" "}
+                      <Button style={{ backgroundColor: theme.button }} onClick={(e) => handleCancelClicked()}>
                         Peruuta
                       </Button>{" "}
 
@@ -344,14 +456,14 @@ const EditSeries = (props) => {
             ) : (
               <>
                 <SuccessComponent text="Tallennus onnistui" />
-                <Button onClick={(e) => handleCancelClicked()}>
+                <Button style={{ backgroundColor: theme.button }} onClick={(e) => handleCancelClicked()}>
                   Sulje
                 </Button>
 
               </>
             )}
           </Card.Body>
-        </Card>
+        </Card >
       )}
     </>
   );

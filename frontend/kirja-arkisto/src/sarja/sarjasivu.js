@@ -153,16 +153,14 @@ const SeriesCard = (props) => {
       <Card border="secondary" className="text-center mb-1"style={{ backgroundColor: theme.input, color: "white" }}>
         <Card.Body onClick={() => props.handleCardClick(sarja)}>
           <Card.Title className="text-center mt-3">{sarja.nimi}</Card.Title>
-          <Row>
+          
             <Col>
               <Card.Text className="text-center mt-3">
                 Kuvaus: {sarja.kuvaus} <p> </p>
               </Card.Text>
             </Col>
-            <Col md={2}>
-              
-            </Col>
-          </Row>
+            
+          
         </Card.Body>
       </Card>
     </Link>
