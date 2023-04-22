@@ -7,7 +7,7 @@ import { KirjaViewerComponent, KuvaViewerComponent } from "./kuvaComponents";
 import theme from './theme.json'
 
 
-const EditSeries = (props) => {
+const EditSerie = (props) => {
   const [kirjat, setKirjat] = useState([]);
   const [isDone, setIsDone] = useState(false);
   const [error, setError] = useState(false);
@@ -280,7 +280,7 @@ const EditSeries = (props) => {
                       ))}
                     </ul>
                   ) : (
-                    <p>Ladataan...</p>
+                    <p>(Ei lisättyjä kirjoja)</p>
                   )}
                 </Card.Body>
               </Card>
@@ -386,7 +386,7 @@ const EditSeries = (props) => {
                         ))}
                       </ul>
                     ) : (
-                      <p>Loading related books...</p>
+                      <p>(Ei lisättyjä kirjoja)</p>
                     )}
                   </Col>
 
@@ -445,4 +445,4 @@ const EditSeries = (props) => {
   );
 };
 
-export { EditSeries };
+export { EditSerie };
