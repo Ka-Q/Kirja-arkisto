@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react"
 import { Button, Card, Col, Row, Stack } from "react-bootstrap"
 import { AddComponent } from "./addOmaSarja"
-import { ViewComponent } from "./viewOmaSarja";
 import { Route, Routes, Link, useParams } from "react-router-dom";
 import theme from './theme.json'
 import { EditSerie } from "./editOmaSarja";
-import { Outlet } from "react-router-dom";
-
-
-
-
 
 const OmaSarjaSivu = () => {
 
