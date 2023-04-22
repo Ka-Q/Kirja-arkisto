@@ -143,14 +143,55 @@
 		INSERT INTO kirja VALUES (22, 'Young Samurai: The Ring of Earth', 5, 'Fifth book in the Young Samurai series', 'Chris Bradford', '-', 2012, 25);
 		INSERT INTO kirja VALUES (23, 'Young Samurai: The Ring of Fire', 6, 'Sixth book in the Young Samurai series', 'Chris Bradford', '-', 2013, 25);
 		INSERT INTO kirja VALUES (24, 'Young Samurai: The Ring of Wind', 7, 'Seventh book in the Young Samurai series', 'Chris Bradford', '-', 2014, 25);
+        
+	-- Young Samurai -kirjat sarjaan
+		insert into sarjan_kirjat values(4,18);
+		insert into sarjan_kirjat values(4,19);
+		insert into sarjan_kirjat values(4,20);
+		insert into sarjan_kirjat values(4,21);
+		insert into sarjan_kirjat values(4,22);
+		insert into sarjan_kirjat values(4,23);
+		insert into sarjan_kirjat values(4,24);
+        
+	-- Young Samurai -kuvat
+		insert into kuva values(20, "YS_twotw_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+		insert into kuva values(21, "YS_twots_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the sword etukannesta");
+		insert into kuva values(22, "YS_twotd_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the dragon etukannesta");
+		insert into kuva values(23, "YS_trow_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The ring of water etukannesta");
+		insert into kuva values(24, "YS_troe_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The ring of earth etukannesta");
+		insert into kuva values(25, "YS_trof_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The ring of fire etukannesta");
+		insert into kuva values(26, "YS_trowind_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The ring of wind etukannesta");
+
+-- Young Samurai kuvat kirjoille
+		insert into kirjan_kuvat values(18, 20);
+		insert into kirjan_kuvat values(19, 21);
+		insert into kirjan_kuvat values(20, 22);
+		insert into kirjan_kuvat values(21, 23);
+		insert into kirjan_kuvat values(22, 24);
+		insert into kirjan_kuvat values(23, 25);
+		insert into kirjan_kuvat values(24, 26);
 
 
 -- Muita kirjoja
 	insert into kirja values(25, "The Shining", NULL, "A horror novel about a family staying at an isolated hotel", "Stephen King", "-", 1977, 30);
+    insert into kuva values(27, "TheShining_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+    insert into kirjan_kuvat values(25, 27);
+    
 	insert into kirja values(26, "Watchmen", NULL, "A graphic novel exploring the dark side of superheroes", "Alan Moore", "Dave Gibbons", 1986, 10);
+    insert into kuva values(28, "Watchmen_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+    insert into kirjan_kuvat values(26, 28);
+    
 	insert into kirja values(27, "Murder on the Orient Express", NULL, "A classic murder mystery novel set on a train", "Agatha Christie", "-", 1934, 40);
+    insert into kuva values(29, "Murder_on_the_Orient_Express_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+    insert into kirjan_kuvat values(27, 29);
+    
 	insert into kirja values(28, "A Game of Thrones", 1, "The first book in the A Song of Ice and Fire series", "George R.R. Martin", "-", 1996, 20);
+    insert into kuva values(30, "Game_Of_Thrones_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+    insert into kirjan_kuvat values(28, 30);
+    
 	insert into kirja values(29, "The Old Man and the Sea", NULL, "A short novel about an aging fisherman's struggle with a giant marlin", "Ernest Hemingway", "-", 1952, 25);
+	insert into kuva values(31, "the_old_man_and_the_sea_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva The way of the warrior etukannesta");
+    insert into kirjan_kuvat values(29, 31);
 
 
 -- Omat kirjat
@@ -234,8 +275,3 @@
     -- omalle kirjalle
     insert into oman_kirjan_valokuvat values(80, 5, 2);
 	insert into oman_kirjan_valokuvat values(80, 6, 2);
-	
-    -- vkuva 8 omakirja 100 
-
-
-
