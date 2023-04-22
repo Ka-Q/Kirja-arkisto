@@ -17,7 +17,9 @@ import { WarningComponent } from "./omakirja/utlilityComponents";
 import { ViewComponent } from "./omakirja/viewOmaKirja";
 import { ViewComponent as KirjaViewComponent } from "./kirja/viewKirja";
 import { EditSeries } from "./sarja/editSarja";
+import { EditSerie } from "./omasarja/editOmaSarja";
 import { AddSeries } from "./sarja/addSarja";
+import { AddComponent } from "./omasarja/addOmaSarja";
 
 
 
@@ -54,8 +56,8 @@ function Etusivu() {
                 <LinkContainer to="/sarjasivu"><Nav.Link className="mx-2">Sarjat</Nav.Link></LinkContainer>
                 {isLoggedIn ?
                   <>
-                    <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Oma kirja</Nav.Link></LinkContainer>
-                    <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Oma sarja</Nav.Link></LinkContainer>
+                    <LinkContainer to="/omakirja"><Nav.Link className="mx-2">Omat kirjat</Nav.Link></LinkContainer>
+                    <LinkContainer to="/omasarja"><Nav.Link className="mx-2">Omat sarjat</Nav.Link></LinkContainer>
                   </> :
                   <>
                     <Nav.Link className="mx-2" disabled>Oma kirja</Nav.Link>
@@ -88,6 +90,8 @@ function Etusivu() {
           <Route path="/omakirja/*" element={<OwnedBookPage />} />
           <Route path="/omakirja/:id" element={<ViewComponent />} />
           <Route path="/omasarja" element={<OwnedSeriePage />} />
+          <Route path="/omasarjasivu/edit/:id" element={<EditSerie />} />
+          <Route path="/omasarjasivu/add" element={<AddComponent />} />
         </Routes>
       </Router>
     </div>

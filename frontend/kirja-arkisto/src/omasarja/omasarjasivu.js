@@ -4,7 +4,7 @@ import { AddComponent } from "./addOmaSarja"
 import { ViewComponent } from "./viewOmaSarja";
 import { Route, Routes, Link, useParams } from "react-router-dom";
 import theme from './theme.json'
-import { EditSeries } from "./editOmaSarja";
+import { EditSerie } from "./editOmaSarja";
 import { Outlet } from "react-router-dom";
 
 
@@ -89,7 +89,7 @@ const OmaSarjaSivu = () => {
               className="text-center"
               style={{ verticalAlign: "center", lineHeight: "2.3em" }}
             >
-              <EditSeries
+              <EditSerie
                 handleEditClicked={handleEditClicked}
                 oma_sarja_id={omasarjaId}
                 handleCancelClicked={handleCancelClicked}
