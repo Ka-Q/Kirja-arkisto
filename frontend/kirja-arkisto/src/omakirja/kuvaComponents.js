@@ -183,7 +183,7 @@ const CoverViewerComponent = (props) => {
                     src1={frontCover}
                     src2={backCover}
                     duration={duration}
-                    perspective="300px"
+                    perspective="650px"
                     style={{borderRadius: "0.3em"}}/>
             </div>
             {showFrontCover?

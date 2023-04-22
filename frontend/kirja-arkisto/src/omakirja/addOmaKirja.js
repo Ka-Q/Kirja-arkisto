@@ -42,13 +42,15 @@ const AddComponent = (props) => {
     let optionList = []
     if (bookList.length > 0){
         optionList = bookList.map((n, index) => {
-            return (
-                <option 
-                    key={index} 
-                    value={n.kirja_id}>
-                        {n.nimi + " (" + n.kirjailijat + ")"}
-                </option>
-            )
+            if (n.kirja_id > 0){
+                return (
+                    <option 
+                        key={index} 
+                        value={n.kirja_id}>
+                            {n.nimi + " (" + n.kirjailijat + ")"}
+                    </option>
+                )
+            }
         });
     }
     else {
