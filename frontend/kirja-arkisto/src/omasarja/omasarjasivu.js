@@ -78,11 +78,6 @@ const OmaSarjaSivu = () => {
                 setSelectedOwnSeries={setSelectedOwnSeries}
                 handleEditClicked={handleEditClicked}
               />
-              <Outlet>
-                <Routes>
-                  <Route path="/omasarjasivu/edit/:id" element={<EditSeries />} />
-                </Routes>
-              </Outlet>
             </div>
           </Col>
         </Row>
@@ -183,23 +178,8 @@ const SearchBar = (props) => {
         credentials: "include"
       });
       const data = await f.json();
-
-      const fetchBooks = async (sarja_id) => {
-        const b = await fetch(`http://localhost:5000/kirja?series_id=${sarja_id}`, {
-          credentials: "include"
-        });
-        const booksData = await b.json();
-        return booksData.data;
-      };
-
-      const seriesWithBooks = await Promise.all(
-        data.data.map(async (series) => {
-          const books = await fetchBooks(series.sarja_id);
-          return { ...series, books };
-        })
-      );
-
-      SetSerieslist({ ...data, data: seriesWithBooks });
+  
+      SetSerieslist(data);
     };
     fetchSeries();
   }, [searchCounter]);
@@ -256,10 +236,11 @@ const SeriesCard = (props) => {
           <Col md={2}>
             <Card.Text style={{ fontSize: "3em" }}>
               <Link
-                to={`/omasarjasivu/edit/${omasarja.sarja_id}`}
-                onClick={() => handleEditClicked(omasarja.sarja_id)}
+                to={`/omasarjasivu/edit/${omasarja.oma_sarja_id}`}
+                onClick={() => handleEditClicked(omasarja.oma_sarja_id)}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
+
                 ➡
               </Link>
             </Card.Text>
