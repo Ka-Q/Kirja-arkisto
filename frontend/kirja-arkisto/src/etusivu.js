@@ -85,6 +85,7 @@ function Etusivu() {
           <Route path="/kirja" element={<BookPage />} />
           <Route path="/kirja/:id" element={<KirjaViewComponent />} />
           <Route path="/sarjasivu" element={<SeriesPage />} />
+          <Route path="/omasarjasivu" element={<OwnedSeriePage />} />
           <Route path="/sarjasivu/edit/:id" element={<EditSeries />} />
           <Route path="/sarjasivu/add" element={<AddSeries />} />
           <Route path="/omakirja/*" element={<OwnedBookPage />} />

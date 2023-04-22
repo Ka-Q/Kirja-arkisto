@@ -38,19 +38,12 @@ const AddComponent = (props) => {
     const [nimi, setNimi] = useState(-1);
     const [sarjasarjaId, setSarjasarjaId] = useState(-1);
 
-
     const [addPicKeys, setAddPicKeys] = useState(0);
-    const [insertedPicId, setInsertedPicId] = useState(-1)
-    const [insertedPicCount, setInsertedPicCount] = useState(0)
-    const [addPicComponents, setAddPicComponents] = useState([]);
-
     const inputStyle = { width: "60%", paddingLeft: "1em" }
 
     const [omaSarjaFilled, setOmaSarjaFilled] = useState(true)
 
     const [saveClicked, setSaveClicked] = useState(false)
-    const [selectedSeries, setSelectedSeries] = useState(null);
-
     const [finalOmaSarja, setfinalOmaSarja] = useState({})
 
     const [filesFilled, setFilesFilled] = useState(true)

@@ -156,7 +156,7 @@ const EditSerie = (props) => {
 
 
   const handleAddBookToSeries = async () => {
-    if (selectedBook) {
+    if (selectedBook && !relatedKirjaID.includes(parseInt(selectedBook))) {
       const response = await fetch("http://localhost:5000/sarjan_kirjat", {
         credentials: "include",
         method: "POST",
@@ -168,20 +168,19 @@ const EditSerie = (props) => {
           kirja_id: selectedBook,
         }),
       });
-
+  
       if (response.ok) {
-
         const k = await fetch(`http://localhost:5000/sarjan_kirjat?sarja_id=${id}`, { credentials: 'include' });
         const kirjaData = await k.json();
         setRelatedKirja(kirjaData.data);
-        
+        setRelatedKirjaID(kirjaData.data.map(kirja => kirja.kirja_id));
         setSelectedBook("");
-        
       } else {
         console.error("Kirjan lisääminen ei onnistunut");
       }
     }
   };
+  
 
   const handleSaveClicked = () => {
     if (checkInputs()) {
@@ -198,7 +197,7 @@ const EditSerie = (props) => {
     }
   };
 
-  const handleRemoveBookFromSeries = async (kirja_id) => {
+  const handleRemoveBookFromOwnSerie = async (kirja_id) => {
     const response = await fetch(`http://localhost:5000/sarjan_kirjat`, {
       credentials: "include",
       method: "DELETE",
@@ -220,7 +219,7 @@ const EditSerie = (props) => {
       setRelatedKirja(kirjaData.data);
       
     } else {
-      console.error("Failed to remove the book from the series");
+      console.error("Kirjan poistaminen omista sarjoista epäonnistui");
     }
   };
 
@@ -272,7 +271,7 @@ const EditSerie = (props) => {
                   <Card.Text className="text-center mt-3">
                     <strong>Kuvaus:</strong> {selectedOwnSeries?.kuvaus}
                   </Card.Text>
-                  <h3>Sarjan kirjat:</h3>
+                  <h3>Oman sarjan kirjat:</h3>
                   {relatedKirja.length > 0 ? (
                     <ul>
                       {relatedKirja.map((kirja) => (
@@ -340,7 +339,7 @@ const EditSerie = (props) => {
           <Card.Body>
             {!saveSuccessful ? (
               <>
-                <Card.Title>Muokkaa sarjaa</Card.Title>
+                <Card.Title>Muokkaa omaa sarjaa</Card.Title>
                 <Row className="mb-2">
                   <Col>
                     <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
@@ -368,7 +367,7 @@ const EditSerie = (props) => {
                 </Row>
                 <Row className="mb-2">
                   <Col>
-                    <h3>Sarjan kirjat:</h3>
+                    <h3>Oman sarjan kirjat:</h3>
                     {relatedKirja.length > 0 ? (
                       <ul>
                         {relatedKirja.map((kirja) => (
@@ -378,7 +377,7 @@ const EditSerie = (props) => {
                               variant="danger"
                               size="sm"
                               style={{ backgroundColor: theme.accent, color: "red" }}
-                              onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
+                              onClick={() => handleRemoveBookFromOwnSerie(kirja.kirja_id)}
                             >
                               🗑 Poista
                             </Button>
@@ -392,13 +391,13 @@ const EditSerie = (props) => {
 
 
                   <Col>
-                    <h3>Lisää kirja sarjaan:</h3>
+                    <h3>Lisää kirja omaan sarjaan:</h3>
                     <select
                       style={{ width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom: "1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input }}
                       value={selectedBook}
                       onChange={(e) => setSelectedBook(e.target.value)}
                     >
-                      <option value="">Valitse kirja</option>
+                      <option value="">Valitse kirja...</option>
                       {allBooks.map((book) => (
                         <option key={book.kirja_id} value={book.kirja_id}>
                           {book.nimi}
