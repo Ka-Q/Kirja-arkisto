@@ -3,13 +3,13 @@ import { Button, Card, Col, Row, Stack } from "react-bootstrap";
 import { RequiredComponent, WarningComponent, SuccessComponent } from "./utilityComponents";
 import { BrowserRouter as Router, Route, Routes, Link, useParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { KirjaViewerComponent, KuvaViewerComponent } from "./kuvaComponents";
+import { KirjaViewerComponent } from "./kuvaComponents";
 
 import theme from './theme.json'
 
 
 const EditSeries = (props) => {
-  const [kirjat, setKirjat] = useState([]);
+
   const [isDone, setIsDone] = useState(false);
   const [error, setError] = useState(false);
 
@@ -64,83 +64,68 @@ const EditSeries = (props) => {
 
   };
 
-  /*
-   const deleteOwnBooks = async () => {
-              const f = await fetch("http://localhost:5000/oma_kirja", {
-                  method: "PUT",
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  credentials: "include",
-                  body: JSON.stringify({
-                      where: {
-                      kirja_id: kirja.kirja_id
-                      },
-                      set: {
-                          kirja_id: "-1"
-                      }
-                  })
-              })
-              const data = await f.json();
-              console.log(data)
-          };
-  */
 
-          const HandleDeleteClicked = async () => {
-            const updateOmaSarja = async () => {
-              const f = await fetch("http://localhost:5000/oma_sarja_admin", {
-                method: "PUT",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                  where: {
-                    sarja_sarja_id: id
-                  },
-                  set: {
-                    sarja_sarja_id: "-1" // or another appropriate value
-                  }
-                })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-          
-                
-            const deleteFromSarjanKirjat = async () => {
-              const f = await fetch("http://localhost:5000/sarjan_kirjat", {
-                method: "DELETE",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({ sarja_id: id })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-          
-            
-          
-            const deleteSarja = async () => {
-              const f = await fetch("http://localhost:5000/sarja", {
-                method: "DELETE",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({ sarja_id: id })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-            await updateOmaSarja();
-            await deleteFromSarjanKirjat();
-            await deleteSarja();
-            setIsDone(true);
+
+  const HandleDeleteClicked = async () => {
+
+
+    const updateOmaSarja = async () => {
+      const f = await fetch("http://localhost:5000/oma_sarja_admin", {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          where: {
+            sarja_sarja_id: id
+          },
+          set: {
+            sarja_sarja_id: "-1" // or another appropriate value
           }
-          
+        })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+
+
+    const deleteFromSarjanKirjat = async () => {
+      const f = await fetch("http://localhost:5000/sarjan_kirjat", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({ sarja_id: id })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+
+
+
+    const deleteSarja = async () => {
+      const f = await fetch("http://localhost:5000/sarja", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({ sarja_id: id })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+    await updateOmaSarja();
+    await deleteFromSarjanKirjat();
+    await deleteSarja();
+    setIsDone(true)
+
+
+  }
+
+
 
 
 
@@ -265,8 +250,31 @@ const EditSeries = (props) => {
 
 
   return (
+
     <>
-      {!editClicked ? (
+      {isDone ? (
+        <Col>
+          <Row className="mt-3">
+            <Col sm={12} lg={12} className="text-center">
+              <Card
+                bg="dark"
+                className="px-2 py-5"
+                style={{
+                  color: "white",
+                  height: "auto",
+                  width: "auto",
+                  margin: "20%",
+                }}
+              >
+                <SuccessComponent text="Poisto onnistui" />
+                <Link to="/sarjasivu">
+                  <Button variant="success">Jatka</Button>
+                </Link>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      ) : !editClicked ? (
 
         <Col>
           <Row className="mt-5">
@@ -276,7 +284,19 @@ const EditSeries = (props) => {
                   <Card.Title className="text-center mt-3">Sarjan kirjat</Card.Title>
                   <Card.Body >
 
-                    <KirjaViewerComponent kirjaId={relatedKirja.map(kirja => kirja.kirja_id).join(',')} />
+                    <Card.Body>
+                      {relatedKirja.length > 0 && (
+                        <KirjaViewerComponent
+                          key={relatedKirja[0].kirja_id}
+                          kirjaIds={relatedKirja.map((kirja) => kirja.kirja_id)}
+                        />
+                      )}
+                    </Card.Body>
+
+
+
+
+
 
 
 
@@ -349,6 +369,8 @@ const EditSeries = (props) => {
                       >
                         🗑 Poista
                       </Button>
+
+
                     </>
                   )}
 
