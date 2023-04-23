@@ -12,7 +12,7 @@ import theme from './theme.json'
 
 const SarjaSivu = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
-  
+
 
   return (
     <div style={{ backgroundColor: "#202020" }}>
@@ -20,19 +20,24 @@ const SarjaSivu = () => {
         <div className='text-center' style={{ paddingTop: '2em' }}>
           <h1 style={{ color: "white" }}>Sarjat</h1>
         </div>
+        <Row className="justify-content-end">
+  <Col md="auto">
+    <Link
+      to="/sarjasivu/add"
+      className="btn btn-dark mt-3"
+      style={{ backgroundColor: theme.button }}
+    >
+      Lisää sarja
+    </Link>
+  </Col>
+</Row>
+
+
         <Row>
           <Col>
             <SearchBar setSelectedSeries={setSelectedSeries} />
           </Col>
-          <Col md="auto">
-            <Link
-              to="/sarjasivu/add"
-              className="btn btn-dark mt-3"
-              style={{ backgroundColor: theme.button }}
-            >
-              Lisää sarja
-            </Link>
-          </Col>
+
         </Row>
         <div className="fluid">
           <SeriesCardList setSelectedSeries={setSelectedSeries} />
@@ -150,17 +155,17 @@ const SeriesCard = (props) => {
       }}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-      <Card border="secondary" className="text-center mb-1"style={{ backgroundColor: theme.input, color: "white" }}>
+      <Card border="secondary" className="text-center mb-1" style={{ backgroundColor: theme.input, color: "white" }}>
         <Card.Body onClick={() => props.handleCardClick(sarja)}>
           <Card.Title className="text-center mt-3">{sarja.nimi}</Card.Title>
-          
-            <Col>
-              <Card.Text className="text-center mt-3">
-                Kuvaus: {sarja.kuvaus} <p> </p>
-              </Card.Text>
-            </Col>
-            
-          
+
+          <Col>
+            <Card.Text className="text-center mt-3">
+              Kuvaus: {sarja.kuvaus} <p> </p>
+            </Card.Text>
+          </Col>
+
+
         </Card.Body>
       </Card>
     </Link>
