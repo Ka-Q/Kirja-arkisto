@@ -109,11 +109,6 @@ const OmaSarjaSivu = () => {
 };
 
 
-
-
-
-
-
 const SearchBar = (props) => {
 
   const [searchCounter, setSearchCounter] = useState(0);
@@ -177,8 +172,6 @@ const SearchBar = (props) => {
     };
     fetchSeries();
   }, [searchCounter]);
-
-
 
 
   const handleSearchClick = (props) => {
