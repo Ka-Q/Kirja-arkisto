@@ -18,6 +18,7 @@ const oman_kirjan_valokuvat_functions = require('./functions/oman_kirjan_valokuv
 const kirjan_kuvat_functions = require('./functions/kirjan_kuvat_functions')
 const sarjan_kirjat_functions=require('./functions/sarjan_kirjat_functions')
 const oman_sarjan_kirjat_functions=require('./functions/oman_sarjan_kirjat_functions')
+const oman_sarjan_kirjat2_functions=require('./functions/oman_sarjan_kirjat2_functions')
 
 //const hyllyn_sarjat_functions=require('./functions/hyllyn_sarjat_functions')
 
@@ -473,6 +474,26 @@ app.delete('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
 
 app.put('/oman_sarjan_kirjat', checkSessionUser, (req, res) => {
   let queryJson = oman_sarjan_kirjat_functions.PutOmatSarjat(req)
+  connect(res, queryJson.query, queryJson.queryList)
+})
+// Oman sarjan kirjat 2
+app.get('/oman_sarjan_kirjat2', checkSessionUser, (req, res) => {
+  let queryJson = oman_sarjan_kirjat2_functions.GetOmatSarjat2(req);
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.post('/oman_sarjan_kirjat2', checkSessionUser, (req, res) => {
+  let queryJson = oman_sarjan_kirjat2_functions.PostOmatSarjat2(req)
+  connect(res, queryJson.query, queryJson.queryList)
+});
+
+app.delete('/oman_sarjan_kirjat2', checkSessionUser, (req, res) => {
+  let queryJson = oman_sarjan_kirjat2_functions.DeleteOmatSarjat2(req)
+  connect(res, queryJson.query, queryJson.queryList);
+});
+
+app.put('/oman_sarjan_kirjat2', checkSessionUser, (req, res) => {
+  let queryJson = oman_sarjan_kirjat2_functions.PutOmatSarjat2(req)
   connect(res, queryJson.query, queryJson.queryList)
 })
 
