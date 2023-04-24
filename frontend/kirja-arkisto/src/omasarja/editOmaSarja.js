@@ -80,7 +80,7 @@ const EditSerie = (props) => {
           
                 
             const deleteFromSarjanKirjat = async () => {
-              const f = await fetch("http://localhost:5000/sarjan_kirjat", {
+              const f = await fetch("http://localhost:5000/oman_sarjan_kirjat", {
                 method: "DELETE",
                 headers: {
                   'Content-Type': 'application/json'
