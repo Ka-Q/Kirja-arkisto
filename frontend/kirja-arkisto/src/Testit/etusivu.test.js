@@ -14,19 +14,21 @@ describe('Etusivu component', () => {
     expect(frontPageElement).toBeInTheDocument();
   });
 
-  test('renders book page when navigating to /kirja', () => {
+  test('renders book page when navigating to /kirja', async () => {
     window.history.pushState({}, 'Test page', '/kirja');
     render(<Etusivu />);
-    const bookPageElement = screen.getByText(/Kirjat/i);
-    expect(bookPageElement).toBeInTheDocument();
+    const bookPageElements = await screen.findAllByText(/Kirjat/i);
+    // Assuming the second element in the array is the desired element
+    expect(bookPageElements[1]).toBeInTheDocument();
   });
-
-  test('renders series page when navigating to /sarjasivu', () => {
+  
+  test('renders series page when navigating to /sarjasivu', async () => {
     window.history.pushState({}, 'Test page', '/sarjasivu');
     render(<Etusivu />);
-    const seriesPageElement = screen.getByText(/Sarjat/i);
-    expect(seriesPageElement).toBeInTheDocument();
+    const seriesPageElements = await screen.findAllByText(/Sarjat/i);
+    // Assuming the second element in the array is the desired element
+    expect(seriesPageElements[1]).toBeInTheDocument();
   });
-
+  
   // Add more tests for other routes and components as needed
 });

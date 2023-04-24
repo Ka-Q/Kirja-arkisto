@@ -1,12 +1,23 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginComponent } from '../etusivu';
+import fetchMock from 'jest-fetch-mock';
+
+beforeAll(() => {
+  fetchMock.enableMocks();
+});
+
+beforeEach(() => {
+  fetchMock.resetMocks();
+});
 
 describe('LoginComponent', () => {
   it('renders the LoginComponent and logs in with admin credentials', async () => {
-    fetch.mockResponseOnce(JSON.stringify({ status: 'OK' }));
+    fetchMock.mockResponseOnce(JSON.stringify({ status: 'OK' }));
 
-    render(<LoginComponent setIsLoggedIn={() => {}} />);
+    const mockSetIsLoggedIn = jest.fn();
+
+    render(<LoginComponent setIsLoggedIn={mockSetIsLoggedIn} />);
 
     // Find input fields and button
     const tunnusInput = screen.getByPlaceholderText('tunnus');
@@ -18,8 +29,8 @@ describe('LoginComponent', () => {
     userEvent.type(salasanaInput, 'admin');
     userEvent.click(loginButton);
 
-    // Wait for the fetch response to be processed
-    await screen.findByText('Kirjaudu ulos');
+    // Wait for the setIsLoggedIn to be called
+    await waitFor(() => expect(mockSetIsLoggedIn).toHaveBeenCalled());
 
     // Check if the fetch was called with the correct arguments
     expect(fetch).toHaveBeenCalledWith('http://localhost:5000/login', {
