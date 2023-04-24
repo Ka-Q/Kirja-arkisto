@@ -138,28 +138,30 @@ const sortByJärjestysnumero = (kirjat) => {
   });
 };
 
+// Update mapKirjaToPreviews function to display only the first image of each book
 const mapKirjaToPreviews = (booksData, kirjaSrc, currentImage, handleImageClick) => {
   let previewList = [];
 
   booksData.forEach((book) => {
-    book.kuvat.forEach((n, index) => {
+    if (book.kuvat.length > 0) {
+      const n = book.kuvat[0];
       let style = { width: "30%" };
       let clickedStyle = { width: "30%", border: "2px solid black", borderRadius: "5px" };
 
       if (currentImage.kuva_id === n.kuva_id) {
         previewList.push(
-          <div key={`${book.kirja_id}-${index}`} onClick={(e) => handleImageClick(n, book)} style={clickedStyle}>
+          <div key={`${book.kirja_id}-0`} onClick={(e) => handleImageClick(n, book)} style={clickedStyle}>
             <Image src={kirjaSrc + n.kuva} thumbnail fluid />
           </div>
         );
       } else {
         previewList.push(
-          <div key={`${book.kirja_id}-${index}`} onClick={(e) => handleImageClick(n, book)} style={style}>
+          <div key={`${book.kirja_id}-0`} onClick={(e) => handleImageClick(n, book)} style={style}>
             <Image src={kirjaSrc + n.kuva} thumbnail fluid />
           </div>
         );
       }
-    });
+    }
   });
 
   return previewList;

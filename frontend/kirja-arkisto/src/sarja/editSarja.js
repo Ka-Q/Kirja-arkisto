@@ -34,9 +34,9 @@ const EditSeries = (props) => {
 
 
 
-  //let kirja = omakirja.kirja
+  
 
-  //let valokuvat = omakirja.valokuvat
+  
   useEffect(() => {
     const fetchSeries = async () => {
       const f = await fetch(`http://localhost:5000/sarja?sarja_id=${id}`);
