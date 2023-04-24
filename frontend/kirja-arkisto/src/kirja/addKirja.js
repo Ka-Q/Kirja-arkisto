@@ -47,12 +47,12 @@ const AddComponent = (props) => {
     // kirjan tietoja
     const [kirjaId, setKirjaId] = useState(-1);
     const [nimi, setNimi] = useState("");
-    const [jarjestysnumero, setJarjestysnumero] = useState(0);
+    const [jarjestysnumero, setJarjestysnumero] = useState(null);
     const [kuvaus, setKuvaus] = useState("");
     const [kirjailijat, setKirjailijat] = useState("");
     const [piirtajat, setPiirtajat] = useState("");
-    const [ensipainosvuosi, setEnsipainosvuosi] = useState(0);
-    const [painokset, setPainokset] = useState(0);
+    const [ensipainosvuosi, setEnsipainosvuosi] = useState(null);
+    const [painokset, setPainokset] = useState(null);
 
     // aputietoa kuvien lisäykseen
     const [addPicComponents, setAddPicComponents] = useState([]);
@@ -210,7 +210,7 @@ const AddComponent = (props) => {
 
         // Tarkistetaan kirjan syötteet
         let kirjaOK = false
-        if (jarjestysnumero >= 0 && ensipainosvuosi >= 0 && painokset >= 0) kirjaOK = true;
+        if (jarjestysnumero >= 0 && ensipainosvuosi >= 0 && painokset >= 0 && nimi &&  kirjailijat) kirjaOK = true;
 
         // Tarkistetaan valokuvatiedostojen syötteet
         let fileInputsOK = true
@@ -240,7 +240,7 @@ const AddComponent = (props) => {
                                 <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
 
                                     <div><input onChange={(e) => setNimi(e.target.value)} placeholder="nimi" style={inputStyle} /><RequiredComponent yes /></div>
-                                    <div><input onChange={(e) => setJarjestysnumero(e.target.value)} type="number" placeholder="järjestysnumero" style={inputStyle} /><RequiredComponent yes /></div>
+                                    <div><input onChange={(e) => setJarjestysnumero(e.target.value)} type="number" placeholder="järjestysnumero" style={inputStyle} /><RequiredComponent /></div>
                                     <div><textarea onChange={(e) => setKuvaus(e.target.value)} placeholder="kuvaus" style={{ width: "60%", paddingLeft: "1em", backgroundColor: "#3a3a3a", borderRadius: '10px', color: "white"}} /><RequiredComponent /></div>
                                     <div><input onChange={(e) => setKirjailijat(e.target.value)} type="text" placeholder="kirjailijat" style={inputStyle} /><RequiredComponent yes /></div>
                                     <div><input onChange={(e) => setPiirtajat(e.target.value)} placeholder="piirtäjät" style={inputStyle} /><RequiredComponent /></div>
@@ -264,10 +264,10 @@ const AddComponent = (props) => {
                                     <hr style={{color: "white"}}/>
                                     <Button onClick={(e) => handleAddPictureClicked(e)} className='btn btn-dark' style={{backgroundColor: "#424242"}}>+ Lisää uusi kuva</Button>
                                 </div>
-                                <div className="my-5">
+                                <div className="my-5"> 
                                     {!kirjaFilled ? <WarningComponent text="Vaadittuja tietoja puuttuu" /> : <></>}
                                     {!filesFilled ? <WarningComponent text="Valokuvatiedosto puuttuu" /> : <></>}
-                                    <Button onClick={(e) => handleSaveClicked()} className='btn btn-dark' style={{backgroundColor: "#424242"}}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()} className='btn btn-dark' style={{backgroundColor: "#424242"}}>Peruuta</Button>
+                                    <Button  onClick={(e) => handleSaveClicked()} className='btn btn-dark' style={{backgroundColor: "#424242"}}>Tallenna</Button> <Button onClick={(e) => props.handleLisaaClicked()} className='btn btn-dark' style={{backgroundColor: "#424242"}}>Peruuta</Button>
                                 </div>
                             </Col>
                         </Row>

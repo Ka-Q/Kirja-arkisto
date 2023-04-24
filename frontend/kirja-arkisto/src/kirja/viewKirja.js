@@ -145,7 +145,7 @@ const DeleteOwnBookComponent = (props) => {
             console.log(data)
         };
         const deleteOwnBooks = async () => {
-            const f = await fetch("http://localhost:5000/oma_kirja", {
+            const f = await fetch("http://localhost:5000/oma_kirja_admin", {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
