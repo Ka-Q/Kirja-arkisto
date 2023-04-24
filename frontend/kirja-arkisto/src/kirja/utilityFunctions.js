@@ -53,23 +53,16 @@ const sendValokuvaForm = async (form, bookId) => {
 
     let type = formdata.get("type");
 
-    /*// jos sivunumeroa ei ole, laitetaan -1
-    if (!formdata.get("sivunumero")) { 
+    // jos sivunumero on alle -1, laitetaan -1
+    if (formdata.get("sivunumero") <= -1) { 
         formdata.set("sivunumero", -1)
     }
 
-    // jos sivunumero on alle -1, laitetaan -1
-    if (formdata.get("sivunumero") < -1) { 
-        formdata.set("sivunumero", -1)
-    }*/
-    /*
-        // Etukannelle sivunro -200 ja takakannelle sivunro -100
-        if (type == "etukansi") {
-            formdata.set("sivunumero", -200)
-        } else if (type == "takakansi") {
-            formdata.set("sivunumero", -100)
-        }
-    */
+    // jos julkaisuvuotta ei ole, laitetaan -1
+    if (!formdata.get("julkaisuvuosi")) { 
+        formdata.set("julkaisuvuosi", -1)
+    }
+
     // jos tiedostoa ei ole, palautetaan false
     if (formdata.get("files").name == "") {
         return 1
