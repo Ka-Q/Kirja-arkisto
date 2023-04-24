@@ -232,7 +232,7 @@
             -- Omaan sarjaan kirjat
 			insert into oman_sarjan_kirjat values(1, 10, 2);
 			insert into oman_sarjan_kirjat values(1, 20, 2);
-			insert into oman_sarjan_kirjat values(1, 30, 2);
+			insert into oman_sarjan_kirjat values(1, 110, 2);
             insert into oman_sarjan_kirjat values(1, 80, 2);
 			insert into oman_sarjan_kirjat values(1, 90, 2);
 			insert into oman_sarjan_kirjat values(1, 100, 2);
@@ -244,7 +244,7 @@
             insert into oman_sarjan_kirjat values(3, 100, 2);
 			insert into oman_sarjan_kirjat values(3, 80, 2);
             insert into oman_sarjan_kirjat values(3, 20, 2);
-			insert into oman_sarjan_kirjat values(3, 30, 2);
+			insert into oman_sarjan_kirjat values(3, 110, 2);
             
 		-- Harry Potter (kaikki)
 			insert into oma_sarja values(4, "Harry Potter (kaikki)", "Kokoelmani Harry Potter - kirjoja", 3, 2);
@@ -306,5 +306,3 @@
     -- omalle kirjalle
     insert into oman_kirjan_valokuvat values(80, 5, 2);
 	insert into oman_kirjan_valokuvat values(80, 6, 2);
-	
-    -- vkuva 8 omakirja 100 
