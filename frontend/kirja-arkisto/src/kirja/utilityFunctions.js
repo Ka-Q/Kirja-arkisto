@@ -1,10 +1,10 @@
-import { useEffect, useState} from "react"
-import { Button, Image, Stack, Row, Col , Card, Collapse } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { Button, Image, Stack, Row, Col, Card, Collapse } from "react-bootstrap"
 import theme from './theme.json'
 import { RequiredComponent, WarningComponent } from "./utilityComponents"
 
 const getCoverArt = (kirja) => {
-    
+
     let kirjankuvat = []
     kirjankuvat = kirja.kuvat
 
@@ -25,7 +25,7 @@ const getCoverArt = (kirja) => {
 
 const getBackCover = (kirja) => {
 
-    
+
     let kirjankuvat = []
     kirjankuvat = kirja.kuvat
 
@@ -62,30 +62,31 @@ const sendValokuvaForm = async (form, bookId) => {
     if (formdata.get("sivunumero") < -1) { 
         formdata.set("sivunumero", -1)
     }*/
-/*
-    // Etukannelle sivunro -200 ja takakannelle sivunro -100
-    if (type == "etukansi") {
-        formdata.set("sivunumero", -200)
-    } else if (type == "takakansi") {
-        formdata.set("sivunumero", -100)
-    }
-*/
+    /*
+        // Etukannelle sivunro -200 ja takakannelle sivunro -100
+        if (type == "etukansi") {
+            formdata.set("sivunumero", -200)
+        } else if (type == "takakansi") {
+            formdata.set("sivunumero", -100)
+        }
+    */
     // jos tiedostoa ei ole, palautetaan false
-    if (formdata.get("files").name == "") { 
+    if (formdata.get("files").name == "") {
         return 1
     }
 
     formdata.delete("type")
 
     const f = await fetch("http://localhost:5000/kuva_tiedostolla", {
-    credentials: "include",
-    method: 'POST',
-    body: formdata})
+        credentials: "include",
+        method: 'POST',
+        body: formdata
+    })
     const data = await f.json()
 
     console.log("Insert id: " + data.data.insertId);
 
-    let obj = {kirja_kirja_id: bookId, kuva_kuva_id: data.data.insertId}
+    let obj = { kirja_kirja_id: bookId, kuva_kuva_id: data.data.insertId }
 
     const f2 = await fetch("http://localhost:5000/kirjan_kuvat", {
         credentials: "include",
@@ -93,7 +94,8 @@ const sendValokuvaForm = async (form, bookId) => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(obj)})
+        body: JSON.stringify(obj)
+    })
 
     const data2 = await f2.json()
 
@@ -105,12 +107,14 @@ const sendValokuvaForm = async (form, bookId) => {
 
 
 const AddValokuvaFormComponent = (props) => {
-    const inputStyle = props.inputStyle
+    //const inputStyle = props.inputStyle
     const formId = props.formId
 
-    const [showSivu, setShowSivu] = useState(true)
 
-    const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
+    const inputStyle = { width: "60%", paddingLeft: "1em", marginRight: "2em" , paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
+    const inputStyleFile = { width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
+
+    //const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
     inputStyleFile.borderRadius = "0.5em";
     inputStyleFile.padding = "0.5em";
 
@@ -121,48 +125,44 @@ const AddValokuvaFormComponent = (props) => {
 
     return (
         <Row className="mt-2 mb-2">
-            <hr/>
+            <hr />
             <Col>
-            <form id={formId} onSubmit={(e) => handleSubmit(e)}>
-                <Stack direction="vertical" gap={3} style={{textAlign: "center"}}>
-                    <div><input type={"file"} name="files" style={inputStyleFile}/><RequiredComponent yes/></div>
-                    <div className="mx-auto" style={{display:"flex"}}>
-                        <div >
-                            <label htmlFor="kuvatyyppi1" className="pe-1">Etukansi</label> 
-                            <input id="kuvatyyppi1" type="radio" name="kuva_tyyppi_id" value="1"/>
+                <form id={formId} onSubmit={(e) => handleSubmit(e)}>
+                    <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
+                        <div><input type={"file"} name="files" style={inputStyleFile} /><RequiredComponent yes /></div>
+                        <div className="mx-auto" style={{ color: "white", display: "flex" }} > 
+                            <div >
+                                <label htmlFor="kuvatyyppi1" className="pe-1">Etukansi</label>
+                                <input id="kuvatyyppi1" type="radio" name="kuva_tyyppi_id" value="1" />
+                            </div>
+                            <div >
+                                <label htmlFor="kuvatyyppi2" className="pe-1">Takakansi</label>
+                                <input id="kuvatyyppi2" type="radio" name="kuva_tyyppi_id" value="2" />
+                            </div>
+                            <div >
+                                <label htmlFor="kuvatyyppi3" className="pe-1">Muu</label>
+                                <input id="kuvatyyppi3" type="radio" name="kuva_tyyppi_id" value="3" />
+                            </div><RequiredComponent yes/>
                         </div>
                         <div >
-                            <label htmlFor="kuvatyyppi2" className="pe-1">Takakansi</label> 
-                            <input id="kuvatyyppi2" type="radio" name="kuva_tyyppi_id" value="2"/>
+                            <input id="kuva" type="text" name="kuva" placeholder="kuvan nimi" style={inputStyle} />
                         </div>
                         <div >
-                            <label htmlFor="kuvatyyppi3" className="pe-1">Muu</label> 
-                            <input id="kuvatyyppi3" type="radio" name="kuva_tyyppi_id" value="3"/>
+                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyle}/>
                         </div>
                         <div >
-                            <label htmlFor="kuva" className="pe-1">Kuvan nimi</label> 
-                            <input id="kuva" type="text" name="kuva" />
+                            <input id="taiteilija" type="text" name="taiteilija" placeholder="taiteilija" style={inputStyle}/>
                         </div>
                         <div >
-                            <label htmlFor="julkaisuvuosi" className="pe-1">julkaisuvuosi</label> 
-                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi"/>
+                            <input id="tyyli" type="text" name="tyyli" placeholder="tyyli" style={inputStyle}/>
                         </div>
                         <div >
-                            <label htmlFor="taiteilija" className="pe-1">Taiteilija</label> 
-                            <input id="taiteilija" type="text" name="taiteilija" />
+                            <input id="kuvaus" type="text" name="kuvaus" placeholder="kuvaus" style={inputStyle}/>
                         </div>
-                        <div >
-                            <label htmlFor="tyyli" className="pe-1">Tyyli</label> 
-                            <input id="tyyli" type="text" name="tyyli" value="tyyli"/>
-                        </div>
-                        <div >
-                            <label htmlFor="kuvaus" className="pe-1">Kuvaus</label> 
-                            <input id="kuvaus" type="text" name="kuvaus" />
-                        </div>
-                    </div>
-                    
-                </Stack>
-            </form>
+
+
+                    </Stack>
+                </form>
             </Col>
         </Row>
     )
@@ -170,4 +170,4 @@ const AddValokuvaFormComponent = (props) => {
 
 
 
-export {getCoverArt, sendValokuvaForm, getBackCover, AddValokuvaFormComponent}
+export { getCoverArt, sendValokuvaForm, getBackCover, AddValokuvaFormComponent }
