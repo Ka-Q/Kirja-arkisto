@@ -1,4 +1,4 @@
-import { Alert, Card, Row, Col } from "react-bootstrap"
+import { Alert, Card, Row, Col, Image } from "react-bootstrap"
 import { getCoverArt } from "./utilityFunctions"
 import { Link } from 'react-router-dom'
 
@@ -90,8 +90,7 @@ const GridBookCard = (props) => {
                 <b id="info" style={{marginTop: "20em", display:"block"}}>Kirjailija: {kirja.kirjailijat} </b>
             </div>
             <div style={{height: "100%", display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden"}}>
-                <img src={imgsrc} style={{flexShrink: 0, minWidth: "100%", minHeight: "100%"}}></img>
-
+                <Image src={imgsrc} style={{flexShrink: 0, objectFit: "cover", height:"100%", minWidth: "100%"}}></Image>
             </div>
         </Card>
         </Link>

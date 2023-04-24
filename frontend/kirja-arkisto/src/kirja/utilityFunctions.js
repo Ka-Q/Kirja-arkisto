@@ -53,23 +53,16 @@ const sendValokuvaForm = async (form, bookId) => {
 
     let type = formdata.get("type");
 
-    /*// jos sivunumeroa ei ole, laitetaan -1
-    if (!formdata.get("sivunumero")) { 
+    // jos sivunumero on alle -1, laitetaan -1
+    if (formdata.get("sivunumero") <= -1) { 
         formdata.set("sivunumero", -1)
     }
 
-    // jos sivunumero on alle -1, laitetaan -1
-    if (formdata.get("sivunumero") < -1) { 
-        formdata.set("sivunumero", -1)
-    }*/
-    /*
-        // Etukannelle sivunro -200 ja takakannelle sivunro -100
-        if (type == "etukansi") {
-            formdata.set("sivunumero", -200)
-        } else if (type == "takakansi") {
-            formdata.set("sivunumero", -100)
-        }
-    */
+    // jos julkaisuvuotta ei ole, laitetaan -1
+    if (!formdata.get("julkaisuvuosi")) { 
+        formdata.set("julkaisuvuosi", -1)
+    }
+
     // jos tiedostoa ei ole, palautetaan false
     if (formdata.get("files").name == "") {
         return 1
@@ -107,16 +100,12 @@ const sendValokuvaForm = async (form, bookId) => {
 
 
 const AddValokuvaFormComponent = (props) => {
-    //const inputStyle = props.inputStyle
     const formId = props.formId
-
-
     const inputStyle = { width: "60%", paddingLeft: "1em", marginRight: "2em" , paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
     const inputStyleFile = { width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
+    
+    
 
-    //const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
-    inputStyleFile.borderRadius = "0.5em";
-    inputStyleFile.padding = "0.5em";
 
     // Formia ei lähetetä submitilla, vaan juurikomponentin useEffectissä
     const handleSubmit = async (e) => {
@@ -133,7 +122,7 @@ const AddValokuvaFormComponent = (props) => {
                         <div className="mx-auto" style={{ color: "white", display: "flex" }} > 
                             <div >
                                 <label htmlFor="kuvatyyppi1" className="pe-1">Etukansi</label>
-                                <input id="kuvatyyppi1" type="radio" name="kuva_tyyppi_id" value="1" />
+                                <input id="kuvatyyppi1" type="radio" name="kuva_tyyppi_id" value="1" defaultChecked/>
                             </div>
                             <div >
                                 <label htmlFor="kuvatyyppi2" className="pe-1">Takakansi</label>
@@ -148,7 +137,7 @@ const AddValokuvaFormComponent = (props) => {
                             <input id="kuva" type="text" name="kuva" placeholder="kuvan nimi" style={inputStyle} />
                         </div>
                         <div >
-                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyle}/>
+                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyleFile}/><RequiredComponent yes/>
                         </div>
                         <div >
                             <input id="taiteilija" type="text" name="taiteilija" placeholder="taiteilija" style={inputStyle}/>

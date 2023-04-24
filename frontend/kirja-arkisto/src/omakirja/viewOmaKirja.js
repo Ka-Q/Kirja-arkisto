@@ -167,7 +167,7 @@ const OmasarjaListComponent = (props) => {
     if (omasarja){
         return (
             <div className="mb-3">
-                <Link to={"/omasarja/"+id} style={{textDecoration: "none", color: "white"}}>
+                <Link to={"/omasarjasivu/edit/"+id} style={{textDecoration: "none", color: "white"}}>
                     <Button variant="dark" style={{backgroundColor: theme.button, width: "100%"}}>
                     {omasarja.nimi}<span style={{position: "absolute", right: "3em"}}>➡</span>
                     </Button>
