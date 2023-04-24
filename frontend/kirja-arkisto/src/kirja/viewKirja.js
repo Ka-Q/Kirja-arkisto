@@ -19,20 +19,20 @@ const ViewComponent = (props) => {
             let idFormatted = "" + id.pathname.split('/')[2];
             console.log(idFormatted)
             const f = await fetch(`http://localhost:5000/kirja_kaikella?&kirja_id=${idFormatted}`, {
-                
+
             });
             const data = await f.json()
             console.log(data)
             setOmakirja(data.data[0])
         }
-        fetchBook(id) 
+        fetchBook(id)
     }, [])
 
     // Virhesivu jos id:llä ei löydy käyttäjän kirjaa
     if (!omakirja) {
-        return(
-            <div className="text-center" style={{color: "white", height: "100%", width: '100%', paddingBottom: '100%', paddingTop: "10em", backgroundColor: theme.bg}}>
-                Odotetaan kirjaa... <br/><br/> Mikäli tämä sivu ei muutu, jotain on mennyt pieleen. Voi olla, ettei sinulla ole oikeuksia tämän kirjan tarkasteluun
+        return (
+            <div className="text-center" style={{ color: "white", height: "100%", width: '100%', paddingBottom: '100%', paddingTop: "10em", backgroundColor: theme.bg }}>
+                Odotetaan kirjaa... <br /><br /> Mikäli tämä sivu ei muutu, jotain on mennyt pieleen. Voi olla, ettei sinulla ole oikeuksia tämän kirjan tarkasteluun
             </div>
         )
     }
@@ -45,55 +45,48 @@ const ViewComponent = (props) => {
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
         kuntoluokkaStars += "⭐"
     }
-    
-    return(
-        <div className="text-center px-3 py-1" style={{height: "100%",width: "auto", backgroundColor: theme.bg}}>
-        <Row className="mt-5">
-            {
-            kuvat.length > 0?
-                <Col sm={12} lg={3}>
-                    <Card className="mb-4" border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <Card.Title className="mt-3">
-                            Kuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <KuvaViewerComponent kuvat={kuvat}/>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            :
-                <></>
-            }
-            
-            <Col >
-                <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+
+    return (
+        <div className="text-center px-3 py-1" style={{ height: "100%", width: "auto", backgroundColor: theme.bg }}>
+            <Row className="mt-5">
+                {
+                    kuvat.length > 0 ?
+                        <Col sm={12} lg={3}>
+                            <KuvaViewerComponent kuvat={kuvat} />
+                        </Col>
+                        :
+                        <></>
+                }
+
+                <Col >
+                    <Card border="secondary" style={{ backgroundColor: theme.accent, color: "white" }}>
                         <h1 className="mt-3">{omakirja.nimi}</h1>
-                        <hr/>
+                        <hr />
                         <Card.Body>
-                            Kirjailijat: {omakirja.kirjailijat} <br/>
-                            Järjestysnumero: {omakirja.jarjestysnumero} <br/>
-                            Piirtäjät: {omakirja.piirtajat} <br/>
-                            Ensipainosvuosi: {omakirja.ensipainosvuosi} <br/>
+                            Kirjailijat: {omakirja.kirjailijat} <br />
+                            Järjestysnumero: {omakirja.jarjestysnumero} <br />
+                            Piirtäjät: {omakirja.piirtajat} <br />
+                            Ensipainosvuosi: {omakirja.ensipainosvuosi} <br />
                             Painokset: {omakirja.painokset}
-                            <br/><br/>
-                            Kirjan kuvaus: <br/>
-                            {omakirja.kuvaus} <br/>
+                            <br /><br />
+                            Kirjan kuvaus: <br />
+                            {omakirja.kuvaus} <br />
                         </Card.Body>
-                    
-                </Card>
-                <Card className="my-4"  border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
+
+                    </Card>
+                    <Card className="my-4" border="secondary" style={{ backgroundColor: theme.accent, color: "white" }}>
                         <Card.Title className="mt-3">
                             Toiminnot
                         </Card.Title>
                         <Card.Body>
-                            <Button variant="dark" style={{backgroundColor: theme.button}}  onClick={(e) => setEditClicked(true)}>✏ Muokkaa</Button> <span className="mx-3"/>
-                            <Button variant="danger" style={{backgroundColor: theme.accent, color: "red"}} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
+                            <Button variant="dark" style={{ backgroundColor: theme.button }} onClick={(e) => setEditClicked(true)}>✏ Muokkaa</Button> <span className="mx-3" />
+                            <Button variant="danger" style={{ backgroundColor: theme.accent, color: "red" }} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
                         </Card.Body>
-                    
-                </Card>
-            </Col>
 
-            {/*
+                    </Card>
+                </Col>
+
+                {/*
             valokuvat.length > 0?
                 <Col sm={12} lg={3}>
                     <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
@@ -106,21 +99,21 @@ const ViewComponent = (props) => {
                     </Card>
                 </Col>
             :
-                <></>*/console.log("deleteclicked ",deleteClicked)
-            }
-        </Row>
-            {deleteClicked?
-                <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked}/>
+                <></>*/console.log("deleteclicked ", deleteClicked)
+                }
+            </Row>
+            {deleteClicked ?
+                <div className="" style={{ position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)" }}>
+                    <DeleteOwnBookComponent omakirja={omakirja} setDeleteClicked={setDeleteClicked} />
                 </div>
-            :
-            <></>}
-            {editClicked?
-                <div className="" style={{position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)"}}>
-                    <EditBookComponent omakirja={omakirja} setEditClicked={setEditClicked}/>
+                :
+                <></>}
+            {editClicked ?
+                <div className="" style={{ position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)" }}>
+                    <EditBookComponent omakirja={omakirja} setEditClicked={setEditClicked} />
                 </div>
-            :
-            <></>}
+                :
+                <></>}
         </div>
     )
 }
@@ -139,7 +132,7 @@ const DeleteOwnBookComponent = (props) => {
                     'Content-Type': 'application/json'
                 },
                 credentials: "include",
-                body: JSON.stringify({kirja_kirja_id: kirja.kirja_id})
+                body: JSON.stringify({ kirja_kirja_id: kirja.kirja_id })
             })
             const data = await f.json();
             console.log(data)
@@ -153,7 +146,7 @@ const DeleteOwnBookComponent = (props) => {
                 credentials: "include",
                 body: JSON.stringify({
                     where: {
-                    kirja_id: kirja.kirja_id
+                        kirja_id: kirja.kirja_id
                     },
                     set: {
                         kirja_id: "-1"
@@ -170,19 +163,19 @@ const DeleteOwnBookComponent = (props) => {
                     'Content-Type': 'application/json'
                 },
                 credentials: "include",
-                body: JSON.stringify({kirja_id: kirja.kirja_id})
+                body: JSON.stringify({ kirja_id: kirja.kirja_id })
             })
             const data = await f.json();
             console.log(data)
             for (let i in kirja.kuvat) {
                 let kuva = kirja.kuvat[i];
-                    const f = await fetch("http://localhost:5000/kuva", {
+                const f = await fetch("http://localhost:5000/kuva", {
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: "include",
-                    body: JSON.stringify({kuva_id: kuva.kuva_id})
+                    body: JSON.stringify({ kuva_id: kuva.kuva_id })
                 })
                 const data = await f.json();
                 console.log(data)
@@ -195,42 +188,42 @@ const DeleteOwnBookComponent = (props) => {
                     'Content-Type': 'application/json'
                 },
                 credentials: "include",
-                body: JSON.stringify({kirja_id: kirja.kirja_id})
+                body: JSON.stringify({ kirja_id: kirja.kirja_id })
             })
             const data = await f.json();
             console.log(data)
         };
-        if (clickCounter > 0){
+        if (clickCounter > 0) {
             //Todo
             deleteImages();
             deleteOwnBooks();
             deleteFromSeries();
             deleteBook();
             setIsDone(true)
-        } 
+        }
     }, [clickCounter])
 
     return (
         <>
-        {isDone?
-            <Card bg="dark" className="px-2 py-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
-                <SuccessComponent text="Poisto onnistui"></SuccessComponent>
-                <Link to="/kirja"><Button variant="success">Jatka</Button></Link>
-            </Card>
-        :
-        <Card bg="dark" className="px-2 pb-5" style={{color: "white", height: "auto", width:"auto", margin: "20%"}}>
-            <Card.Title className="mt-5">Haluatko varmasti poistaa kirjan "{kirja.nimi}" kirjoistasi</Card.Title>
-            <Card.Header>
-                Poiston yhteydessä poistetaan myös kirjaan liitetyt kuvat. Kirja poistetaan myös niistä sarjoistasi, joihin se kuuluu. 
-                <br/>
-                <br/>
-                <b style={{color:"rgb(250,200, 0)"}}>⚠ Tätä toimintoa ei voi peruuttaa! ⚠</b>
-            </Card.Header>
-            <Button variant="warning" className="my-5" onClick={(e) => props.setDeleteClicked(false)}>Peruuta</Button> 
-            <Button variant="danger" onClick={(e) => setClickCounter(clickCounter + 1)}>Poista</Button>
+            {isDone ?
+                <Card bg="dark" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                    <SuccessComponent text="Poisto onnistui"></SuccessComponent>
+                    <Link to="/kirja"><Button variant="success">Jatka</Button></Link>
+                </Card>
+                :
+                <Card bg="dark" className="px-2 pb-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                    <Card.Title className="mt-5">Haluatko varmasti poistaa kirjan "{kirja.nimi}" kirjoistasi</Card.Title>
+                    <Card.Header>
+                        Poiston yhteydessä poistetaan myös kirjaan liitetyt kuvat. Kirja poistetaan myös niistä sarjoistasi, joihin se kuuluu.
+                        <br />
+                        <br />
+                        <b style={{ color: "rgb(250,200, 0)" }}>⚠ Tätä toimintoa ei voi peruuttaa! ⚠</b>
+                    </Card.Header>
+                    <Button variant="warning" className="my-5" onClick={(e) => props.setDeleteClicked(false)}>Peruuta</Button>
+                    <Button variant="danger" onClick={(e) => setClickCounter(clickCounter + 1)}>Poista</Button>
 
-        </Card>
-        }
+                </Card>
+            }
         </>
     )
 }
@@ -258,7 +251,7 @@ const EditBookComponent = (props) => {
     const [kirjailijat, setKirjailijat] = useState(omakirja.kirjailijat)
     const [piirtajat, setPiirtajat] = useState(omakirja.piirtajat)
     const [ensipainosvuosi, setEnsipainosvuosi] = useState(omakirja.ensipainosvuosi)
-    const [painokset, setPainokset] = useState(omakirja.painokset)   
+    const [painokset, setPainokset] = useState(omakirja.painokset)
 
     // Pidetään yllä, mitä kenttiä on muutettu
 
@@ -276,7 +269,7 @@ const EditBookComponent = (props) => {
     const [clickCounter, setClickCounter] = useState(0)
     const [updateObject, setUpdateObject] = useState({})
 
-    useEffect(()=> {
+    useEffect(() => {
         const updateBook = async () => {
             console.log(updateObject)
             const f = await fetch("http://localhost:5000/kirja", {
@@ -318,14 +311,14 @@ const EditBookComponent = (props) => {
     }
 
     // Palautetaan kaikkien kenttien alkuperäiset arvot
-    const handleRevert  = (e) => {
+    const handleRevert = (e) => {
         if (nimiChanged) setNimi(nimiOriginal)
-        if (jarjestysnumeroChanged) setJarjestysnumero(jarjestysnumeroOriginal)  
+        if (jarjestysnumeroChanged) setJarjestysnumero(jarjestysnumeroOriginal)
         if (kuvausChanged) setKuvaus(kuvausOriginal)
-        if (kirjailijatChanged) setKuvaus(kuvausOriginal)  
-        if (piirtajatChanged) setPiirtajat(piirtajatOriginal) 
-        if (ensipainosvuosiChanged) setEnsipainosvuosi(ensipainosvuosiOriginal) 
-        if (painoksetChanged) setEnsipainosvuosi(ensipainosvuosiOriginal) 
+        if (kirjailijatChanged) setKuvaus(kuvausOriginal)
+        if (piirtajatChanged) setPiirtajat(piirtajatOriginal)
+        if (ensipainosvuosiChanged) setEnsipainosvuosi(ensipainosvuosiOriginal)
+        if (painoksetChanged) setEnsipainosvuosi(ensipainosvuosiOriginal)
     }
 
     // Rajoittavat käyttäjän syötteitä: kuntoluokka 0-5, hankintahinta > 0 ja painosvuosi > 0
@@ -347,62 +340,62 @@ const EditBookComponent = (props) => {
 
 
     const labelW = "10em"
-    const inputStyle = {width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom:"1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input}
+    const inputStyle = { width: "50%", paddingLeft: "1em", paddingRight: "1em", marginBottom: "1.5em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
 
     return (
-        <div style={{lineHeight: "2.3em"}}>
-            <Card bg="dark" className="px-2 pt-5 mt-3" style={{color: "white", height: "50em", width:"auto"}}>
+        <div style={{ lineHeight: "2.3em" }}>
+            <Card bg="dark" className="px-2 pt-5 mt-3" style={{ color: "white", height: "50em", width: "auto" }}>
                 <Card.Title>Muokataan kirjaa "{props.omakirja.nimi}"</Card.Title>
-                    <div>
-                        <label htmlFor="nimi" style={{width:labelW}}>Nimi: </label>
-                        <input type="text" id="nimi" value={nimi} style={inputStyle} onChange={(e) => setNimi(e.target.value)}/>
-                        {nimiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="nimi" style={{ width: labelW }}>Nimi: </label>
+                    <input type="text" id="nimi" value={nimi} style={inputStyle} onChange={(e) => setNimi(e.target.value)} />
+                    {nimiChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div>
-                        <label htmlFor="jarjestysnumero" style={{width:labelW}}>Järjestysnumero: </label>
-                        <input type="text" id="jarjestysnumero" value={jarjestysnumero} style={inputStyle} onChange={(e) => setJarjestysnumero(e.target.value)}/>
-                        {jarjestysnumeroChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="jarjestysnumero" style={{ width: labelW }}>Järjestysnumero: </label>
+                    <input type="text" id="jarjestysnumero" value={jarjestysnumero} style={inputStyle} onChange={(e) => setJarjestysnumero(e.target.value)} />
+                    {jarjestysnumeroChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div>
-                        <label htmlFor="kirjailijat" style={{width:labelW}}>Kirjailijat: </label>
-                        <input type="text" id="kirjailijat" value={kirjailijat} style={inputStyle} onChange={(e) => setKirjailijat(e.target.value)}/>
-                        {kirjailijatChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="kirjailijat" style={{ width: labelW }}>Kirjailijat: </label>
+                    <input type="text" id="kirjailijat" value={kirjailijat} style={inputStyle} onChange={(e) => setKirjailijat(e.target.value)} />
+                    {kirjailijatChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div>
-                        <label htmlFor="piirtajat" style={{width:labelW}}>Piirtäjät: </label>
-                        <input type="text" id="piirtajat" value={piirtajat} style={inputStyle} onChange={(e) => setPiirtajat(e.target.value)}/>
-                        {piirtajatChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="piirtajat" style={{ width: labelW }}>Piirtäjät: </label>
+                    <input type="text" id="piirtajat" value={piirtajat} style={inputStyle} onChange={(e) => setPiirtajat(e.target.value)} />
+                    {piirtajatChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div>
-                        <label htmlFor="ensipainosvuosi" style={{width:labelW}}>Ensipainosvuosi: </label>
-                        <input type="text" id="ensipainosvuosi" value={ensipainosvuosi} style={inputStyle} onChange={(e) => setEnsipainosvuosi(e.target.value)}/>
-                        {ensipainosvuosiChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="ensipainosvuosi" style={{ width: labelW }}>Ensipainosvuosi: </label>
+                    <input type="text" id="ensipainosvuosi" value={ensipainosvuosi} style={inputStyle} onChange={(e) => setEnsipainosvuosi(e.target.value)} />
+                    {ensipainosvuosiChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div>
-                        <label htmlFor="painokset" style={{width:labelW}}>Painokset: </label>
-                        <input type="text" id="painokset" value={painokset} style={inputStyle} onChange={(e) => setPainokset(e.target.value)}/>
-                        {painoksetChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
+                <div>
+                    <label htmlFor="painokset" style={{ width: labelW }}>Painokset: </label>
+                    <input type="text" id="painokset" value={painokset} style={inputStyle} onChange={(e) => setPainokset(e.target.value)} />
+                    {painoksetChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
 
-                    <div><label htmlFor="kuvaus" style={{width:labelW}}>Kuvaus: </label></div>
-                    <div className="mb-2" style={{display: "inline-block", whiteSpace: "nowrap", overflow: "auto", width: "100%", height: "30em"}}>
-                        <textarea id="kuvaus" value={kuvaus} style={{ width: "80%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white"}} onChange={(e) => setKuvaus(e.target.value)}/>
-                        {kuvausChanged? <span style={{paddingLeft: "2em", position:"absolute", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
-                    </div>
-                    
-                    <Stack direction="horizontal" gap={2} className="mx-auto mb-3">
-                        <Button variant="dark" onClick={(e) => props.setEditClicked(false)} style={{backgroundColor: theme.button}}>Peruuta</Button>
-                        <Button variant="warning" onClick={(e) => handleRevert(e)} style={{backgroundColor: theme.button, color: "white"}}>Palauta</Button>
-                        <Button variant="success" onClick={(e) => handleSave(e)} style={{backgroundColor: theme.button}}>Tallenna</Button>
-                    </Stack>
+                <div><label htmlFor="kuvaus" style={{ width: labelW }}>Kuvaus: </label></div>
+                <div className="mb-2" style={{ display: "inline-block", whiteSpace: "nowrap", overflow: "auto", width: "100%", height: "30em" }}>
+                    <textarea id="kuvaus" value={kuvaus} style={{ width: "80%", paddingLeft: "1em", backgroundColor: theme.input, borderRadius: '10px', color: "white" }} onChange={(e) => setKuvaus(e.target.value)} />
+                    {kuvausChanged ? <span style={{ paddingLeft: "2em", position: "absolute", color: "orange" }}>*</span> : <span style={{ paddingLeft: "2em", position: "absolute" }} />}
+                </div>
+
+                <Stack direction="horizontal" gap={2} className="mx-auto mb-3">
+                    <Button variant="dark" onClick={(e) => props.setEditClicked(false)} style={{ backgroundColor: theme.button }}>Peruuta</Button>
+                    <Button variant="warning" onClick={(e) => handleRevert(e)} style={{ backgroundColor: theme.button, color: "white" }}>Palauta</Button>
+                    <Button variant="success" onClick={(e) => handleSave(e)} style={{ backgroundColor: theme.button }}>Tallenna</Button>
+                </Stack>
             </Card>
         </div>
     )
 }
 
-export {ViewComponent}
+export { ViewComponent }
