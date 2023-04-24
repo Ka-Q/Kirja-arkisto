@@ -53,16 +53,16 @@ const sendValokuvaForm = async (form, bookId) => {
 
     let type = formdata.get("type");
 
-    /*// jos sivunumeroa ei ole, laitetaan -1
-    if (!formdata.get("sivunumero")) { 
-        formdata.set("sivunumero", -1)
+    // jos sivunumeroa ei ole, laitetaan -1
+    if (!formdata.get("julkaisuvuosi")) { 
+        formdata.set("julkaisuvuosi", 1)
     }
 
     // jos sivunumero on alle -1, laitetaan -1
-    if (formdata.get("sivunumero") < -1) { 
+    /*if (formdata.get("julkaisuvuosi") < -1) { 
         formdata.set("sivunumero", -1)
-    }*/
-    /*
+    }
+    
         // Etukannelle sivunro -200 ja takakannelle sivunro -100
         if (type == "etukansi") {
             formdata.set("sivunumero", -200)
@@ -108,11 +108,13 @@ const sendValokuvaForm = async (form, bookId) => {
 
 const AddValokuvaFormComponent = (props) => {
     const formId = props.formId
-    const inputStyle = { width: "60%", paddingLeft: "1em", marginRight: "2em" , paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
-    const inputStyleFile = { width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
+    //const inputStyle = { width: "60%", paddingLeft: "1em", marginRight: "2em" , paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
+    //const inputStyleFile = { width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
     
-    
-
+    const inputStyle = props.inputStyle
+    const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
+    inputStyleFile.borderRadius = "0.5em";
+    inputStyleFile.padding = "0.5em";
 
     // Formia ei lähetetä submitilla, vaan juurikomponentin useEffectissä
     const handleSubmit = async (e) => {
@@ -141,10 +143,7 @@ const AddValokuvaFormComponent = (props) => {
                             </div><RequiredComponent yes/>
                         </div>
                         <div >
-                            <input id="kuva" type="text" name="kuva" placeholder="kuvan nimi" style={inputStyle} />
-                        </div>
-                        <div >
-                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyleFile}/><RequiredComponent yes/>
+                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyle}/>
                         </div>
                         <div >
                             <input id="taiteilija" type="text" name="taiteilija" placeholder="taiteilija" style={inputStyle}/>
@@ -163,6 +162,7 @@ const AddValokuvaFormComponent = (props) => {
         </Row>
     )
 }
+
 
 
 
