@@ -119,11 +119,11 @@ const SeriesCardList = ({ setSelectedSeries }) => {
     setSelectedSeries(sarja);
   };
 
-  let seriesData = serieslist.data
+  let seriesData = serieslist.data;
   let SeriesCardList = [];
-  if (seriesData) {
-    if (seriesData.length > 0) {
-      SeriesCardList = seriesData.map((n, index) => {
+  if (seriesData && seriesData.length > 0) {
+    SeriesCardList = seriesData.map((n, index) => {
+      if (n.sarja_id > 0) { // check if sarja_id is greater than 0
         return (
           <SeriesCard
             key={index}
@@ -131,10 +131,10 @@ const SeriesCardList = ({ setSelectedSeries }) => {
             handleCardClick={handleCardClick}
           />
         );
-      });
-    } else {
-      SeriesCardList = [<ErrorCard />];
-    }
+      } else {
+        return null; // don't render the card if sarja_id is 0 or less
+      }
+    });
   }
 
   return (
