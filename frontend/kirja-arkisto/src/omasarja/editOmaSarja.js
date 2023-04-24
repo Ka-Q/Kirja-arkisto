@@ -44,12 +44,11 @@ const EditSerie = (props) => {
       setKuvaus(selectedOwnSeries.kuvaus);
       setRelatedKirja(kirjaData.data);
       setRelatedKirjaID(kirjaData.data.map(kirja => kirja.kirja_id));
+
+      
     };
     fetchSeries();
   }, [id]);
-
-  
-
 
   const handleCancelClicked = () => {
     navigate('/omasarjasivu', { replace: true });
@@ -60,18 +59,15 @@ const EditSerie = (props) => {
 
           const HandleDeleteClicked = async () => {
             const updateOmaSarja = async () => {
-              const f = await fetch("http://localhost:5000/oma_sarja_admin", {
-                method: "PUT",
+              const f = await fetch("http://localhost:5000/oma_sarja", {
+                method: "Delete",
                 headers: {
                   'Content-Type': 'application/json'
                 },
                 credentials: "include",
                 body: JSON.stringify({
                   where: {
-                    oma_sarja_sarja_id: id
-                  },
-                  set: {
-                    oma_sarja_sarja_id: "-1"
+                    oma_sarja_id: id
                   }
                 })
               });
@@ -265,8 +261,8 @@ const EditSerie = (props) => {
                   <h3>Oman sarjan kirjat:</h3>
                   {relatedKirja.length > 0 ? (
                     <ul>
-                      {relatedKirja.map((kirja) => (
-                        <li key={kirja.kirja_id}>{kirja.nimi}</li>
+                      {relatedKirja.map((idList) => (
+                        <BookListItem id={idList.oma_kirja_id}/>
                       ))}
                     </ul>
                   ) : (
@@ -363,12 +359,12 @@ const EditSerie = (props) => {
                       <ul>
                         {relatedKirja.map((kirja) => (
                           <li key={kirja.oma_kirja_id}>
-                            {kirja.kirja.nimi}{" "}
+                            <BookListItem id={kirja.oma_kirja_id}/>
                             <Button
                               variant="danger"
                               size="sm"
                               style={{ backgroundColor: theme.accent, color: "red" }}
-                              onClick={() => handleRemoveBookFromOwnSerie(kirja.kirja_id)}
+                              onClick={() => handleRemoveBookFromOwnSerie(kirja.oma_kirja_id)}
                             >
                               🗑 Poista
                             </Button>
@@ -434,5 +430,25 @@ const EditSerie = (props) => {
     </>
   );
 };
+
+
+const BookListItem = (props) => {
+
+  const [omakirja, setOmakirja] = useState(null);
+
+  useEffect(()=> {
+    const getOmakirjaData = async () => {
+      const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${props.id}`, {credentials: "include"});
+      const data = await f.json();
+      console.log(data);
+      setOmakirja(data.data[0])
+    }
+    getOmakirjaData()
+  }, [])
+
+  return (
+    omakirja? <li key={props.id}>{omakirja.kirja.nimi}, {omakirja.hankinta_aika}</li> : <li>Odotetaan kirjaa...</li>
+  )
+}
 
 export { EditSerie };
