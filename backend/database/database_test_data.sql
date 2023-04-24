@@ -41,12 +41,19 @@
 	insert into kuva values(3, "kaksi_tornia_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia etukannesta");
 	insert into kuva values(4, "kaksi_tornia_takakansi.gif", 2, 1999, "Kalle", "Maalaus", "Kuva kaksi tornia takakannesta");
 	insert into kuva values(5, "kuninkaan_paluu_etukansi.gif", 1, 1999, "Kalle", "Maalaus", "Kuva Kuninkaan paluun etukannesta");
+    insert into kuva values(32, "lotr_fotr_map.jpg", 3, 1999, "Kalle", "Maalaus", "Kuva kartasta sormuksen ritareissa");
+    insert into kuva values(33, "lotr_fotr_kontu.jpg", 3, 1999, "Kalle", "Maalaus", "Kuva Konnusta sormuksen ritareissa");
+    
 
 	-- Taru Sormusten Herrasta kuvat kirjoille
 	insert into kirjan_kuvat values(1, 1);
 	insert into kirjan_kuvat values(1, 2);
+    insert into kirjan_kuvat values(1, 32);
+    insert into kirjan_kuvat values(1, 33);
+    
 	insert into kirjan_kuvat values(2, 3);
 	insert into kirjan_kuvat values(2, 4);
+    
 	insert into kirjan_kuvat values(3, 5);
 
 -- Narnia
@@ -77,9 +84,9 @@
 	insert into kuva values(7, "narnian_viimeinen_taistelu_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Narnian viimeinen taistelu etukannesta");
 	insert into kuva values(8, "prinssi_kaspian_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva prinssi kaspian etukannesta");
 	insert into kuva values(9, "kaspianin_matka_maailman_aariin_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva kaspianin matka maailman ääriin etukannesta");
-	insert into kuva values(10, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Hopeinen tuoli etukannesta");
-	insert into kuva values(11, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Hevonen ja poika etukannesta");
-	insert into kuva values(12, "Taru_sormusten_herrasta_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Taikurin sisarenpoika etukannesta");
+	insert into kuva values(10, "hopeinen_tuoli_etukansi.webp", 1, 1999, "Kalle", "Maalaus", "Kuva Hopeinen tuoli etukannesta");
+	insert into kuva values(11, "hevonen_ja_poika_etukansi.jpg", 1, 1999, "Kalle", "Maalaus", "Kuva Hevonen ja poika etukannesta");
+	insert into kuva values(12, "taikurin_sisarenpoika_etukansi.webp", 1, 1999, "Kalle", "Maalaus", "Kuva Taikurin sisarenpoika etukannesta");
 
 	-- Narnia kuvat kirjoille
 	insert into kirjan_kuvat values(4, 6);
@@ -199,10 +206,16 @@
 		-- Taru Sormusten Herrasta:
 			insert into oma_kirja values(10, 2, 12.90, "Kirpputorilöytö. Aika huonossa kunnossa ja muutama sivu irtonaisina välissä.", 2002, "2019-10-12", 1, 2); 
 			insert into oma_kirja values(20, 5, 7.50, "Antikvariaatista. Hyvä hinta ja kirja on priimakunnossa.", 2004, "2021-11-11", 2, 2);
-			insert into oma_kirja values(30, 4, 6.50, "Kirpputorilöytö. Suurehko repeämä kolmannen sivun alalaidassa, mutta korjattu huolella.", 2004, "2021-11-11", 1, 2);
+			insert into oma_kirja values(110, 4, 6.50, "Kirpputorilöytö. Suurehko repeämä kolmannen sivun alalaidassa, mutta korjattu huolella.", 2004, "2021-11-11", 1, 2);
             insert into oma_kirja values(80, 5, 12.90, "Antikvariaatista. Varjeltu kappale toiselta keräilijältä. Kuin uusi", 2002, "2019-10-12", 3, 2); 
 			insert into oma_kirja values(90, 1, 7.50, "Kirpputorilöytö. Hirveässä kunnossa ja maksoin tästä ryöstöhinnan. En ollut huomannut, että keskelä olevat sivut olivat liimattuna yhteen... ;_;", 2004, "2021-11-11", 2, 2);
 			insert into oma_kirja values(100, 4, 6.50, "Kirpputorilöytö.", 2004, "2021-11-11", 1, 2);
+            
+		-- Harry Potter:
+			insert into oma_kirja values(30, 2, 12.90, "Kirpputorilöytö. Aika huonossa kunnossa ja muutama sivu irtonaisina välissä.", 2002, "2019-10-12", 11, 2); 
+			insert into oma_kirja values(120, 5, 7.50, "Antikvariaatista. Hyvä hinta ja kirja on priimakunnossa.", 2004, "2021-11-11", 12, 2);
+			insert into oma_kirja values(130, 4, 6.50, "Kirpputorilöytö. Suurehko repeämä kolmannen sivun alalaidassa, mutta korjattu huolella.", 2004, "2021-11-11", 14, 2);
+            
             
 	-- Admin
 		-- Narnia:
@@ -219,7 +232,7 @@
             -- Omaan sarjaan kirjat
 			insert into oman_sarjan_kirjat values(1, 10, 2);
 			insert into oman_sarjan_kirjat values(1, 20, 2);
-			insert into oman_sarjan_kirjat values(1, 30, 2);
+			insert into oman_sarjan_kirjat values(1, 110, 2);
             insert into oman_sarjan_kirjat values(1, 80, 2);
 			insert into oman_sarjan_kirjat values(1, 90, 2);
 			insert into oman_sarjan_kirjat values(1, 100, 2);
@@ -231,7 +244,16 @@
             insert into oman_sarjan_kirjat values(3, 100, 2);
 			insert into oman_sarjan_kirjat values(3, 80, 2);
             insert into oman_sarjan_kirjat values(3, 20, 2);
-			insert into oman_sarjan_kirjat values(3, 30, 2);
+			insert into oman_sarjan_kirjat values(3, 110, 2);
+            
+		-- Harry Potter (kaikki)
+			insert into oma_sarja values(4, "Harry Potter (kaikki)", "Kokoelmani Harry Potter - kirjoja", 3, 2);
+            
+            -- Omaan sarjaan kirjat
+            insert into oman_sarjan_kirjat values(4, 30, 2);
+			insert into oman_sarjan_kirjat values(4, 120, 2);
+            insert into oman_sarjan_kirjat values(4, 130, 2);
+            
             
    -- Admin
 		-- Narnian tarinoita (oma)
@@ -250,10 +272,19 @@
 	insert into valokuva values(2, "sormuksenritarit_takakansi_vkuva.jpg", -100, "valokuva takakannesta", 2);
     insert into valokuva values(7, "sormuksenritarit_s0_vkuva.jpg", 0, "valokuva ensimmäiseltä aukeamalta", 2);
     
+    insert into valokuva values(9, "Lotr_fotr_page8.jpg", 8, "valokuva sivulta 8", 2);
+    insert into valokuva values(10, "Lotr_fotr_page21.jpg", 21, "valokuva sivulta 21", 2);
+    insert into valokuva values(11, "paras_valokuva.png", 100, "valokuva sivulta 100", 2);
+    insert into valokuva values(12, "paras_valokuva.png", 101, "valokuva sivulta 101", 2);
+    
     -- omalle kirjalle
     insert into oman_kirjan_valokuvat values(10, 1, 2);
 	insert into oman_kirjan_valokuvat values(10, 2, 2);
 	insert into oman_kirjan_valokuvat values(10, 7, 2);
+    insert into oman_kirjan_valokuvat values(10, 9, 2);
+	insert into oman_kirjan_valokuvat values(10, 10, 2);
+	insert into oman_kirjan_valokuvat values(10, 11, 2);
+    insert into oman_kirjan_valokuvat values(10, 12, 2);
 
 	-- Kaksi tornia
 	insert into valokuva values(3, "kaksitornia_etukansi_vkuva.jpg", -200, "valokuva etukannesta", 2);
