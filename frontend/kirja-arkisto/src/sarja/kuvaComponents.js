@@ -75,7 +75,7 @@ const KirjaViewerComponent = ({ kirjaIds }) => {
   
   const handleIncrease = () => {
     const totalImagesCount = totalImages(booksData);
-    if (rollIndex < totalImagesCount - width) {
+    if (rollIndex < totalImagesCount - 1) {
       setRollIndex(rollIndex + 1);
       const { image, book } = getImageByIndex(rollIndex + 1);
       if (image && book) {
@@ -93,6 +93,7 @@ const KirjaViewerComponent = ({ kirjaIds }) => {
       }
     }
   };
+  
   
 
   const remainingImages = totalImages(booksData) - (rollIndex + width);
