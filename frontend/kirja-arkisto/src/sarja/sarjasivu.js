@@ -7,11 +7,13 @@ import { useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
 
+
 import theme from './theme.json'
 
 
 const SarjaSivu = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
+  const [filteredSeries, setFilteredSeries] = useState([]);
 
 
   return (
@@ -35,12 +37,12 @@ const SarjaSivu = () => {
 
         <Row>
           <Col>
-            <SearchBar setSelectedSeries={setSelectedSeries} />
+          <SearchBar setSelectedSeries={setSelectedSeries} setFilteredSeries={setFilteredSeries} />
           </Col>
 
         </Row>
         <div className="fluid">
-          <SeriesCardList setSelectedSeries={setSelectedSeries} />
+        <SeriesCardList setSelectedSeries={setSelectedSeries} serieslist={filteredSeries} />
         </div>
       </div>
       <Outlet>
@@ -53,7 +55,7 @@ const SarjaSivu = () => {
   );
 };
 
-const SearchBar = ({ setSelectedSeries }) => {
+const SearchBar = ({  setSelectedSeries, setFilteredSeries  }) => {
 
   const [searchCounter, setSearchCounter] = useState(0);
   const [serieslist, SetSerieslist] = useState([]);
@@ -83,11 +85,11 @@ const SearchBar = ({ setSelectedSeries }) => {
     const fetchSeries = async () => {
       const f = await fetch("http://localhost:5000/sarja" + "?" + query);
       const data = await f.json();
-      SetSerieslist(data);
+      setFilteredSeries(data);
+      
     };
-    fetchSeries(); // Remove the condition to fetch data on the initial render
+    fetchSeries();
   }, [searchCounter]);
-
 
   const handleSearchClick = () => {
     updateQuery();
@@ -102,19 +104,7 @@ const SearchBar = ({ setSelectedSeries }) => {
   )
 }
 
-const SeriesCardList = ({ setSelectedSeries }) => {
-
-  const [serieslist, SetSerieslist] = useState([]);
-
-  useEffect(() => {
-    const fetchSeries = async () => {
-      const f = await fetch("http://localhost:5000/sarja");
-      const data = await f.json();
-      SetSerieslist(data);
-    };
-    fetchSeries(); // Remove the condition to fetch data on the initial render
-  }, []);
-
+const SeriesCardList = ({ setSelectedSeries, serieslist }) => {
   const handleCardClick = (sarja) => {
     setSelectedSeries(sarja);
   };
@@ -123,7 +113,7 @@ const SeriesCardList = ({ setSelectedSeries }) => {
   let SeriesCardList = [];
   if (seriesData && seriesData.length > 0) {
     SeriesCardList = seriesData.map((n, index) => {
-      if (n.sarja_id > 0) { // check if sarja_id is greater than 0
+      if (n.sarja_id > 0) {
         return (
           <SeriesCard
             key={index}
@@ -132,7 +122,7 @@ const SeriesCardList = ({ setSelectedSeries }) => {
           />
         );
       } else {
-        return null; // don't render the card if sarja_id is 0 or less
+        return null;
       }
     });
   }
@@ -143,6 +133,7 @@ const SeriesCardList = ({ setSelectedSeries }) => {
     </div>
   )
 }
+
 
 const SeriesCard = (props) => {
   let sarja = props.sarja;
@@ -155,7 +146,7 @@ const SeriesCard = (props) => {
       }}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-      <Card border="secondary" className="text-center mb-1" style={{ backgroundColor: theme.input, color: "white" }}>
+             <Card border="dark" className="mb-1 me-auto ms-auto" style={{backgroundColor: "#313131", width: "75%", color:"white"}}>
         <Card.Body onClick={() => props.handleCardClick(sarja)}>
           <Card.Title className="text-center mt-3">{sarja.nimi}</Card.Title>
 
