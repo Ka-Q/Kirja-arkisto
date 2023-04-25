@@ -23,6 +23,7 @@ import { AddComponent } from "./omasarja/addOmaSarja";
 
 
 
+
 function Etusivu() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -106,8 +107,12 @@ const FrontPage = (props) => {
         <Col>
           <img src="https://dbdzm869oupei.cloudfront.net/img/sticker/preview/90751.png" />
         </Col>
-        <Col >
-          <h1 className="" style={{ color: "white" }}>Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1>
+        <Col className="" style={{ color: "white" }}>
+          <h1 >Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1> <br/><br/>
+          <h3>Lisätietoa sovelluksesta löydät {" "}
+              <a style={{textDecoration: "none"}} href="https://dev.azure.com/OT2-K23-GroupE/Kirja-arkisto/_wiki/wikis/Kirja-arkisto.wiki/1/Ryhm%C3%A4-E">Wikistä</a>{" "}<br/>
+               (mukaan lukien tunnukset sisäänkirjautumiseen)
+            </h3>
         </Col>
       </Row>
     </div>
