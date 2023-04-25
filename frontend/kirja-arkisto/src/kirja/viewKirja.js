@@ -45,18 +45,17 @@ const ViewComponent = (props) => {
     for (let i = 0; i < omakirja.kuntoluokka; i++) {
         kuntoluokkaStars += "⭐"
     }
+    
 
     return (
         <div className="text-center px-3 py-1" style={{ height: "100%", width: "auto", backgroundColor: theme.bg }}>
             <Row className="mt-5">
-                {
-                    kuvat.length > 0 ?
+                
                         <Col sm={12} lg={3}>
-                            <KuvaViewerComponent kuvat={kuvat} />
+                            <KuvaViewerComponent kuvat={kuvat} omakirjaId={omakirja.kirja_id}/>
                         </Col>
-                        :
-                        <></>
-                }
+                        
+                
 
                 <Col >
                     <Card border="secondary" style={{ backgroundColor: theme.accent, color: "white" }}>

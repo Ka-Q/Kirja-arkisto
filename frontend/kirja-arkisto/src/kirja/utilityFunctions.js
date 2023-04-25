@@ -53,14 +53,20 @@ const sendValokuvaForm = async (form, bookId) => {
 
     let type = formdata.get("type");
 
-    // jos sivunumero on alle -1, laitetaan -1
-    if (formdata.get("sivunumero") <= -1) { 
-        formdata.set("sivunumero", -1)
-    }
+    
 
     // jos julkaisuvuotta ei ole, laitetaan -1
     if (!formdata.get("julkaisuvuosi")) { 
         formdata.set("julkaisuvuosi", -1)
+    }
+    if (!formdata.get("taiteilija")) { 
+        formdata.set("taiteilija", -1)
+    }
+    if (!formdata.get("tyyli")) { 
+        formdata.set("tyyli", -1)
+    }
+    if (!formdata.get("kuvaus")) { 
+        formdata.set("kuvaus", -1)
     }
 
     // jos tiedostoa ei ole, palautetaan false
