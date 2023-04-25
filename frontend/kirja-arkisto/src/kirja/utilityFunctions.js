@@ -142,7 +142,7 @@ const AddValokuvaFormComponent = (props) => {
                             </div><RequiredComponent yes/>
                         </div>
                         <div >
-                            <input id="julkaisuvuosi" type="text" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyle}/>
+                            <input id="julkaisuvuosi" type="number" name="julkaisuvuosi" placeholder="julkaisuvuosi" style={inputStyle}/>
                         </div>
                         <div >
                             <input id="taiteilija" type="text" name="taiteilija" placeholder="taiteilija" style={inputStyle}/>
