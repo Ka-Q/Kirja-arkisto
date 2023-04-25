@@ -15,6 +15,21 @@ const SarjaSivu = () => {
   const [selectedSeries, setSelectedSeries] = useState(null);
   const [filteredSeries, setFilteredSeries] = useState([]);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const sendAuth = async () => {
+      const f = await fetch("http://localhost:5000/check_login", {
+        credentials: "include",
+        method: 'GET'
+      })
+      const data = await f.json();
+      console.log(data.data);
+      if (data.data && data.data.rooli == 1) { setIsAdmin(true) } else setIsAdmin(false)
+    };
+    sendAuth();
+  }, []);
+
 
   return (
     <div style={{ backgroundColor: "#202020" }}>
@@ -23,26 +38,35 @@ const SarjaSivu = () => {
           <h1 style={{ color: "white" }}>Sarjat</h1>
         </div>
         <Row className="justify-content-end">
-  <Col md="auto">
-    <Link
-      to="/sarjasivu/add"
-      className="btn btn-dark mt-3"
-      style={{ backgroundColor: theme.button }}
-    >
-      Lisää sarja
-    </Link>
-  </Col>
-</Row>
+          <Col md="auto">
+            {isAdmin ?
+              <Link
+                to="/sarjasivu/add"
+                className="btn btn-dark mt-3"
+                style={{ backgroundColor: theme.button }}
+              >
+                Lisää sarja
+              </Link> :
+              <button
+                disabled
+                className="btn btn-dark mt-3"
+                style={{ backgroundColor: theme.button }}
+              >
+                Lisää sarja
+              </button>}
+
+          </Col>
+        </Row>
 
 
         <Row>
           <Col>
-          <SearchBar setSelectedSeries={setSelectedSeries} setFilteredSeries={setFilteredSeries} />
+            <SearchBar setSelectedSeries={setSelectedSeries} setFilteredSeries={setFilteredSeries} />
           </Col>
 
         </Row>
         <div className="fluid">
-        <SeriesCardList setSelectedSeries={setSelectedSeries} serieslist={filteredSeries} />
+          <SeriesCardList setSelectedSeries={setSelectedSeries} serieslist={filteredSeries} />
         </div>
       </div>
       <Outlet>
@@ -55,7 +79,7 @@ const SarjaSivu = () => {
   );
 };
 
-const SearchBar = ({  setSelectedSeries, setFilteredSeries  }) => {
+const SearchBar = ({ setSelectedSeries, setFilteredSeries }) => {
 
   const [searchCounter, setSearchCounter] = useState(0);
   const [serieslist, SetSerieslist] = useState([]);
@@ -86,7 +110,7 @@ const SearchBar = ({  setSelectedSeries, setFilteredSeries  }) => {
       const f = await fetch("http://localhost:5000/sarja" + "?" + query);
       const data = await f.json();
       setFilteredSeries(data);
-      
+
     };
     fetchSeries();
   }, [searchCounter]);
@@ -146,7 +170,7 @@ const SeriesCard = (props) => {
       }}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-             <Card border="dark" className="mb-1 me-auto ms-auto" style={{backgroundColor: "#313131", width: "75%", color:"white"}}>
+      <Card border="dark" className="mb-1 me-auto ms-auto" style={{ backgroundColor: "#313131", width: "75%", color: "white" }}>
         <Card.Body onClick={() => props.handleCardClick(sarja)}>
           <Card.Title className="text-center mt-3">{sarja.nimi}</Card.Title>
 

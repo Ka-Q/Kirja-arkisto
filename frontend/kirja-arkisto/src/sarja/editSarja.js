@@ -9,6 +9,20 @@ import theme from './theme.json'
 
 
 const EditSeries = (props) => {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const sendAuth = async () => {
+      const f = await fetch("http://localhost:5000/check_login", {
+        credentials: "include",
+        method: 'GET'
+      })
+      const data = await f.json();
+      console.log(data.data);
+      if (data.data && data.data.rooli == 1) { setIsAdmin(true) } else setIsAdmin(false)
+    };
+    sendAuth();
+  }, []);
 
   const [isDone, setIsDone] = useState(false);
   const [error, setError] = useState(false);
@@ -34,9 +48,9 @@ const EditSeries = (props) => {
 
 
 
-  
 
-  
+
+
   useEffect(() => {
     const fetchSeries = async () => {
       const f = await fetch(`http://localhost:5000/sarja?sarja_id=${id}`);
@@ -278,7 +292,7 @@ const EditSeries = (props) => {
 
         <Col>
           <Row className="mt-5">
-            <Col sm={10} lg={3}>
+            <Col sm={12} lg={3}>
               <Card className="mb-4">
                 <div style={{ color: "white", background: "#131415", borderRadius: "inherit" }}>
                   <Card.Title className="text-center mt-3">Sarjan kirjat</Card.Title>
@@ -316,11 +330,21 @@ const EditSeries = (props) => {
                   <Card.Text className="text-center mt-3">
                     <strong>Kuvaus:</strong> {selectedSeries?.kuvaus}
                   </Card.Text>
-                  <h3>Sarjan kirjat:</h3>
+                  <h3 className="text-center mt-3">Sarjan kirjat</h3>
                   {relatedKirja.length > 0 ? (
-                    <ul>
+
+
+                    <ul className="text-center mt-3">
                       {relatedKirja.map((kirja) => (
-                        <li key={kirja.kirja_id}>{kirja.nimi}</li>
+                        <Link to={"/kirja/" + kirja.kirja_id}
+                          style={{ backgroundColor: theme.button, color: "white" }}>
+
+                          <li key={kirja.kirja_id}>
+                            {kirja.nimi}{" "}
+
+
+                          </li>
+                        </Link>
                       ))}
                     </ul>
                   ) : (
@@ -330,52 +354,53 @@ const EditSeries = (props) => {
               </Card>
 
 
+              {isAdmin ?
+                <Card
+                  className="my-4"
+                  border="secondary"
+                  style={{ backgroundColor: theme.accent, color: "white" }}
+                >
+                  <Card.Title className="text-center mt-3">Toiminnot</Card.Title>
+                  <Card.Body className="text-center mt-3">
+                    <Button
+                      variant="dark"
+                      style={{ backgroundColor: theme.button }}
+                      onClick={() => setEditClicked(true)}
+                    >
+                      ✏ Muokkaa
+                    </Button>{" "}
+                    <span className="mx-3" />
+                    {isDone ? (
+                      <>
+                        <Card bg="dark" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                          <SuccessComponent text="Poisto onnistui"></SuccessComponent>
+                          <Link to="/sarjasivu"><Button variant="success">Jatka</Button></Link>
+                        </Card>
+                      </>
+                    ) : error ? (
+                      <>
+                        <Card bg="danger" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
+                          <WarningComponent text="Poisto epäonnistui"></WarningComponent>
+                          <Button variant="danger" onClick={() => setError(false)}>Sulje</Button>
+                        </Card>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="danger"
+                          style={{ backgroundColor: theme.accent, color: "red" }}
+                          onClick={() => HandleDeleteClicked()}
+                        >
+                          🗑 Poista
+                        </Button>
 
-              <Card
-                className="my-4"
-                border="secondary"
-                style={{ backgroundColor: theme.accent, color: "white" }}
-              >
-                <Card.Title className="text-center mt-3">Toiminnot</Card.Title>
-                <Card.Body className="text-center mt-3">
-                  <Button
-                    variant="dark"
-                    style={{ backgroundColor: theme.button }}
-                    onClick={() => setEditClicked(true)}
-                  >
-                    ✏ Muokkaa
-                  </Button>{" "}
-                  <span className="mx-3" />
-                  {isDone ? (
-                    <>
-                      <Card bg="dark" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
-                        <SuccessComponent text="Poisto onnistui"></SuccessComponent>
-                        <Link to="/sarjasivu"><Button variant="success">Jatka</Button></Link>
-                      </Card>
-                    </>
-                  ) : error ? (
-                    <>
-                      <Card bg="danger" className="px-2 py-5" style={{ color: "white", height: "auto", width: "auto", margin: "20%" }}>
-                        <WarningComponent text="Poisto epäonnistui"></WarningComponent>
-                        <Button variant="danger" onClick={() => setError(false)}>Sulje</Button>
-                      </Card>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="danger"
-                        style={{ backgroundColor: theme.accent, color: "red" }}
-                        onClick={() => HandleDeleteClicked()}
-                      >
-                        🗑 Poista
-                      </Button>
 
+                      </>
+                    )}
 
-                    </>
-                  )}
-
-                </Card.Body>
-              </Card>
+                  </Card.Body>
+                </Card> :
+                <></>}
             </Col>
           </Row>
 
@@ -386,7 +411,7 @@ const EditSeries = (props) => {
           <Card.Body>
             {!saveSuccessful ? (
               <>
-                <Card.Title>Muokkaa sarjaa</Card.Title>
+                <Card.Title className="text-center mt-3">Muokkaa sarjaa</Card.Title>
                 <Row className="mb-2">
                   <Col>
                     <Stack direction="vertical" gap={3} style={{ textAlign: "center" }}>
@@ -414,23 +439,32 @@ const EditSeries = (props) => {
                 </Row>
                 <Row className="mb-2">
                   <Col>
-                    <h3>Sarjan kirjat:</h3>
+                    <h3 className="text-center mt-3">Sarjan kirjat:</h3>
+
                     {relatedKirja.length > 0 ? (
-                      <ul>
+
+
+                      <ul className="text-center mt-3">
                         {relatedKirja.map((kirja) => (
-                          <li key={kirja.kirja_id}>
-                            {kirja.nimi}{" "}
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              style={{ backgroundColor: theme.accent, color: "red" }}
-                              onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
-                            >
-                              🗑 Poista
-                            </Button>
-                          </li>
+                          <Link to={"/kirja/" + kirja.kirja_id}
+                            style={{ backgroundColor: theme.button, color: "white" }}>
+
+                            <li key={kirja.kirja_id}>
+                              {kirja.nimi}{" "}
+
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                style={{ backgroundColor: theme.accent, color: "red" }}
+                                onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
+                              >
+                                🗑 Poista
+                              </Button>
+                            </li>
+                          </Link>
                         ))}
                       </ul>
+
                     ) : (
                       <p>Loading related books...</p>
                     )}
@@ -456,7 +490,7 @@ const EditSeries = (props) => {
                 </Row>
                 <Row>
                   <Col>
-                    <div className="my-5">
+                    <div className="text-center mt-3">
                       {!sarjaFilled ? (
                         <WarningComponent text="Vaadittuja tietoja puuttuu" />
                       ) : (
