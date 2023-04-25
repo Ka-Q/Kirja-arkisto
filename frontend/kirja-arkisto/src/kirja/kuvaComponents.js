@@ -27,7 +27,7 @@ const KuvaViewerComponent = (props) => {
 
     <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
         <Card.Body>
-            <AddValokuvaComponent setAddClicked={setAddClicked} omakirjaId={props.kirja_id}/>
+            <AddValokuvaComponent setAddClicked={setAddClicked} omakirjaId={props.omakirjaId}/>
         </Card.Body>
     </Card>)
 
@@ -39,6 +39,7 @@ const KuvaViewerComponent = (props) => {
     // Vierittää esikatseluja niin, että valittu kuva tulee näkyviin. "dir" kertoo vierityssuunnan
     const scrollToPreview = (dir) => {
         let preview = document.getElementById("previewPic" + clickedPic.index)
+        console.log(preview);
         if (dir > 0) {
             preview.scrollIntoView({
                 behavior: "smooth",
@@ -129,7 +130,7 @@ const KuvaViewerComponent = (props) => {
                 </Collapse>
                 <Collapse in={addClicked}>
                     <div id="addValokuva">
-                        <AddValokuvaComponent setAddClicked={setAddClicked} omakirjaId={props.kirja_id}/>
+                        <AddValokuvaComponent setAddClicked={setAddClicked} omakirjaId={props.omakirjaId}/>
                     </div>
                 </Collapse>
                 <Collapse in={!deleteClicked && !editClicked && !addClicked}>
@@ -158,7 +159,7 @@ const sortByTyyppinumero = (valokuvat) => {
         return 0
     });
 }
-const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
+/*const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
     let previewList = list.map((n, index) => {
         let style = {width: "20%"};
         let clickedStyle = {width: "20%", border: "2px solid black", borderRadius: "5px"}
@@ -173,6 +174,29 @@ const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
         return (
             <div key={index} onClick={(e) => setClickedPic(n)} style={style}>
                 <Image src={kuvaSrc + n.kuva} thumbnail fluid/>
+            </div>
+        )
+    });
+    return previewList
+}*/
+
+
+const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
+    let previewList = list.map((n, index) => {
+        n.index = index
+  
+
+        if (clickedPic.kuva_id == n.kuva_id){
+            return (
+                <div id={"previewPic" + index} className="mx-1" key={index} style={{display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em", borderRadius: "0.3em", minWidth:"4em", backgroundColor: "black"}}>
+                    <Image src={kuvaSrc + n.kuva} height={"100%"}/>
+                </div>
+            )
+        }
+        return (
+            <div id={"previewPic" + index} className="mx-1" key={index} onClick={(e) => setClickedPic(n)} style={{position: "relative", display:"inline-block", overflow: "auto", whiteSpace: "nowrap", height: "6em" , borderRadius: "0.3em"}}>
+                <div style={{display: "block", overflow: "auto", whiteSpace: "nowrap", height: "100%", filter: "brightness(0.4)", margin: 0, padding: 0, minWidth:"4em", backgroundColor: "black"}}><Image src={kuvaSrc + n.kuva} height={"100%"}/></div>
+                
             </div>
         )
     });
@@ -275,16 +299,16 @@ const EditValokuvaComponent = (props) => {
             <h5>Muokataan kuvan tietoja</h5> 
             <div>
                 <label htmlFor="etukansiRadio" className="pe-1" style={{width: "6em"}} >Etukansi</label> 
-                <input id="etukansiRadio" type="radio" name="kuva_tyyppi_id" value="1" />
+                <input id="etukansiRadio" type="radio" name="kuva_tyyppi_id" value="1" onChange={(e) =>{setKuvaTyyppi(e.target.value)}}/>
             </div>
             <div className="mx-5">
                 <label htmlFor="takakansiRadio" className="pe-1" style={{width: "6em"}} >Takakansi</label> 
-                <input id="takakansiRadio" type="radio" name="kuva_tyyppi_id" value="2" />
+                <input id="takakansiRadio" type="radio" name="kuva_tyyppi_id" value="2"onChange={(e) =>{setKuvaTyyppi(e.target.value)}} />
                 {kuvaTyyppiChanged? <span style={{position:"absolute", right: "2em", color: "orange"}}>*</span>:<span style={{paddingLeft: "2em", position:"absolute"}}/>}
             </div>
             <div>
                 <label htmlFor="sivuRadio" className="pe-1" style={{width: "6em"}} >Muu</label> 
-                <input id="sivuRadio" type="radio" name="kuva_tyyppi_id" value="3" />
+                <input id="sivuRadio" type="radio" name="kuva_tyyppi_id" value="3" onChange={(e) =>{setKuvaTyyppi(e.target.value)}}/>
             </div>
             
             <input onChange={(e) => setJulkaisuvuosi(e.target.value)} value={julkaisuvuosi} className="my-3" type="text" placeholder="julkaisuvuosi" style={inputStyle}/>
@@ -348,6 +372,7 @@ const AddValokuvaComponent = (props) => {
 
     const [error, setError] = useState(false)
 
+    console.log(props.omakirjaId);
     const handleSave = async () => {
         let errorCode = await sendValokuvaForm(document.getElementById("picForm0"), props.omakirjaId)
         if (errorCode == 0) {setError(false); window.location.reload()}
