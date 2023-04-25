@@ -96,6 +96,8 @@ function Etusivu() {
           <Route path="/omasarja" element={<OwnedSeriePage />} />
           <Route path="/omasarjasivu/edit/:id" element={<EditSerie />} />
           <Route path="/omasarjasivu/add" element={<AddComponent />} />
+          <Route path="/omakirja/:id" element={<AddComponent />} />
+
         </Routes>
       </Router>
     </div>

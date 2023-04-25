@@ -7,6 +7,8 @@ import { KirjaViewerComponent } from "./kuvaComponents";
 import theme from './theme.json'
 
 
+
+
 const EditSerie = (props) => {
   const [kirjat, setKirjat] = useState([]);
   const [isDone, setIsDone] = useState(false);
@@ -35,17 +37,17 @@ const EditSerie = (props) => {
     const fetchSeries = async () => {
       const f = await fetch(`http://localhost:5000/oma_sarja?oma_sarja_id=${id}`, { credentials: 'include' });
       const data = await f.json();
-      const selectedOwnSeries = data.data[0]; 
+      const selectedOwnSeries = data.data[0];
       const k = await fetch(`http://localhost:5000/oman_sarjan_kirjat?oma_sarja_id=${id}`, { credentials: 'include' });
       const kirjaData = await k.json();
-  
+
       setSelectedOwnSeries(selectedOwnSeries);
       setNimi(selectedOwnSeries.nimi);
       setKuvaus(selectedOwnSeries.kuvaus);
       setRelatedKirja(kirjaData.data);
       setRelatedKirjaID(kirjaData.data.map(kirja => kirja.kirja_id));
 
-      
+
     };
     fetchSeries();
   }, [id]);
@@ -57,58 +59,58 @@ const EditSerie = (props) => {
   };
 
 
-          const HandleDeleteClicked = async () => {
-            const updateOmaSarja = async () => {
-              const f = await fetch("http://localhost:5000/oma_sarja", {
-                method: "Delete",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                  where: {
-                    oma_sarja_id: id
-                  }
-                })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-          
-                
-            const deleteFromSarjanKirjat = async () => {
-              const f = await fetch("http://localhost:5000/oman_sarjan_kirjat2", {
-                method: "DELETE",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({ oma_sarja_id: id })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-          
-            
-          
-            const deleteSarja = async () => {
-              const f = await fetch("http://localhost:5000/oma_sarja", {
-                method: "DELETE",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: "include",
-                body: JSON.stringify({ oma_sarja_id: id })
-              });
-              const data = await f.json();
-              console.log(data);
-            };
-            await updateOmaSarja();
-            await deleteFromSarjanKirjat();
-            await deleteSarja();
-            setIsDone(true);
+  const HandleDeleteClicked = async () => {
+    const updateOmaSarja = async () => {
+      const f = await fetch("http://localhost:5000/oma_sarja", {
+        method: "Delete",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          where: {
+            oma_sarja_id: id
           }
-          
+        })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+
+
+    const deleteFromSarjanKirjat = async () => {
+      const f = await fetch("http://localhost:5000/oman_sarjan_kirjat2", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({ oma_sarja_id: id })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+
+
+
+    const deleteSarja = async () => {
+      const f = await fetch("http://localhost:5000/oma_sarja", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({ oma_sarja_id: id })
+      });
+      const data = await f.json();
+      console.log(data);
+    };
+    await updateOmaSarja();
+    await deleteFromSarjanKirjat();
+    await deleteSarja();
+    setIsDone(true);
+  }
+
 
   const [sarjaFilled, setSarjaFilled] = useState(true)
   const [filesFilled, setFilesFilled] = useState(true)
@@ -142,7 +144,7 @@ const EditSerie = (props) => {
     };
     fetchBooks();
   }, []);
-  
+
 
 
   const handleAddBookToSeries = async () => {
@@ -158,7 +160,7 @@ const EditSerie = (props) => {
           oma_kirja_id: selectedBook,
         }),
       });
-  
+
       if (response.ok) {
         const k = await fetch(`http://localhost:5000/oman_sarjan_kirjat2?oma_sarja_id=${id}`, { credentials: 'include' });
         const kirjaData = await k.json();
@@ -170,7 +172,7 @@ const EditSerie = (props) => {
       }
     }
   };
-  
+
 
   const handleSaveClicked = () => {
     if (checkInputs()) {
@@ -201,13 +203,13 @@ const EditSerie = (props) => {
     });
 
     if (response.ok) {
-      
+
       const k = await fetch(`http://localhost:5000/oman_sarjan_kirjat?sarja_id=${id}`, {
         credentials: 'include'
       });
       const kirjaData = await k.json();
       setRelatedKirja(kirjaData.data);
-      
+
     } else {
       console.error("Kirjan poistaminen omista sarjoista epäonnistui");
     }
@@ -258,11 +260,19 @@ const EditSerie = (props) => {
                   <Card.Text className="text-center mt-3">
                     <strong>Kuvaus:</strong> {selectedOwnSeries?.kuvaus}
                   </Card.Text>
-                  <h3>Oman sarjan kirjat:</h3>
+                  <h3 className="text-center mt-3">Oman sarjan kirjat:</h3>
                   {relatedKirja.length > 0 ? (
-                    <ul>
+
+
+
+
+                    <ul className="text-center mt-3">
                       {relatedKirja.map((idList) => (
-                        <BookListItem id={idList.oma_kirja_id}/>
+                        <Link to={"/omakirja/" + idList.oma_kirja_id}
+                          style={{ backgroundColor: theme.button, color: "white" }}>
+
+                          <BookListItem id={idList.oma_kirja_id} />
+                        </Link>
                       ))}
                     </ul>
                   ) : (
@@ -270,6 +280,7 @@ const EditSerie = (props) => {
                   )}
                 </Card.Body>
               </Card>
+
 
 
 
@@ -359,7 +370,7 @@ const EditSerie = (props) => {
                       <ul>
                         {relatedKirja.map((kirja) => (
                           <li key={kirja.oma_kirja_id}>
-                            <BookListItem id={kirja.oma_kirja_id}/>
+                            <BookListItem id={kirja.oma_kirja_id} />
                             <Button
                               variant="danger"
                               size="sm"
@@ -436,9 +447,9 @@ const BookListItem = (props) => {
 
   const [omakirja, setOmakirja] = useState(null);
 
-  useEffect(()=> {
+  useEffect(() => {
     const getOmakirjaData = async () => {
-      const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${props.id}`, {credentials: "include"});
+      const f = await fetch(`http://localhost:5000/oma_kirja_kaikella?&oma_kirja_id=${props.id}`, { credentials: "include" });
       const data = await f.json();
       console.log(data);
       setOmakirja(data.data[0])
@@ -447,7 +458,7 @@ const BookListItem = (props) => {
   }, [])
 
   return (
-    omakirja? <li key={props.id}>{omakirja.kirja.nimi}, {omakirja.hankinta_aika}</li> : <li>Odotetaan kirjaa...</li>
+    omakirja ? <li key={props.id}>{omakirja.kirja.nimi}, {omakirja.hankinta_aika}</li> : <li>Odotetaan kirjaa...</li>
   )
 }
 
