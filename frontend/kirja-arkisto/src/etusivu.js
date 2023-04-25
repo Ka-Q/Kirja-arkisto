@@ -40,6 +40,8 @@ function Etusivu() {
     };
     sendAuth();
   }, [isLoggedIn]);
+  
+
 
   return (
     <div >
@@ -101,6 +103,60 @@ function Etusivu() {
 }
 
 const FrontPage = (props) => {
+  const [bookCount, setBookCount] = useState(0);
+  const [SeriesCount, setSeriesCount] = useState(0);
+  const [ownbookCount, setownBookCount] = useState(0);
+  const [ownSeriesCount, setownSeriesCount] = useState(0);
+
+
+  useEffect(() => {
+    const fetchAllBooks = async () => {
+      const response = await fetch('http://localhost:5000/kirja');
+      const data = await response.json();
+      const validBooks = data.data.filter(book => book.kirja_id > 0);
+      setBookCount(validBooks.length);
+    };
+
+    fetchAllBooks();
+  }, []);
+  useEffect(() => {
+    const fetchAllBooks = async () => {
+      const response = await fetch('http://localhost:5000/oma_kirja', {
+        credentials: "include",
+        method: 'GET'
+      })
+      const data = await response.json();
+      
+      const validBooks = data.data.filter(book => book.oma_kirja_id > 0);
+      setownBookCount(validBooks.length);
+    };
+
+    fetchAllBooks();
+  }, []);
+  useEffect(() => {
+    const fetchAllSeries = async () => {
+      const response = await fetch('http://localhost:5000/sarja');
+      const data = await response.json();
+      const validSeries = data.data.filter(series => series.sarja_id > 0);
+      setSeriesCount(validSeries.length);
+    };
+
+    fetchAllSeries();
+  }, []);
+  useEffect(() => {
+    const fetchAllBooks = async () => {
+      const response = await fetch('http://localhost:5000/oma_sarja', {
+        credentials: "include",
+        method: 'GET'
+      })
+      const data = await response.json();
+      
+      const validBooks = data.data.filter(book => book.oma_sarja_id > 0);
+      setownSeriesCount(validBooks.length);
+    };
+
+    fetchAllBooks();
+  }, []);
   return (
     <div style={{ height: "100%", width: '100%', padding: '10px', backgroundColor: "#202020" }}>
       <Row className="mx-5 my-5">
@@ -108,11 +164,17 @@ const FrontPage = (props) => {
           <img src="https://dbdzm869oupei.cloudfront.net/img/sticker/preview/90751.png" />
         </Col>
         <Col className="" style={{ color: "white" }}>
-          <h1 >Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1> <br/><br/>
+          <h1 >Tervetuloa käyttämään kirja-arkistoa johon voit tallettaa omia kirjoja ja kirjasarjojasi</h1> <br /><br />
+          <h3>Kirjoja arkistossa {bookCount}</h3><br /><br />
+          <h3>Sarjoja arkistossa {SeriesCount}</h3><br /><br />
+          <h3>Omia kirjoja arkistossa {ownbookCount}</h3><br /><br />
+          <h3>Omia sarjoja arkistossa {ownSeriesCount}</h3><br /><br />
           <h3>Lisätietoa sovelluksesta löydät {" "}
-              <a style={{textDecoration: "none"}} href="https://dev.azure.com/OT2-K23-GroupE/Kirja-arkisto/_wiki/wikis/Kirja-arkisto.wiki/1/Ryhm%C3%A4-E">Wikistä</a>{" "}<br/>
-               (mukaan lukien tunnukset sisäänkirjautumiseen)
-            </h3>
+            <a style={{ textDecoration: "none" }} href="https://dev.azure.com/OT2-K23-GroupE/Kirja-arkisto/_wiki/wikis/Kirja-arkisto.wiki/1/Ryhm%C3%A4-E">Wikistä</a>{" "}<br />
+            (myös tunnukset sisäänkirjautumiseen)
+          </h3>
+          
+
         </Col>
       </Row>
     </div>
@@ -216,4 +278,4 @@ const LogoutComponent = (props) => {
 }
 
 
-export { Etusivu,LoginComponent,BookPage,FrontPage,SeriesPage,OwnedBookPage,OwnedSeriePage };
+export { Etusivu, LoginComponent, BookPage, FrontPage, SeriesPage, OwnedBookPage, OwnedSeriePage };
