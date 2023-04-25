@@ -10,6 +10,8 @@ const KirjaViewerComponent = ({ kirjaIds }) => {
   const width = 5;
   const BtnStyle = { backgroundColor: theme.button };
   const [booksData, setBooksData] = useState([]);
+  
+  
 
   useEffect(() => {
     fetchBookData();
@@ -58,17 +60,14 @@ const KirjaViewerComponent = ({ kirjaIds }) => {
   const sortedKirjat = sortByJärjestysnumero(booksData[0].kuvat);
   const previewList = mapKirjaToPreviews(booksData, "http://localhost:5000/kuvatiedosto?kuva=", currentImage, handleImageClick);
   const totalImages = (booksData) => {
-    return booksData.reduce((acc, book) => acc + book.kuvat.length, 0);
+    return booksData.length;
   };
+  
   const getImageByIndex = (index) => {
-    let currentIndex = 0;
-    for (const book of booksData) {
-      for (const image of book.kuvat) {
-        if (currentIndex === index) {
-          return { image, book };
-        }
-        currentIndex++;
-      }
+    if (index >= 0 && index < booksData.length) {
+      const book = booksData[index];
+      const image = book.kuvat[0];
+      return { image, book };
     }
     return null;
   };
@@ -93,6 +92,7 @@ const KirjaViewerComponent = ({ kirjaIds }) => {
       }
     }
   };
+  
   
   
 
