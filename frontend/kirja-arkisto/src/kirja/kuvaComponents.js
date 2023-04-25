@@ -16,6 +16,21 @@ const KuvaViewerComponent = (props) => {
     const [editClicked, setEditClicked] = useState(false)
     const [addClicked, setAddClicked] = useState(false);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const sendAuth = async () => {
+        const f = await fetch("http://localhost:5000/check_login", {
+            credentials: "include",
+            method: 'GET'
+        })
+        const data = await f.json();
+        console.log(data.data);
+        if (data.data && data.data.rooli == 1) { setIsAdmin(true) } else setIsAdmin(false)
+        };
+        sendAuth();
+    }, []);
+
     useEffect(() => {
         setDeleteClicked(false)
         setEditClicked(false)
@@ -109,13 +124,16 @@ const KuvaViewerComponent = (props) => {
                     {previewList}
                 </div>
                 <hr/>
-                <Stack direction="horizontal" gap={0} className="me-2 my-2" style={{position: "relative", top :0}}>
-                    <div>Valokuva:</div>
-                    <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => handleEditClicked()} aria-expanded={editClicked} aria-controls="editValokuva">✏</Button> <span className="mx-1"/>
-                    <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => handleDeleteClicked()} aria-expanded={deleteClicked} aria-controls="deleteValokuva">🗑</Button>
-                    <span className="mx-3" style={{lineHeight: "2.3em", width: "0.2em", backgroundColor: theme.input, color: theme.input, borderRadius: "1em", userSelect: "none"}}>|</span>
-                    <Button variant="primary" style={{backgroundColor: theme.accent}} onClick={(e) => handleAddClicked()} aria-expanded={addClicked} aria-controls="addValokuva">➕</Button>
-                </Stack>
+                {isAdmin? 
+                    <Stack direction="horizontal" gap={0} className="me-2 my-2" style={{position: "relative", top :0}}>
+                        <div>Valokuva:</div>
+                        <Button className="ms-auto" variant="success" style={{backgroundColor: theme.accent}}  onClick={(e) => handleEditClicked()} aria-expanded={editClicked} aria-controls="editValokuva">✏</Button> <span className="mx-1"/>
+                        <Button variant="danger" style={{backgroundColor: theme.accent}} onClick={(e) => handleDeleteClicked()} aria-expanded={deleteClicked} aria-controls="deleteValokuva">🗑</Button>
+                        <span className="mx-3" style={{lineHeight: "2.3em", width: "0.2em", backgroundColor: theme.input, color: theme.input, borderRadius: "1em", userSelect: "none"}}>|</span>
+                        <Button variant="primary" style={{backgroundColor: theme.accent}} onClick={(e) => handleAddClicked()} aria-expanded={addClicked} aria-controls="addValokuva">➕</Button>
+                    </Stack>
+                :<></>}
+                
                 <Collapse in={deleteClicked}>
                     <div id="deleteValokuva">
                         <DeleteValokuvaComponent setDeleteClicked={setDeleteClicked} clickedPic={clickedPic} sivunumero={sivunumero}/>
