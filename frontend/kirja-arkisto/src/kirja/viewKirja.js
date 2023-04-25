@@ -12,6 +12,21 @@ const ViewComponent = (props) => {
     const [omakirja, setOmakirja] = useState(null)
     const id = useLocation()
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const sendAuth = async () => {
+        const f = await fetch("http://localhost:5000/check_login", {
+            credentials: "include",
+            method: 'GET'
+        })
+        const data = await f.json();
+        console.log(data.data);
+        if (data.data && data.data.rooli == 1) { setIsAdmin(true) } else setIsAdmin(false)
+        };
+        sendAuth();
+    }, []);
+
 
     // Haetaan osoitekentän id:n avulla kirja serveriltä
     useEffect(() => {
@@ -73,6 +88,7 @@ const ViewComponent = (props) => {
                         </Card.Body>
 
                     </Card>
+                    {isAdmin?
                     <Card className="my-4" border="secondary" style={{ backgroundColor: theme.accent, color: "white" }}>
                         <Card.Title className="mt-3">
                             Toiminnot
@@ -81,8 +97,8 @@ const ViewComponent = (props) => {
                             <Button variant="dark" style={{ backgroundColor: theme.button }} onClick={(e) => setEditClicked(true)}>✏ Muokkaa</Button> <span className="mx-3" />
                             <Button variant="danger" style={{ backgroundColor: theme.accent, color: "red" }} onClick={(e) => setDeleteClicked(true)}>🗑 Poista</Button>
                         </Card.Body>
-
                     </Card>
+                    :<></>}
                 </Col>
 
                 {/*

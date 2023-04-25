@@ -8,6 +8,21 @@ import { ViewComponent } from './viewKirja';
 
 const KirjaSivu = (props) => {
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const sendAuth = async () => {
+      const f = await fetch("http://localhost:5000/check_login", {
+        credentials: "include",
+        method: 'GET'
+      })
+      const data = await f.json();
+      console.log(data.data);
+      if (data.data && data.data.rooli == 1) { setIsAdmin(true) } else setIsAdmin(false)
+    };
+    sendAuth();
+  }, []);
+
 
 
   const [isBackButton, setIsBackButton] = useState(false)
@@ -55,7 +70,11 @@ const KirjaSivu = (props) => {
         <Row>
           <Col>
             <Stack direction='horizontal' gap={3}>
-              <div className=" ms-auto"><Button className='btn btn-dark' style={{ backgroundColor: "#424242" }} onClick={(e) => handleButtonClicked(e.target)}>{btnText}</Button></div>
+              <div className=" ms-auto">
+                {isAdmin?
+                <Button className='btn btn-dark' style={{ backgroundColor: "#424242" }} onClick={(e) => handleButtonClicked(e.target)}>{btnText}</Button>
+                : <Button className='btn btn-dark' style={{ backgroundColor: "#424242" }} disabled>{btnText}</Button> }
+                </div>
             </Stack>
           </Col>
         </Row>
