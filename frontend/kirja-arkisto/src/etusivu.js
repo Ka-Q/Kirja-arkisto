@@ -174,7 +174,7 @@ const LoginComponent = (props) => {
   return (
     <div className="text-center">
       <input className="mb-2" placeholder="tunnus" onChange={(e) => setSposti(e.target.value)} style={inputStyle} />
-      <input className="mb-2" placeholder="salasana" onChange={(e) => setSalasana(e.target.value)} style={inputStyle} />
+      <input className="mb-2" type="password" placeholder="salasana" onChange={(e) => setSalasana(e.target.value)} style={inputStyle} />
       <Button variant="success" onClick={(e) => handleClick()} style={{ width: "100%" }}>Kirjaudu</Button>
       {error ? <div className="mt-4"><WarningComponent text="Tarkista tunnus ja salasana" /></div> : <></>}
     </div>
