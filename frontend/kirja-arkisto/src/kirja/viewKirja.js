@@ -101,21 +101,7 @@ const ViewComponent = (props) => {
                     :<></>}
                 </Col>
 
-                {/*
-            valokuvat.length > 0?
-                <Col sm={12} lg={3}>
-                    <Card border="secondary" style={{backgroundColor: theme.accent, color: "white"}}>
-                        <Card.Title className="mt-3">
-                            Valokuvat
-                        </Card.Title>
-                        <Card.Body>
-                            <ValokuvaViewerComponent valokuvat={valokuvat}/>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            :
-                <></>*/console.log("deleteclicked ", deleteClicked)
-                }
+                
             </Row>
             {deleteClicked ?
                 <div className="" style={{ position: "fixed", width: "100%", height: "100%", left: "0", top: "0", right: "0", bottom: "0", backgroundColor: "rgba(0,0,0,0.9)" }}>
@@ -336,22 +322,7 @@ const EditBookComponent = (props) => {
         if (painoksetChanged) setEnsipainosvuosi(ensipainosvuosiOriginal)
     }
 
-    // Rajoittavat käyttäjän syötteitä: kuntoluokka 0-5, hankintahinta > 0 ja painosvuosi > 0
-    /*const handleKuntoluokka = (val) => {
-        if (val > 5) {setKuntoluokka(5); return};
-        if (val < 0) {setKuntoluokka(0); return};
-        setKuntoluokka(val)
-    }
-
-    const handleHankintahinta = (val) => {
-        if (val < 0) {setHankintaHinta(0); return};
-        setHankintaHinta(val)
-    }
-
-    const handlePainosvuosi = (val) => {
-        if (val < 0) {setPainosvuosi(0); return};
-        setPainosvuosi(val)
-    }*/
+    
 
 
     const labelW = "10em"

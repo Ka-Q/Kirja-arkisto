@@ -138,34 +138,7 @@ const AddComponent = (props) => {
         }
     }, [insertedPicId]);
 
-    // Lähettää valokuvan tiedoston ja tiedot serverille. 
-    // HUOM! Tiedot lähtevät FORMINA, EIVÄT JSON-muodossa. Tämä siksi, että serveri ei tykkää kuvien vastaanottamisesta jsonissa 
-    /*const handleSubmit = async (e) => {
-        e.preventDefault()
-        console.log(e.target);
-
-        let formdata = new FormData(e.target)
-
-        // jos sivunumeroa ei ole, laitetaan -1
-        if (!formdata.get("sivunumero")) {
-            formdata.set("sivunumero", -1)
-        }
-
-        try {
-            const f = await fetch("http://localhost:5000/kuva_tiedostolla", {
-                method: 'POST',
-                credentials: "include",
-                body: formdata
-            })
-            const data = await f.json()
-
-            console.log(data.data);
-            setInsertedPicId(data.data.insertId)
-        } catch (e) {
-            console.log("jotain meni pieleen")
-        }
-
-    }*/
+    
 
     // Poistaa viimeisimmän valokuvanlisäyskomponentin listasta. Päivittää formien avaimen/id:n
     const handleDeletePicClicked = () => {
