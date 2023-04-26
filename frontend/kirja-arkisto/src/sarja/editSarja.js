@@ -442,31 +442,30 @@ const EditSeries = (props) => {
                     <h3 className="text-center mt-3">Sarjan kirjat:</h3>
 
                     {relatedKirja.length > 0 ? (
-
-
                       <ul className="text-center mt-3">
                         {relatedKirja.map((kirja) => (
-                          <Link to={"/kirja/" + kirja.kirja_id}
-                            style={{ backgroundColor: theme.button, color: "white" }}>
-
-                            <li key={kirja.kirja_id}>
-                              {kirja.nimi}{" "}
-
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                style={{ backgroundColor: theme.accent, color: "red" }}
-                                onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
-                              >
-                                🗑 Poista
-                              </Button>
-                            </li>
-                          </Link>
+                          <li key={kirja.kirja_id}>
+                            <Link
+                              to={"/kirja/" + kirja.kirja_id}
+                              style={{ backgroundColor: theme.button, color: "white" }}
+                            >
+                              {kirja.nimi}
+                            </Link>{" "}
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              style={{ backgroundColor: theme.accent, color: "red" }}
+                              onClick={() => handleRemoveBookFromSeries(kirja.kirja_id)}
+                            >
+                              🗑 Poista
+                            </Button>
+                          </li>
                         ))}
                       </ul>
+                   
 
                     ) : (
-                      <p>Loading related books...</p>
+                    <p>Loading related books...</p>
                     )}
                   </Col>
 
