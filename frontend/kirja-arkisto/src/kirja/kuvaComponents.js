@@ -177,26 +177,7 @@ const sortByTyyppinumero = (valokuvat) => {
         return 0
     });
 }
-/*const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
-    let previewList = list.map((n, index) => {
-        let style = {width: "20%"};
-        let clickedStyle = {width: "20%", border: "2px solid black", borderRadius: "5px"}
-        
-        if (clickedPic.kuva_id == n.kuva_id){
-            return (
-                <div key={index} onClick={(e) => setClickedPic(n)} style={clickedStyle}>
-                    <Image src={kuvaSrc + n.kuva} thumbnail fluid/>
-                </div>
-            )
-        }
-        return (
-            <div key={index} onClick={(e) => setClickedPic(n)} style={style}>
-                <Image src={kuvaSrc + n.kuva} thumbnail fluid/>
-            </div>
-        )
-    });
-    return previewList
-}*/
+
 
 
 const mapKuvaToPreviews = (list, kuvaSrc, clickedPic, setClickedPic) => {
@@ -292,25 +273,7 @@ const EditValokuvaComponent = (props) => {
 
     const inputStyle = {width: "100%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input, lineHeight: "2.3em"}
 
-    /*const handleEtukansi = () => {
-        setShowSivu(false)
-        setSivunumero(-200)
-    }
-
-    const handleTakakansi = () => {
-        setShowSivu(false)
-        setSivunumero(-100)
-    }
-
-    const handleSivu = () => {
-        setShowSivu(true)
-        setSivunumero(0)
-    }
-
-    const limitSivunumero = (val) => {
-        if (val < 0) {setSivunumero(0); return}
-        setSivunumero(val)
-    }*/
+    
 
     return(
         <div>

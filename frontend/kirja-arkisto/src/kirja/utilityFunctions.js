@@ -107,8 +107,6 @@ const sendValokuvaForm = async (form, bookId) => {
 
 const AddValokuvaFormComponent = (props) => {
     const formId = props.formId
-    //const inputStyle = { width: "60%", paddingLeft: "1em", marginRight: "2em" , paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
-    //const inputStyleFile = { width: "60%", paddingLeft: "1em", paddingRight: "1em", borderRadius: '100px', color: "white", backgroundColor: theme.input }
     
     const inputStyle = props.inputStyle
     const inputStyleFile = JSON.parse(JSON.stringify(inputStyle));
